@@ -2,7 +2,25 @@
 // ManUp Platform — Shared TypeScript types
 // =====================================================================
 
-export type Role = "user" | "admin" | "owner";
+export type Role = "user" | "admin" | "owner" | "superadmin";
+
+/** Roles that may enter the admin studio. */
+export function isAdminRole(role: Role): boolean {
+  return role === "admin" || role === "owner" || role === "superadmin";
+}
+
+/** Roles that may enter the owner console (/hackeradmin). */
+export function isOwnerRole(role: Role): boolean {
+  return role === "owner" || role === "superadmin";
+}
+
+/** Where a signed-in user should land by default. */
+export function studioHrefFor(role: Role): string {
+  if (role === "superadmin") return "/hackeradmin";
+  if (role === "owner") return "/hackeradmin";
+  if (role === "admin") return "/admin";
+  return "/";
+}
 
 export type PublishStatus = "draft" | "published" | "archived";
 
@@ -206,6 +224,20 @@ export interface PublicSiteSettings {
     aboutBody: string;
     aboutImage?: string;
     aboutStats: { value: string; label: string }[];
+    /** Optional editorial blocks rendered on the home page. */
+    stats?: { value: string; label: string }[];
+    experience?: {
+      eyebrow?: string;
+      title?: string;
+      body?: string;
+      items?: { title: string; description: string; image?: string }[];
+    };
+    venue?: { title?: string; address?: string; note?: string; image?: string };
+    faqs?: { q: string; a: string }[];
+    gallery?: { image: string; caption?: string }[];
+    tickets?: { name: string; price: string; note?: string; perks: string[]; featured?: boolean }[];
+    testimonials?: { quote: string; name: string; role?: string }[];
+    announcement?: string;
   };
   updatedAt: string;
   updatedBy?: string;
@@ -256,5 +288,8 @@ export interface HealthStatus {
   version: string;
   environment: string;
   commit?: string;
+  /** Persistence driver in use: firebase | local (embedded SQLite). */
+  backend?: "firebase" | "local";
+  masterAdminConfigured?: boolean;
   checkedAt: string;
 }

@@ -104,11 +104,21 @@ export async function subscribe(email: string, source?: string): Promise<{ id: s
   return { id: ref.id, duplicate: false };
 }
 
+/** Email-initiated unsubscribe (idempotent, never reveals whether the address exists). */
+export async function unsubscribeByEmail(email: string): Promise<boolean> {
+  const db = requireDb();
+  const normalized = email.trim().toLowerCase();
+  const snap = await db.collection("newsletterSubscribers").where("email", "==", normalized).limit(1).get();
+  if (snap.empty) return false;
+  await snap.docs[0].ref.set({ status: "unsubscribed", unsubscribedAt: FieldValue.serverTimestamp() }, { merge: true });
+  return true;
+}
+
 export async function unsubscribeByToken(token: string): Promise<boolean> {
   const db = requireDb();
   const snap = await db.collection("newsletterSubscribers").where("unsubscribeToken", "==", token).limit(1).get();
   if (snap.empty) return false;
-  await snap.docs[0].ref.set({ status: "unsubscribed" }, { merge: true });
+  await snap.docs[0].ref.set({ status: "unsubscribed", unsubscribedAt: FieldValue.serverTimestamp() }, { merge: true });
   return true;
 }
 

@@ -46,7 +46,7 @@ export function MediaPicker({
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <p className="py-8 text-center text-sm text-ink-400">No images found. Upload some in the Media section first.</p>
+        <p className="py-8 text-center text-sm text-ivory-500">No images found. Upload some in the Media section first.</p>
       ) : (
         <div className="grid max-h-[50vh] grid-cols-3 gap-3 overflow-y-auto sm:grid-cols-4">
           {filtered.map((m) => (
@@ -56,7 +56,7 @@ export function MediaPicker({
               onClick={() => m.downloadUrl && onSelect(m.downloadUrl, m.alt || m.fileName)}
               disabled={!m.downloadUrl}
               className={cn(
-                "group relative aspect-square overflow-hidden rounded-xl border border-ink-100 bg-ink-50",
+                "group relative aspect-square overflow-hidden rounded-sm border border-white/[0.08] bg-white/[0.03]",
                 m.downloadUrl ? "hover:border-brand-400" : "opacity-40"
               )}
               title={m.fileName}
@@ -65,7 +65,7 @@ export function MediaPicker({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={m.downloadUrl} alt={m.alt || m.fileName} loading="lazy" className="h-full w-full object-cover" />
               ) : (
-                <span className="flex h-full items-center justify-center text-[11px] text-ink-400">Private</span>
+                <span className="flex h-full items-center justify-center text-[11px] text-ivory-500">Private</span>
               )}
               <span className="absolute inset-0 flex items-center justify-center bg-ink-950/0 transition-colors group-hover:bg-ink-950/30">
                 <Check className="h-6 w-6 text-white opacity-0 transition-opacity group-hover:opacity-100" />

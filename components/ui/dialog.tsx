@@ -37,7 +37,7 @@ export function Dialog({
   if (!open) return null;
   return (
     <div
-      className="fixed inset-0 z-[90] flex items-end justify-center bg-ink-950/60 p-4 backdrop-blur-sm animate-fade sm:items-center"
+      className="fixed inset-0 z-[90] flex items-end justify-center bg-obsidian-950/75 p-4 backdrop-blur-sm animate-fade sm:items-center"
       onClick={onClose}
       role="presentation"
     >
@@ -47,19 +47,19 @@ export function Dialog({
         aria-label={title}
         onClick={(e) => e.stopPropagation()}
         className={cn(
-          "w-full rounded-2xl bg-white p-6 shadow-2xl animate-scale-in",
+          "relative w-full border border-gold-500/20 bg-obsidian-900 p-7 shadow-2xl animate-scale-in",
           wide ? "max-w-2xl" : "max-w-md"
         )}
       >
-        <div className="mb-4 flex items-start justify-between gap-4">
+        <div className="mb-6 flex items-start justify-between gap-4">
           <div>
-            <h2 className="font-display text-lg font-bold text-ink-900">{title}</h2>
-            {description && <p className="mt-1 text-sm text-ink-500">{description}</p>}
+            <h2 className="font-serif text-[1.4rem] text-ivory-50">{title}</h2>
+            {description && <p className="mt-2 text-[13px] leading-relaxed text-ivory-400/80">{description}</p>}
           </div>
           <button
             onClick={onClose}
             aria-label="Close dialog"
-            className="rounded-lg p-1.5 text-ink-400 hover:bg-ink-50 hover:text-ink-700"
+            className="rounded-sm p-1.5 text-ivory-400 transition-colors hover:bg-white/[0.06] hover:text-ivory-100"
           >
             <X className="h-5 w-5" />
           </button>
@@ -77,7 +77,9 @@ export function ConfirmDialog({
   onConfirm,
   title,
   message,
+  description,
   confirmLabel = "Confirm",
+  destructive,
   requireTyping,
   loading,
 }: {
@@ -85,8 +87,11 @@ export function ConfirmDialog({
   onClose: () => void;
   onConfirm: () => void | Promise<void>;
   title: string;
-  message: string;
+  message?: string;
+  /** Alias for `message` — both are accepted. */
+  description?: string;
   confirmLabel?: string;
+  destructive?: boolean;
   requireTyping?: string;
   loading?: boolean;
 }) {
@@ -96,20 +101,29 @@ export function ConfirmDialog({
   }, [open ]);
   const canConfirm = !requireTyping || typed.trim() === requireTyping;
   return (
-    <Dialog open={open} onClose={onClose} title={title} description={message}>
+    <Dialog open={open} onClose={onClose} title={title} description={message ?? description}>
       {requireTyping && (
         <div className="mb-4">
-          <p className="mb-2 text-sm text-ink-600">
-            Type <code className="rounded bg-ink-50 px-1.5 py-0.5 font-mono text-[13px] font-bold">{requireTyping}</code> to confirm:
+          <p className="mb-2 text-[13px] text-ivory-300">
+            Type{" "}
+            <code className="rounded-sm border border-white/[0.08] bg-black/40 px-1.5 py-0.5 font-mono text-[12.5px] font-bold text-gold-200">
+              {requireTyping}
+            </code>{" "}
+            to confirm:
           </p>
           <Input value={typed} onChange={(e) => setTyped(e.target.value)} placeholder={requireTyping} autoComplete="off" />
         </div>
       )}
       <div className="flex justify-end gap-3">
-        <Button variant="secondary" onClick={onClose} disabled={loading}>
+        <Button variant="ghost" onClick={onClose} disabled={loading}>
           Cancel
         </Button>
-        <Button variant="danger" onClick={() => void onConfirm()} disabled={!canConfirm} loading={loading}>
+        <Button
+          variant={destructive ? "danger" : "gold"}
+          onClick={() => void onConfirm()}
+          disabled={!canConfirm}
+          loading={loading}
+        >
           {confirmLabel}
         </Button>
       </div>

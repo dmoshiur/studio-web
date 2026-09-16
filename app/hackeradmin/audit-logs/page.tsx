@@ -48,14 +48,14 @@ export default function OwnerAuditLogsPage() {
             </THead>
             <TBody>
               {list.items.map((l) => (
-                <tr key={l.id} className="cursor-pointer transition-colors hover:bg-ink-50/50" onClick={() => setViewing(l)}>
-                  <TD className="whitespace-nowrap text-ink-500">{formatDateTime(l.createdAt)}</TD>
+                <tr key={l.id} className="cursor-pointer transition-colors hover:bg-white/[0.03]" onClick={() => setViewing(l)}>
+                  <TD className="whitespace-nowrap text-ivory-400/80">{formatDateTime(l.createdAt)}</TD>
                   <TD>
-                    <p className="max-w-[200px] truncate font-medium text-ink-900">{l.actorEmail ?? l.actorId.slice(0, 12)}</p>
-                    {l.actorRole && <p className="text-[12px] capitalize text-ink-400">{l.actorRole}</p>}
+                    <p className="max-w-[200px] truncate font-medium text-ivory-50">{l.actorEmail ?? l.actorId.slice(0, 12)}</p>
+                    {l.actorRole && <p className="text-[12px] capitalize text-ivory-500">{l.actorRole}</p>}
                   </TD>
-                  <TD><code className="rounded bg-ink-50 px-2 py-1 font-mono text-[12px] text-ink-800">{l.action}</code></TD>
-                  <TD className="max-w-[160px] truncate font-mono text-[12px] text-ink-500">{l.resource ?? "—"}</TD>
+                  <TD><code className="rounded bg-white/[0.03] px-2 py-1 font-mono text-[12px] text-ivory-100">{l.action}</code></TD>
+                  <TD className="max-w-[160px] truncate font-mono text-[12px] text-ivory-400/80">{l.resource ?? "—"}</TD>
                   <TD>
                     <Badge variant={l.result === "success" ? "success" : l.result === "denied" ? "warning" : "danger"}>
                       {l.result}
@@ -79,18 +79,18 @@ export default function OwnerAuditLogsPage() {
         {viewing && (
           <div className="grid gap-3 text-sm">
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl bg-ink-50 p-3">
-                <p className="text-[12px] font-semibold text-ink-400">Result</p>
+              <div className="rounded-sm bg-white/[0.03] p-3">
+                <p className="text-[12px] font-semibold text-ivory-500">Result</p>
                 <p className="font-semibold">{viewing.result}</p>
               </div>
-              <div className="rounded-xl bg-ink-50 p-3">
-                <p className="text-[12px] font-semibold text-ink-400">IP</p>
+              <div className="rounded-sm bg-white/[0.03] p-3">
+                <p className="text-[12px] font-semibold text-ivory-500">IP</p>
                 <p className="font-mono text-[13px]">{viewing.ip ?? "—"}</p>
               </div>
             </div>
             <div>
-              <p className="mb-1 text-[12px] font-semibold text-ink-400">Metadata</p>
-              <pre className="max-h-64 overflow-auto rounded-xl bg-ink-900 p-4 font-mono text-[12px] text-emerald-200">
+              <p className="mb-1 text-[12px] font-semibold text-ivory-500">Metadata</p>
+              <pre className="max-h-64 overflow-auto rounded-sm bg-ink-900 p-4 font-mono text-[12px] text-emerald-200">
                 {JSON.stringify(viewing.metadata ?? {}, null, 2)}
               </pre>
             </div>

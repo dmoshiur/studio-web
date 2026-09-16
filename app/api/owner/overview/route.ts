@@ -1,4 +1,6 @@
-import { getAdminAuth, getAdminDb, getAdminStorage, isAdminConfigured } from "@/lib/firebase/admin";
+import { getAdminAuth, getAdminDb, getAdminStorage, getDataBackend, isAdminConfigured } from "@/lib/firebase/admin";
+import { listIdentityUsers } from "@/lib/server/identity";
+import { isEnvAdminConfigured } from "@/lib/server/auth";
 import { requireOwner } from "@/lib/server/auth";
 import { getDashboardCounts } from "@/lib/firestore/content";
 import { getMaintenanceState, getPublicSettings } from "@/lib/firestore/settings";
@@ -19,8 +21,9 @@ export async function GET() {
     ]);
 
     const dbOk = await getAdminDb()?.collection("siteSettings").doc("public").get().then(() => true).catch(() => false) ?? false;
-    const authOk = await getAdminAuth()?.listUsers(1).then(() => true).catch(() => false) ?? false;
-    const storageOk = Boolean(getAdminStorage() && process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
+    const authOk = await listIdentityUsers(1).then(() => true).catch(() => false);
+    const storageOk =
+      getDataBackend() === "local" ? true : Boolean(getAdminStorage() && process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
 
     return ok({
       app: {
@@ -28,6 +31,10 @@ export async function GET() {
         environment: process.env.VERCEL_ENV ?? process.env.NODE_ENV ?? "development",
         commit: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? null,
         url: process.env.NEXT_PUBLIC_APP_URL ?? null,
+      },
+      backend: {
+        driver: getDataBackend(),
+        masterAdminConfigured: isEnvAdminConfigured(),
       },
       firebase: {
         configured: isAdminConfigured(),

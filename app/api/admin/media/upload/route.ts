@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
-import { getAdminBucketName, getAdminStorage } from "@/lib/firebase/admin";
+import { getDataBackend } from "@/lib/firebase/admin";
+import { isLocalStorage, putObject } from "@/lib/storage/media";
 import { requireAdmin } from "@/lib/server/auth";
 import { createMediaRecord } from "@/lib/firestore/engagement";
 import { apiError, created, handleApiError, rateLimitKey } from "@/lib/server/api-helpers";
@@ -37,9 +38,9 @@ export async function POST(req: Request) {
     );
     if (!rl.allowed) return apiError("Upload rate limit exceeded", 429, "rate_limited");
 
-    const storage = getAdminStorage();
-    const bucketName = getAdminBucketName();
-    if (!storage || !bucketName) return apiError("Storage is not configured", 503, "not_configured");
+    if (!isLocalStorage() && getDataBackend() === "firebase" && !process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET) {
+      return apiError("Storage is not configured", 503, "not_configured");
+    }
 
     const form = await req.formData();
     const file = form.get("file");
@@ -61,24 +62,18 @@ export async function POST(req: Request) {
 
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 120) || "upload";
     const storagePath = `${folder}/${Date.now()}-${randomUUID().slice(0, 8)}-${safeName}`;
-    const bucket = storage.bucket(bucketName);
-    const gfile = bucket.file(storagePath);
     const buffer = Buffer.from(await file.arrayBuffer());
-
-    await gfile.save(buffer, {
+    // Public folders get public URLs; documents stay private (resolved on demand).
+    const visibility: "public" | "private" = isDocFolder ? "private" : "public";
+    const stored = await putObject({
+      storagePath,
+      buffer,
       contentType: file.type,
-      metadata: {
-        metadata: { uploadedBy: user.uid, originalName: file.name.slice(0, 200) },
-      },
+      visibility,
+      uploadedBy: user.uid,
+      originalName: file.name.slice(0, 200),
     });
-    // Public folders get public URLs; documents stay private (signed URLs on demand).
-    const visibility = isDocFolder ? "private" : "public";
-    if (visibility === "public") {
-      await gfile.makePublic().catch(() => undefined);
-    }
-    const downloadUrl = visibility === "public"
-      ? `https://storage.googleapis.com/${bucketName}/${encodeURI(storagePath)}`
-      : "";
+    const downloadUrl = stored.downloadUrl;
 
     const id = await createMediaRecord({
       fileName: safeName,

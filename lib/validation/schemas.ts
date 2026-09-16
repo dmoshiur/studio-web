@@ -216,7 +216,7 @@ export const ownerBootstrapSchema = z.object({
 
 export const setRoleSchema = z.object({
   uid: z.string().min(4).max(128),
-  role: z.enum(["user", "admin", "owner"]),
+  role: z.enum(["user", "admin", "owner", "superadmin"]),
 });
 
 export const mediaUpdateSchema = z.object({

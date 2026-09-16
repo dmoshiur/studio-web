@@ -3,7 +3,7 @@ import { getNavigation, listSocialLinks } from "@/lib/firestore/engagement";
 import { SiteHeader } from "@/components/public/site-header";
 import { SiteFooter } from "@/components/public/site-footer";
 
-export const revalidate = 120;
+export const dynamic = "force-dynamic";
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const [settings, headerNav, footerNav, socialLinks] = await Promise.all([

@@ -113,10 +113,10 @@ export default function OwnerUsersPage() {
             </THead>
             <TBody>
               {users.map((u) => (
-                <tr key={u.uid} className="transition-colors hover:bg-ink-50/50">
+                <tr key={u.uid} className="transition-colors hover:bg-white/[0.03]">
                   <TD>
-                    <p className="font-semibold text-ink-900">{u.displayName ?? "—"}</p>
-                    <p className="font-mono text-[12px] text-ink-400">{u.email ?? "no email"}</p>
+                    <p className="font-semibold text-ivory-50">{u.displayName ?? "—"}</p>
+                    <p className="font-mono text-[12px] text-ivory-500">{u.email ?? "no email"}</p>
                   </TD>
                   <TD>
                     <Select
@@ -138,7 +138,7 @@ export default function OwnerUsersPage() {
                       {!u.emailVerified && <Badge variant="warning">Unverified</Badge>}
                     </div>
                   </TD>
-                  <TD className="whitespace-nowrap text-ink-500">
+                  <TD className="whitespace-nowrap text-ivory-400/80">
                     {u.lastSignInAt ? new Date(u.lastSignInAt).toLocaleDateString() : "Never"}
                   </TD>
                   <TD>

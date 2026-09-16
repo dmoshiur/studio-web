@@ -65,14 +65,14 @@ export default function OwnerSettingsPage() {
   return (
     <>
       <OwnerPageHeader title="Site settings" description="Changes go live within seconds (cached pages revalidate)" />
-      <div className="mb-6 flex flex-wrap gap-1 rounded-2xl border border-ink-100 bg-white p-1.5 shadow-card">
+      <div className="mb-6 flex flex-wrap gap-1 rounded-sm border border-white/[0.08] bg-white/[0.03] p-1.5 shadow-luxe">
         {TABS.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
             className={cn(
-              "rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors",
-              tab === t.id ? "bg-ink-900 text-white" : "text-ink-500 hover:bg-ink-50 hover:text-ink-900"
+              "rounded-sm px-4 py-2.5 text-sm font-semibold transition-colors",
+              tab === t.id ? "bg-gold-500 text-obsidian-950" : "text-ivory-400/80 hover:bg-white/[0.03] hover:text-ivory-50"
             )}
           >
             {t.label}
@@ -187,8 +187,8 @@ function SettingsForm({
               </div>
               <div className="grid content-start gap-4">
                 <div><Label>Main event date (for countdown)</Label><Input type="datetime-local" {...register("homepage.eventDateISO")} /></div>
-                <div className="flex items-center justify-between rounded-xl bg-ink-50 px-4 py-3">
-                  <span className="text-sm font-semibold text-ink-700">Show countdown</span>
+                <div className="flex items-center justify-between rounded-sm bg-white/[0.03] px-4 py-3">
+                  <span className="text-sm font-semibold text-ivory-200">Show countdown</span>
                   <Controller name="homepage.showCountdown" control={control} render={({ field }) => <Switch checked={field.value} onCheckedChange={field.onChange} label="Show countdown" />} />
                 </div>
               </div>
@@ -206,7 +206,7 @@ function SettingsForm({
               <div className="sm:col-span-2">
                 <div className="mb-2 flex items-center justify-between">
                   <Label className="mb-0">Stats</Label>
-                  <Button type="button" variant="secondary" size="sm" onClick={() => appendStat({ value: "", label: "" })}>
+                  <Button type="button" variant="ghost" size="sm" onClick={() => appendStat({ value: "", label: "" })}>
                     <Plus /> Add stat
                   </Button>
                 </div>
@@ -220,7 +220,7 @@ function SettingsForm({
                       </Button>
                     </div>
                   ))}
-                  {statFields.length === 0 && <p className="text-sm text-ink-400">No stats yet.</p>}
+                  {statFields.length === 0 && <p className="text-sm text-ivory-500">No stats yet.</p>}
                 </div>
               </div>
             </CardContent>
@@ -289,7 +289,7 @@ function SettingsForm({
       )}
 
       <div className="sticky bottom-4 mt-6 flex justify-end">
-        <Button type="submit" size="lg" loading={isSubmitting} className="shadow-pop">
+        <Button type="submit" size="lg" loading={isSubmitting} className="shadow-gold-sm">
           Save {TABS.find((t) => t.id === tab)?.label} settings
         </Button>
       </div>

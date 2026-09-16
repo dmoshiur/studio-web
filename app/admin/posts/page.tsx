@@ -79,21 +79,21 @@ export default function AdminPostsPage() {
             </THead>
             <TBody>
               {list.items.map((p) => (
-                <tr key={p.id} className="transition-colors hover:bg-ink-50/50">
+                <tr key={p.id} className="transition-colors hover:bg-white/[0.03]">
                   <TD>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-ink-900">{p.title}</span>
-                      {p.featured && <Badge variant="brand">Featured</Badge>}
+                      <span className="font-semibold text-ivory-50">{p.title}</span>
+                      {p.featured && <Badge variant="gold">Featured</Badge>}
                     </div>
-                    <p className="mt-0.5 text-[12px] text-ink-400">/{p.slug}</p>
+                    <p className="mt-0.5 text-[12px] text-ivory-500">/{p.slug}</p>
                   </TD>
                   <TD>
                     <Badge variant={p.status === "published" ? "success" : p.status === "draft" ? "warning" : "default"}>
                       {p.status}
                     </Badge>
                   </TD>
-                  <TD className="text-ink-600">{p.authorName}</TD>
-                  <TD className="whitespace-nowrap text-ink-500">{formatDate(p.updatedAt)}</TD>
+                  <TD className="text-ivory-300">{p.authorName}</TD>
+                  <TD className="whitespace-nowrap text-ivory-400/80">{formatDate(p.updatedAt)}</TD>
                   <TD>
                     <RowActions>
                       {p.status === "published" && (

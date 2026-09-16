@@ -1,0 +1,39 @@
+import { NextResponse } from "next/server";
+import { registerSchema } from "@/lib/validation/schemas";
+import { apiError, handleApiError, parseBody, requestIp } from "@/lib/server/api-helpers";
+import { rateLimit, RATE_PRESETS } from "@/lib/server/rate-limit";
+import { auditLog } from "@/lib/server/audit";
+import { createIdentityUser, IdentityError } from "@/lib/server/identity";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+/** Self-service registration for the public site (role: user). */
+export async function POST(req: Request) {
+  try {
+    if ((process.env.ALLOW_REGISTRATION ?? "true").toLowerCase() === "false") {
+      return apiError("Registration is currently closed", 403, "registration_closed");
+    }
+    const rl = await rateLimit(`auth:register:${requestIp(req)}`, RATE_PRESETS.auth.limit, RATE_PRESETS.auth.windowMs);
+    if (!rl.allowed) return apiError("Too many attempts. Please try again later.", 429, "rate_limited");
+
+    const body = await parseBody(req, registerSchema);
+    const user = await createIdentityUser({
+      email: body.email,
+      password: body.password,
+      displayName: body.displayName,
+      role: "user",
+    });
+    await auditLog({
+      actorId: user.uid,
+      actorEmail: user.email ?? undefined,
+      action: "auth.register",
+      result: "success",
+      ip: requestIp(req),
+    });
+    return NextResponse.json({ ok: true, user: { uid: user.uid, email: user.email } }, { status: 201 });
+  } catch (err) {
+    if (err instanceof IdentityError) return apiError(err.message, err.status, err.code);
+    return handleApiError(err);
+  }
+}

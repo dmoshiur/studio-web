@@ -8,22 +8,22 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
   }, [error]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-ink-950 px-4 text-center">
-      <p className="font-display text-7xl font-extrabold text-gradient">500</p>
-      <h1 className="mt-4 font-display text-2xl font-bold text-white">Something went wrong</h1>
-      <p className="mt-2 max-w-sm text-white/60">
-        An unexpected error occurred. Our team has been notified — please try again.
+    <main className="flex min-h-screen flex-col items-center justify-center bg-obsidian-950 px-6 text-center">
+      <p className="calligraphic gold-text text-[3.4rem] leading-none">something broke</p>
+      <h1 className="display-md mt-5 text-ivory-50">An unexpected error occurred</h1>
+      <p className="lead mt-4 max-w-sm">
+        The page could not be rendered. Try again — if it keeps happening, our team has been notified.
       </p>
-      <div className="mt-8 flex gap-3">
+      <div className="mt-9 flex flex-wrap justify-center gap-4">
         <button
           onClick={reset}
-          className="inline-flex h-12 items-center rounded-xl bg-brand-gradient px-7 text-[15px] font-semibold text-white shadow-pop hover:brightness-105"
+          className="inline-flex h-[52px] items-center bg-gold-gradient px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06]"
         >
           Try again
         </button>
         <a
           href="/"
-          className="inline-flex h-12 items-center rounded-xl border border-white/20 bg-white/5 px-7 text-[15px] font-semibold text-white hover:bg-white/10"
+          className="inline-flex h-[52px] items-center border border-white/20 px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-ivory-100 transition-colors hover:border-gold-400/60"
         >
           Home
         </a>

@@ -43,3 +43,6 @@ Thumbs.db
 
 # TypeScript
 *.tsbuildinfo
+
+# Embedded store + uploaded media (runtime data, never commit)
+/data/

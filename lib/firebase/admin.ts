@@ -8,6 +8,7 @@ import {
 import { getAuth, type Auth } from "firebase-admin/auth";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import { getStorage, type Storage } from "firebase-admin/storage";
+import { LocalFirestore } from "@/lib/db/local-store";
 
 /**
  * Firebase Admin SDK — SERVER ONLY. Never import from client components.
@@ -41,7 +42,40 @@ function buildCredential() {
 
 let cachedApp: App | null = null;
 
+/**
+ * Which persistence backend is active.
+ *  - "firebase" → Firebase Admin SDK (Firestore/Storage/Auth)
+ *  - "local"    → embedded SQLite store (Firestore-compatible API)
+ * Automatic: Firebase wins when credentials exist, otherwise the embedded
+ * store keeps the whole platform (public site + admin + owner console)
+ * fully functional with zero external services. Force with DATA_BACKEND.
+ */
+export function getDataBackend(): "firebase" | "local" {
+  const forced = (process.env.DATA_BACKEND ?? "").trim().toLowerCase();
+  if (forced === "local" || forced === "sqlite") return "local";
+  if (forced === "firebase" || forced === "firestore") return "firebase";
+  return hasFirebaseCredentials() ? "firebase" : "local";
+}
+
+function hasFirebaseCredentials(): boolean {
+  if (process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) return true;
+  return Boolean(
+    process.env.FIREBASE_PROJECT_ID &&
+      process.env.FIREBASE_CLIENT_EMAIL &&
+      process.env.FIREBASE_PRIVATE_KEY
+  );
+}
+
+let cachedLocalDb: LocalFirestore | null = null;
+
+/** Embedded SQLite adapter, presented through the Firestore API surface. */
+function getLocalDbInstance(): LocalFirestore {
+  if (!cachedLocalDb) cachedLocalDb = new LocalFirestore();
+  return cachedLocalDb;
+}
+
 export function getAdminApp(): App | null {
+  if (getDataBackend() === "local") return null;
   if (cachedApp) return cachedApp;
   if (getApps().length) {
     cachedApp = getApps()[0];
@@ -65,15 +99,18 @@ export function getAdminApp(): App | null {
 }
 
 export function isAdminConfigured(): boolean {
+  if (getDataBackend() === "local") return true; // embedded store is always available
   return getAdminApp() !== null;
 }
 
 export function getAdminAuth(): Auth | null {
+  if (getDataBackend() === "local") return null; // local identity handled by lib/server/identity
   const app = getAdminApp();
   return app ? getAuth(app) : null;
 }
 
 export function getAdminDb(): Firestore | null {
+  if (getDataBackend() === "local") return getLocalDbInstance() as unknown as Firestore;
   const app = getAdminApp();
   return app ? getFirestore(app) : null;
 }

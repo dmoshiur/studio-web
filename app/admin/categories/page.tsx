@@ -92,8 +92,8 @@ export default function AdminCategoriesPage() {
             <Card key={c.id}>
               <CardContent className="flex items-center justify-between gap-3 p-5">
                 <div className="min-w-0">
-                  <p className="font-semibold text-ink-900">{c.name}</p>
-                  <p className="mt-0.5 truncate text-[12px] text-ink-400">/{c.slug}</p>
+                  <p className="font-semibold text-ivory-50">{c.name}</p>
+                  <p className="mt-0.5 truncate text-[12px] text-ivory-500">/{c.slug}</p>
                   {c.description && <Badge variant="default" className="mt-2">{c.description.slice(0, 40)}</Badge>}
                 </div>
                 <Button variant="ghost" size="iconSm" aria-label={`Delete ${c.name}`} onClick={() => setDeleting(c)}>
@@ -111,7 +111,7 @@ export default function AdminCategoriesPage() {
           <Input id="cat-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Keynotes" autoFocus />
         </div>
         <div className="mt-4 flex justify-end gap-2">
-          <Button variant="secondary" onClick={() => setShowNew(false)}>Cancel</Button>
+          <Button variant="ghost" onClick={() => setShowNew(false)}>Cancel</Button>
           <Button onClick={create} loading={saving} disabled={!name.trim()}>Create</Button>
         </div>
       </Dialog>

@@ -106,7 +106,7 @@ export function EventForm({ initial, speakers }: { initial?: EventItem; speakers
 
         <Card>
           <CardContent className="grid gap-4 p-6 sm:grid-cols-2">
-            <h2 className="font-display text-base font-bold text-ink-900 sm:col-span-2">Date & venue</h2>
+            <h2 className="font-serif text-base font-bold text-ivory-50 sm:col-span-2">Date & venue</h2>
             <div>
               <Label>Starts at *</Label>
               <Controller
@@ -163,7 +163,7 @@ export function EventForm({ initial, speakers }: { initial?: EventItem; speakers
       <div className="grid content-start gap-6">
         <Card>
           <CardContent className="grid gap-4 p-6">
-            <h2 className="font-display text-base font-bold text-ink-900">Publish</h2>
+            <h2 className="font-serif text-base font-bold text-ivory-50">Publish</h2>
             <div>
               <Label>Status</Label>
               <Select {...register("status")}>
@@ -172,8 +172,8 @@ export function EventForm({ initial, speakers }: { initial?: EventItem; speakers
                 <option value="archived">Archived</option>
               </Select>
             </div>
-            <div className="flex items-center justify-between rounded-xl bg-ink-50 px-4 py-3">
-              <span className="text-sm font-semibold text-ink-700">Featured</span>
+            <div className="flex items-center justify-between rounded-sm bg-white/[0.03] px-4 py-3">
+              <span className="text-sm font-semibold text-ivory-200">Featured</span>
               <Controller name="featured" control={control} render={({ field }) => <Switch checked={field.value} onCheckedChange={field.onChange} label="Featured" />} />
             </div>
             <Button type="submit" loading={isSubmitting} className="w-full">
@@ -184,7 +184,7 @@ export function EventForm({ initial, speakers }: { initial?: EventItem; speakers
 
         <Card>
           <CardContent className="grid gap-4 p-6">
-            <h2 className="font-display text-base font-bold text-ink-900">Media & speakers</h2>
+            <h2 className="font-serif text-base font-bold text-ivory-50">Media & speakers</h2>
             <Controller name="coverImage" control={control} render={({ field }) => <CoverInput value={field.value ?? ""} onChange={field.onChange} />} />
             <div>
               <Label>Speakers</Label>
@@ -192,10 +192,10 @@ export function EventForm({ initial, speakers }: { initial?: EventItem; speakers
                 name="speakerIds"
                 control={control}
                 render={({ field }) => (
-                  <div className="grid max-h-56 gap-1.5 overflow-y-auto rounded-xl border border-ink-200 p-2">
-                    {speakers.length === 0 && <p className="p-2 text-sm text-ink-400">No speakers yet.</p>}
+                  <div className="grid max-h-56 gap-1.5 overflow-y-auto rounded-sm border border-white/10 p-2">
+                    {speakers.length === 0 && <p className="p-2 text-sm text-ivory-500">No speakers yet.</p>}
                     {speakers.map((s) => (
-                      <label key={s.id} className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm hover:bg-ink-50">
+                      <label key={s.id} className="flex cursor-pointer items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm hover:bg-white/[0.03]">
                         <input
                           type="checkbox"
                           checked={field.value.includes(s.id)}
@@ -205,9 +205,9 @@ export function EventForm({ initial, speakers }: { initial?: EventItem; speakers
                               : field.value.filter((id: string) => id !== s.id);
                             field.onChange(next);
                           }}
-                          className="h-4 w-4 accent-pink-600"
+                          className="h-4 w-4 accent-gold-500"
                         />
-                        <span className="font-medium text-ink-800">{s.name}</span>
+                        <span className="font-medium text-ivory-100">{s.name}</span>
                       </label>
                     ))}
                   </div>

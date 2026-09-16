@@ -1,5 +1,5 @@
-import { getAdminAuth, getAdminDb, isAdminConfigured } from "@/lib/firebase/admin";
-import { getOwnerEmails } from "@/lib/server/auth";
+import { getAdminDb, isAdminConfigured } from "@/lib/firebase/admin";
+import { getAdminEmails, getAdminPassword, getOwnerEmails } from "@/lib/server/auth";
 import { ok } from "@/lib/server/api-helpers";
 
 export const runtime = "nodejs";
@@ -8,11 +8,10 @@ export const dynamic = "force-dynamic";
 /** Tells the setup UI whether bootstrap is available. No secrets exposed. */
 export async function GET() {
   if (!isAdminConfigured()) {
-    return ok({ available: false, reason: "Firebase Admin is not configured" });
+    return ok({ available: false, reason: "Backend is not configured" });
   }
   const db = getAdminDb();
-  const auth = getAdminAuth();
-  if (!db || !auth) return ok({ available: false, reason: "Backend not configured" });
+  if (!db) return ok({ available: false, reason: "Backend is not configured" });
 
   // Bootstrap is disabled once an owner exists.
   try {
@@ -22,9 +21,11 @@ export async function GET() {
     /* fall through — allow attempt; claim route re-checks */
   }
 
-  const ownerEmails = getOwnerEmails();
-  if (!ownerEmails.length) {
-    return ok({ available: false, reason: "OWNER_EMAILS is not configured" });
+  if (!process.env.SETUP_TOKEN) {
+    return ok({ available: false, reason: "SETUP_TOKEN is not configured" });
   }
-  return ok({ available: true });
+  if (!getOwnerEmails().length && !getAdminEmails().length) {
+    return ok({ available: false, reason: "OWNER_EMAILS / ADMIN_EMAIL is not configured" });
+  }
+  return ok({ available: true, masterAdminConfigured: Boolean(getAdminPassword()) });
 }

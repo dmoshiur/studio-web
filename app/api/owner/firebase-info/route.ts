@@ -1,4 +1,5 @@
-import { getAdminAuth, getAdminDb, getAdminStorage } from "@/lib/firebase/admin";
+import { getAdminAuth, getAdminDb, getAdminStorage, getDataBackend } from "@/lib/firebase/admin";
+import { listIdentityUsers } from "@/lib/server/identity";
 import { requireOwner } from "@/lib/server/auth";
 import { maskSecret } from "@/lib/utils";
 import { handleApiError, ok } from "@/lib/server/api-helpers";
@@ -12,12 +13,18 @@ export async function GET() {
     await requireOwner();
 
     const dbOk = await getAdminDb()?.collection("siteSettings").doc("public").get().then(() => "operational").catch(() => "error") ?? "error";
-    const authOk = await getAdminAuth()?.listUsers(1).then(() => "operational").catch(() => "error") ?? "error";
-    const storageOk = getAdminStorage() && process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ? "operational" : "error";
+    const authOk = await listIdentityUsers(1).then(() => "operational").catch(() => "error");
+    const storageOk =
+      getDataBackend() === "local"
+        ? "operational (embedded)"
+        : getAdminStorage() && process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+          ? "operational"
+          : "error";
 
     const clientEmail = process.env.FIREBASE_CLIENT_EMAIL ?? null;
 
     return ok({
+      backend: getDataBackend(),
       configured: Boolean(process.env.FIREBASE_PROJECT_ID ?? process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID),
       projectId: process.env.FIREBASE_PROJECT_ID ?? process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? null,
       authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ?? null,

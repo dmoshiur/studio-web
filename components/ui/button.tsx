@@ -2,29 +2,38 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
+/**
+ * Button — champagne gold on obsidian. Squared, editorial proportions.
+ * `gold` is the primary action, `outlineLight` sits on dark imagery,
+ * `ghostDark` is for the studio surfaces.
+ */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 active:scale-[.98]",
+  "group/btn relative inline-flex items-center justify-center gap-2.5 overflow-hidden whitespace-nowrap rounded-sm font-sans text-[12.5px] font-semibold uppercase tracking-[0.18em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-950 disabled:pointer-events-none disabled:opacity-45 [&_svg]:size-[15px] [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        gradient: "bg-brand-gradient text-white shadow-pop hover:brightness-105 hover:shadow-lg",
-        primary: "bg-ink-900 text-white hover:bg-ink-700",
-        secondary: "bg-ink-50 text-ink-900 hover:bg-ink-100 border border-ink-100",
-        outline: "border border-ink-200 bg-white text-ink-900 hover:bg-ink-50",
-        ghost: "text-ink-600 hover:bg-ink-50 hover:text-ink-900",
-        danger: "bg-danger text-white hover:brightness-95",
-        dangerOutline: "border border-danger/30 text-danger hover:bg-danger/5",
-        link: "text-brand-600 underline-offset-4 hover:underline",
+        gold: "bg-gold-gradient text-obsidian-950 shadow-gold-sm hover:shadow-gold hover:brightness-[1.06]",
+        obsidian: "bg-obsidian-900 text-ivory-100 hover:bg-obsidian-800 shadow-luxe",
+        outline:
+          "border border-gold-500/50 text-gold-200 hover:border-gold-400 hover:bg-gold-500/[0.08]",
+        outlineLight:
+          "border border-white/25 bg-white/[0.04] text-ivory-100 backdrop-blur-sm hover:border-gold-400/60 hover:bg-white/[0.08]",
+        ivory: "bg-ivory-100 text-obsidian-900 hover:bg-white",
+        ghost: "text-ivory-300 hover:bg-white/[0.06] hover:text-ivory-100",
+        ghostDark: "text-ink-500 hover:bg-ink-900/[0.05] hover:text-ink-900",
+        danger: "bg-crimson-500 text-white hover:bg-crimson-400",
+        dangerOutline: "border border-danger/40 text-danger hover:bg-danger/[0.07]",
+        link: "text-gold-300 underline-offset-4 hover:text-gold-200 hover:underline",
       },
       size: {
-        sm: "h-9 px-3.5 text-[13px]",
-        md: "h-11 px-5",
-        lg: "h-12 px-7 text-[15px]",
-        icon: "h-10 w-10",
-        iconSm: "h-8 w-8 rounded-lg",
+        sm: "h-9 px-4 text-[11.5px] tracking-[0.16em]",
+        md: "h-11 px-6",
+        lg: "h-[52px] px-8 text-[13px]",
+        icon: "h-10 w-10 px-0",
+        iconSm: "h-8 w-8 px-0",
       },
     },
-    defaultVariants: { variant: "gradient", size: "md" },
+    defaultVariants: { variant: "gold", size: "md" },
   }
 );
 
@@ -53,5 +62,19 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   )
 );
 Button.displayName = "Button";
+
+/** Anchor styled exactly like a Button — for links that must not nest in a button. */
+export interface ButtonLinkProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement>,
+    VariantProps<typeof buttonVariants> {}
+
+export const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
+  ({ className, variant, size, children, ...props }, ref) => (
+    <a ref={ref} className={cn(buttonVariants({ variant, size }), className)} {...props}>
+      {children}
+    </a>
+  )
+);
+ButtonLink.displayName = "ButtonLink";
 
 export { buttonVariants };

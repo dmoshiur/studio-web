@@ -59,11 +59,11 @@ export default function OwnerFirebasePage() {
   }
 
   const rows: { icon: React.ReactNode; label: string; value: string; copyable?: string; copyKey?: string; status?: string }[] = [
-    { icon: <Database className="h-4 w-4 text-ink-400" />, label: "Project ID", value: info.projectId ?? "— not configured —", copyable: info.projectId ?? undefined, copyKey: "project", status: info.checks.firestore },
-    { icon: <KeyRound className="h-4 w-4 text-ink-400" />, label: "Auth domain", value: info.authDomain ?? "— not configured —", copyable: info.authDomain ?? undefined, copyKey: "domain", status: info.checks.auth },
-    { icon: <HardDrive className="h-4 w-4 text-ink-400" />, label: "Storage bucket", value: info.storageBucket ?? "— not configured —", copyable: info.storageBucket ?? undefined, copyKey: "bucket", status: info.checks.storage },
-    { icon: <ShieldCheck className="h-4 w-4 text-ink-400" />, label: "Web API key", value: info.apiKeyMasked ?? "—", status: undefined },
-    { icon: <ShieldCheck className="h-4 w-4 text-ink-400" />, label: "Web App ID", value: info.appIdMasked ?? "—", status: undefined },
+    { icon: <Database className="h-4 w-4 text-ivory-500" />, label: "Project ID", value: info.projectId ?? "— not configured —", copyable: info.projectId ?? undefined, copyKey: "project", status: info.checks.firestore },
+    { icon: <KeyRound className="h-4 w-4 text-ivory-500" />, label: "Auth domain", value: info.authDomain ?? "— not configured —", copyable: info.authDomain ?? undefined, copyKey: "domain", status: info.checks.auth },
+    { icon: <HardDrive className="h-4 w-4 text-ivory-500" />, label: "Storage bucket", value: info.storageBucket ?? "— not configured —", copyable: info.storageBucket ?? undefined, copyKey: "bucket", status: info.checks.storage },
+    { icon: <ShieldCheck className="h-4 w-4 text-ivory-500" />, label: "Web API key", value: info.apiKeyMasked ?? "—", status: undefined },
+    { icon: <ShieldCheck className="h-4 w-4 text-ivory-500" />, label: "Web App ID", value: info.appIdMasked ?? "—", status: undefined },
   ];
 
   return (
@@ -80,17 +80,17 @@ export default function OwnerFirebasePage() {
         </CardHeader>
         <CardContent className="grid gap-3">
           {rows.map((r) => (
-            <div key={r.label} className="flex flex-col gap-2 rounded-2xl border border-ink-100 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div key={r.label} className="flex flex-col gap-2 rounded-sm border border-white/[0.08] p-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-2.5">
                 {r.icon}
                 <div>
-                  <p className="text-[13px] font-semibold text-ink-500">{r.label}</p>
+                  <p className="text-[13px] font-semibold text-ivory-400/80">{r.label}</p>
                   <div className="mt-1"><MaskedValue value={r.value} /></div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 {r.status && (
-                  <span className={`rounded-full px-2.5 py-1 text-[12px] font-bold ${r.status === "operational" ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"}`}>
+                  <span className={`rounded-full px-2.5 py-1 text-[12px] font-bold ${r.status === "operational" ? "bg-emerald-400/10 text-emerald-300" : "bg-red-400/10 text-red-300"}`}>
                     {r.status}
                   </span>
                 )}
@@ -112,16 +112,16 @@ export default function OwnerFirebasePage() {
           <CardDescription>Used by API routes. Credentials live in server environment variables.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-3">
-          <div className="flex flex-col gap-2 rounded-2xl border border-ink-100 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-2 rounded-sm border border-white/[0.08] p-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-[13px] font-semibold text-ink-500">Service account</p>
+              <p className="text-[13px] font-semibold text-ivory-400/80">Service account</p>
               <div className="mt-1"><MaskedValue value={info.admin.clientEmailMasked ?? "— not configured —"} /></div>
             </div>
-            <span className={`w-fit rounded-full px-2.5 py-1 text-[12px] font-bold ${info.admin.keyConfigured ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"}`}>
+            <span className={`w-fit rounded-full px-2.5 py-1 text-[12px] font-bold ${info.admin.keyConfigured ? "bg-emerald-400/10 text-emerald-300" : "bg-red-400/10 text-red-300"}`}>
               {info.admin.keyConfigured ? "Private key present" : "Private key missing"}
             </span>
           </div>
-          <p className="rounded-2xl bg-ink-900 p-4 text-[13px] leading-relaxed text-white/70">
+          <p className="rounded-sm bg-ink-900 p-4 text-[13px] leading-relaxed text-white/70">
             To rotate credentials: create a new service-account key in the Firebase console, update{" "}
             <code className="text-emerald-300">FIREBASE_PRIVATE_KEY</code> in Vercel environment variables, redeploy,
             then delete the old key. Never paste the private key into any browser UI.

@@ -1,10 +1,11 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
+/** Studio table shell — obsidian panels with gold hairlines. */
 export function TableShell({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("overflow-x-auto rounded-2xl border border-ink-100 bg-white shadow-card", className)}>
-      <table className="w-full min-w-[640px] border-collapse text-left text-sm">{children}</table>
+    <div className={cn("studio-panel overflow-x-auto", className)}>
+      <table className="w-full min-w-[680px] border-collapse text-left text-[13.5px]">{children}</table>
     </div>
   );
 }
@@ -12,23 +13,30 @@ export function TableShell({ children, className }: { children: React.ReactNode;
 export function THead({ children }: { children: React.ReactNode }) {
   return (
     <thead>
-      <tr className="border-b border-ink-100 bg-ink-50/60 text-[12px] font-semibold uppercase tracking-wider text-ink-500">
-        {children}
-      </tr>
+      <tr className="border-b border-white/[0.08] bg-white/[0.02]">{children}</tr>
     </thead>
   );
 }
 
 export function TH({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <th className={cn("px-4 py-3", className)}>{children}</th>;
+  return (
+    <th
+      className={cn(
+        "px-5 py-3.5 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-ivory-500",
+        className
+      )}
+    >
+      {children}
+    </th>
+  );
 }
 
 export function TBody({ children }: { children: React.ReactNode }) {
-  return <tbody className="divide-y divide-ink-100">{children}</tbody>;
+  return <tbody className="divide-y divide-white/[0.05]">{children}</tbody>;
 }
 
 export function TD({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <td className={cn("px-4 py-3.5 align-middle", className)}>{children}</td>;
+  return <td className={cn("px-5 py-4 align-middle text-ivory-300", className)}>{children}</td>;
 }
 
 export function RowActions({ children }: { children: React.ReactNode }) {

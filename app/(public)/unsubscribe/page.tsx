@@ -2,21 +2,30 @@
 
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PageHero } from "@/components/public/cards";
+import { PageHero, Section } from "@/components/public/ui-kit";
+import { Script } from "@/components/public/ui-kit";
 
 export default function UnsubscribePage() {
   return (
     <>
-      <PageHero eyebrow="Newsletter" title="Unsubscribe" description="We're sorry to see you go." />
-      <section className="bg-white py-14">
-        <div className="container max-w-md">
+      <PageHero
+        script="Until next time"
+        eyebrow="Newsletter"
+        title="Unsubscribe"
+        description="No hard feelings — you are welcome back any time."
+        image="/images/texture-marble.jpg"
+        breadcrumb={[{ label: "Home", href: "/" }, { label: "Unsubscribe" }]}
+      />
+      <Section tone="light">
+        <div className="mx-auto max-w-lg">
           <React.Suspense fallback={<p className="text-center text-ink-500">Loading…</p>}>
             <UnsubscribeForm />
           </React.Suspense>
         </div>
-      </section>
+      </Section>
     </>
   );
 }
@@ -26,17 +35,20 @@ function UnsubscribeForm() {
   const token = params.get("token");
   const [state, setState] = React.useState<"idle" | "loading" | "done" | "error">("idle");
   const [error, setError] = React.useState("");
+  const [email, setEmail] = React.useState("");
 
   async function confirm() {
-    if (!token) return;
+    const payload = token ? { token } : { email };
+    if (!token && !email) return;
     setState("loading");
+    setError("");
     try {
       const res = await fetch("/api/newsletter/unsubscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
+        body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error("This unsubscribe link is invalid or has expired.");
+      if (!res.ok) throw new Error("We could not process that request. Please try again.");
       setState("done");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to unsubscribe");
@@ -44,32 +56,74 @@ function UnsubscribeForm() {
     }
   }
 
+  /* No token in the URL — accept the address directly. */
   if (!token) {
     return (
-      <div className="rounded-3xl border border-ink-100 p-8 text-center shadow-card">
-        <AlertCircle className="mx-auto h-10 w-10 text-amber-500" />
-        <p className="mt-4 font-semibold text-ink-900">Missing unsubscribe link</p>
-        <p className="mt-1 text-sm text-ink-500">Please use the link from one of our emails.</p>
-      </div>
+      <form
+        className="border border-ink-900/10 bg-white p-10 shadow-luxe"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void confirm();
+        }}
+      >
+        <AlertCircle className="mx-auto h-9 w-9 text-gold-600" />
+        <p className="mt-5 text-center font-serif text-[1.5rem] text-ink-900">Leave the list</p>
+        <p className="mx-auto mt-2 max-w-sm text-center text-[13.5px] leading-relaxed text-ink-500">
+          Enter the address you subscribed with and we will remove it immediately. No questions asked.
+        </p>
+        <label htmlFor="unsub-email" className="mt-7 block font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-500">
+          Email address
+        </label>
+        <input
+          id="unsub-email"
+          type="email"
+          required
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
+          className="mt-2 h-12 w-full rounded-sm border border-ink-900/[0.12] bg-white px-4 text-[14px] text-ink-900 placeholder:text-ink-400 focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/20"
+        />
+        {state === "error" && (
+          <p role="alert" className="mt-3 text-[13px] font-medium text-danger">
+            {error}
+          </p>
+        )}
+        <Button className="mt-5 w-full" variant="obsidian" size="lg" type="submit" loading={state === "loading"}>
+          Unsubscribe me
+        </Button>
+      </form>
     );
   }
 
   if (state === "done") {
     return (
-      <div className="rounded-3xl border border-emerald-200 bg-emerald-50/50 p-8 text-center">
-        <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-600" />
-        <p className="mt-4 font-display text-lg font-bold text-ink-900">You've been unsubscribed</p>
-        <p className="mt-1 text-sm text-ink-500">You won't receive further newsletter emails.</p>
+      <div className="border border-emerald-600/20 bg-white p-10 text-center shadow-luxe">
+        <CheckCircle2 className="mx-auto h-9 w-9 text-emerald-600" />
+        <Script className="mt-5 block text-[2.2rem] leading-none">thank you</Script>
+        <p className="mt-3 font-serif text-[1.35rem] text-ink-900">You have been unsubscribed</p>
+        <p className="mt-2 text-[13.5px] text-ink-500">
+          You will not receive further newsletter emails. The archive and events remain open to you.
+        </p>
+        <Link href="/" className="mt-7 inline-block font-sans text-[11px] uppercase tracking-[0.22em] text-gold-700">
+          Back to the summit
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="rounded-3xl border border-ink-100 p-8 text-center shadow-card">
-      <p className="font-display text-lg font-bold text-ink-900">Confirm unsubscribe?</p>
-      <p className="mt-1 text-sm text-ink-500">You'll stop receiving newsletter emails immediately.</p>
-      {state === "error" && <p role="alert" className="mt-3 text-sm font-medium text-danger">{error}</p>}
-      <Button className="mt-6 w-full" loading={state === "loading"} onClick={confirm}>
+    <div className="border border-ink-900/10 bg-white p-10 text-center shadow-luxe">
+      <p className="font-serif text-[1.45rem] text-ink-900">Confirm unsubscribe?</p>
+      <p className="mt-2 text-[13.5px] text-ink-500">
+        You will stop receiving newsletter emails immediately and can resubscribe at any time.
+      </p>
+      {state === "error" && (
+        <p role="alert" className="mt-4 text-[13px] font-medium text-danger">
+          {error}
+        </p>
+      )}
+      <Button className="mt-7 w-full" variant="obsidian" size="lg" loading={state === "loading"} onClick={confirm}>
         Yes, unsubscribe me
       </Button>
     </div>

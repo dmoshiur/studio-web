@@ -76,24 +76,24 @@ export default function AdminSpeakersPage() {
           </THead>
           <TBody>
             {items.map((s) => (
-              <tr key={s.id} className="transition-colors hover:bg-ink-50/50">
+              <tr key={s.id} className="transition-colors hover:bg-white/[0.03]">
                 <TD>
                   <div className="flex items-center gap-3">
                     {s.photoURL ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={s.photoURL} alt="" className="h-10 w-10 rounded-full object-cover" />
                     ) : (
-                      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-gradient-soft font-display font-bold text-brand-700">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full border border-gold-500/25 bg-gold-500/[0.12] font-serif text-gold-700">
                         {s.name.charAt(0)}
                       </span>
                     )}
                     <div>
-                      <p className="font-semibold text-ink-900">{s.name}</p>
-                      {s.featured && <Badge variant="brand">Featured</Badge>}
+                      <p className="font-semibold text-ivory-50">{s.name}</p>
+                      {s.featured && <Badge variant="gold">Featured</Badge>}
                     </div>
                   </div>
                 </TD>
-                <TD className="text-ink-600">{[s.title, s.company].filter(Boolean).join(" · ") || "—"}</TD>
+                <TD className="text-ivory-300">{[s.title, s.company].filter(Boolean).join(" · ") || "—"}</TD>
                 <TD>
                   <Badge variant={s.status === "published" ? "success" : "warning"}>{s.status}</Badge>
                 </TD>

@@ -205,7 +205,7 @@ export default function OwnerSmtpPage() {
                 <Label>Recipient</Label>
                 <Input type="email" value={testEmail} onChange={(e) => setTestEmail(e.target.value)} placeholder="you@example.com" />
               </div>
-              <Button variant="secondary" onClick={sendTest} loading={testing} disabled={!status.configured}>
+              <Button variant="ghost" onClick={sendTest} loading={testing} disabled={!status.configured}>
                 <Send /> Send test
               </Button>
               {!status.configured && (
@@ -225,8 +225,8 @@ export default function OwnerSmtpPage() {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-start justify-between gap-3">
-      <dt className="shrink-0 text-ink-400">{label}</dt>
-      <dd className="break-all text-right font-medium text-ink-900">{value}</dd>
+      <dt className="shrink-0 text-ivory-500">{label}</dt>
+      <dd className="break-all text-right font-medium text-ivory-50">{value}</dd>
     </div>
   );
 }

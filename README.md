@@ -1,109 +1,92 @@
 # ManUp Platform v2
 
-A premium, fully dynamic, serverless event/conference platform — rebuilt from the classic
+A premium, fully dynamic event & publication platform — rebuilt from the classic
 [ManUp template](https://github.com/themewagon/manup) (Colorlib, CC BY 3.0 — attribution retained in the footer)
-into a production-ready **Next.js + Firebase + Vercel** application with a secure admin studio and a
+into a production-ready **Next.js 14** application with an editorial public site, a content studio and a
 separate owner control center.
+
+It runs **with zero external services**: an embedded SQLite data layer, on-disk media storage, local
+identity (email + password) and an administrator defined entirely by environment variables. Point it at
+Firebase instead by supplying credentials — the same code paths serve both backends.
+
+---
+
+## Design language — “Maison Noir”
+
+- **Obsidian & champagne gold** — deep black surfaces (`#08080a`) with gold hairlines, thin rules and diamond separators.
+- **Calligraphic display type** — Cormorant Garamond for headlines, *Great Vibes* for the script accents
+  (“the door is open”, “join the circle”), Inter for UI text.
+- **Editorial imagery** — full-bleed photographic backdrops with obsidian/editorial overlays, gold frames and grain textures.
+- **Motion** — reveal-on-scroll, marquee, count-up and gold-line animations, all respecting `prefers-reduced-motion`.
+- Every surface is themed: public site, auth screens, error/utility pages, the studio (`/admin`) and the owner console (`/hackeradmin`),
+  down to tables, dialogs, toasts, skeletons and empty states.
 
 ## Highlights
 
-- **Modern public site** — home, about, events/schedule, speakers, blog, contact, privacy; mobile-first,
-  accessible, SEO-ready (metadata, OG/Twitter cards, sitemap, robots, JSON-LD).
-- **Firestore-driven CMS** — posts, events, speakers, categories, pages, navigation, social links, site settings.
-- **Admin studio (`/admin`)** — SaaS-grade dashboard: content, media library (Firebase Storage uploads),
-  messages, subscribers, navigation, profile.
-- **Owner console (`/hackeradmin`)** — infrastructure control: system health, Firebase status (secrets masked),
-  site settings, SMTP, users & roles, audit logs, maintenance mode, emergency kill switch.
-- **Security-first** — Firebase Auth sessions (httpOnly cookies), custom-claim roles (`user`/`admin`/`owner`),
-  server-side authorization on every privileged route, strict Firestore/Storage rules (default deny),
-  Zod validation client + server, sanitized rich text, Firestore-backed rate limiting, security headers, CSP.
-- **Serverless** — no traditional backend; Next.js route handlers + Firebase Admin SDK (server-only) on Vercel.
+- **Public site** — home, about, events + detail, speakers + detail, journal (`/blog`) + post, contact, privacy,
+  unsubscribe; SEO-ready (metadata, OG/Twitter, sitemap, robots, JSON-LD, **RSS at `/feed.xml`**).
+- **Studio (`/admin`)** — dashboard, posts, events, speakers, categories, pages, media library, messages,
+  subscribers, navigation & social links, accounts, profile. Role-gated to admin/owner/superadmin.
+- **Owner console (`/hackeradmin`)** — system health, backend/Firebase status (secrets masked), site settings,
+  SMTP (+ test send), users & roles, audit logs, maintenance mode and the emergency lock. Owner/superadmin only.
+- **Master administrator from `.env`** — `ADMIN_EMAIL` / `ADMIN_PASSWORD` create an always-available
+  `superadmin` with whole-platform access (content, users, roles, infrastructure). No database setup required.
+- **Complete auth flows** — sign in, self-registration (`ALLOW_REGISTRATION`), password reset (link delivered
+  by SMTP when configured), one-time owner bootstrap via `SETUP_TOKEN`.
+- **Security-first** — signed httpOnly session cookies, scrypt-hashed credentials, roles
+  `user` / `admin` / `owner` / `superadmin`, server-side authorization on every privileged route, Zod validation
+  on both sides, rate limiting, security headers, CSP, and an audit log for privileged actions.
 
 ## Tech stack
 
-Next.js 14 (App Router) · TypeScript (strict) · React 18 · Tailwind CSS · Firebase Auth / Firestore /
-Storage · Firebase Admin SDK (server-only) · Zod + React Hook Form · Nodemailer (SMTP) · Lucide icons
+Next.js 14 (App Router) · TypeScript (strict) · React 18 · Tailwind CSS · embedded SQLite (`node:sqlite`) **or**
+Firestore · local credentials **or** Firebase Auth · Zod + React Hook Form · Nodemailer (SMTP) · Lucide icons
 
 ## Quick start
 
 ```bash
 npm install
-cp .env.example .env.local   # fill in Firebase + SMTP values
-npm run dev                  # http://localhost:3000
+cp .env.example .env.local        # set ADMIN_EMAIL / ADMIN_PASSWORD (quote any # or ! characters)
+npm run dev                       # http://localhost:3000
 ```
 
-The app renders with safe defaults even before Firebase is configured (dynamic sections appear once
-connected). Full setup: **[docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)**, then
-**[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** for Vercel.
+That is the whole setup for the embedded mode: the store seeds itself with settings, navigation, socials,
+categories, events, speakers, posts and pages on first boot.
+
+Sign in at **`/login`** with the `ADMIN_EMAIL` / `ADMIN_PASSWORD` from `.env.local` and you land in the owner
+console with full access.
 
 ```bash
-npm run build        # production build (must pass before deploy)
 npm run typecheck    # tsc --noEmit
-npx tsx scripts/seed.ts       # starter content (needs Admin env vars)
-npx tsx scripts/set-owner.ts you@example.com   # owner escape hatch
+npm run build        # production build
+npm run start        # serve the production build
+npm run seed         # optional: re-run the content seed script
 ```
 
-## Project structure
+## Project layout
 
 ```
-app/
-  (public)/            # home, about, events, speakers, blog, contact, privacy, unsubscribe
-  (auth)/              # login, register, forgot-password, setup (owner bootstrap)
-  admin/               # admin studio (server-gated: admin/owner)
-  hackeradmin/         # owner console (server-gated: owner only)
-  api/
-    auth/ contact/ newsletter/ health/ maintenance/ setup/
-    public/            # cached public feeds (published content only)
-    admin/             # content/media/messages/navigation CRUD (requireAdmin)
-    owner/             # settings/smtp/users/audit/maintenance (requireOwner)
-  maintenance/ forbidden/ unauthorized/  # system pages
-  sitemap.ts robots.ts
-components/
-  ui/                  # design-system primitives (button, dialog, toast, table…)
-  public/              # header, footer, hero helpers, cards, forms
-  admin/               # shell, rich editor, media picker, content forms
-  hackeradmin/         # owner shell + health UI
-lib/
-  firebase/  client.ts (public SDK) · admin.ts (server-only Admin SDK)
-  firestore/ content.ts · engagement.ts · settings.ts   # data-access layer
-  server/    auth.ts · api-helpers.ts · rate-limit.ts · audit.ts
-  security/  sanitize.ts
-  validation/ schemas.ts      # Zod schemas shared by client + server
-  email/     mailer.ts        # server-only SMTP
-  utils.ts
-types/  hooks/  scripts/  docs/
-firestore.rules  storage.rules  firestore.indexes.json  firebase.json
-middleware.ts    # maintenance rewrite + coarse auth gating (real auth is server-side)
+app/(public)/      editorial site — home, about, events, speakers, blog, contact, privacy, unsubscribe
+app/(auth)/        login, register, forgot-password, one-time owner setup
+app/admin/         content studio (admin · owner · superadmin)
+app/hackeradmin/   owner console (owner · superadmin)
+app/api/           route handlers: auth, admin, owner, public, media, newsletter, contact, setup, health
+components/public/ shared editorial UI kit (heroes, sections, cards, reveal, forms)
+components/ui/     design-system primitives (button, badge, input, card, table, dialog, feedback, toast)
+lib/db/            embedded store + seed;  lib/server/ session, identity, auth, audit, rate limiting
+lib/firestore/     content & settings repositories (backend-agnostic)
+docs/              admin, owner, deployment, Firebase and security guides
 ```
-
-## Roles & access
-
-| Role | Capabilities |
-|------|--------------|
-| `user` | Public site, account |
-| `admin` | Everything in `/admin`: content, media, messages, subscribers, navigation |
-| `owner` | Admin + `/hackeradmin`: settings, SMTP, users/roles, audit, maintenance, kill switch |
-
-Roles are Firebase Auth **custom claims** set server-side only. First owner: sign up, then visit
-`/setup` with the `SETUP_TOKEN` (allowlisted `OWNER_EMAILS`) — the endpoint self-disables afterwards.
-Details: [docs/OWNER_GUIDE.md](docs/OWNER_GUIDE.md).
-
-## Environment variables
-
-See [`.env.example`](.env.example). Rule: anything starting with `NEXT_PUBLIC_` is browser-visible —
-**never** put `FIREBASE_PRIVATE_KEY`, `SMTP_PASSWORD`, `SETUP_TOKEN` or any secret behind that prefix.
 
 ## Documentation
 
-- [docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md) — Firebase project, Auth, Firestore, Storage, rules, indexes
-- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — Vercel deployment, env vars, domain, verification
-- [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md) — `/admin` manual
-- [docs/OWNER_GUIDE.md](docs/OWNER_GUIDE.md) — `/hackeradmin` manual + bootstrap + maintenance
-- [docs/SECURITY.md](docs/SECURITY.md) — threat model, controls, production checklist
+- **[docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md)** — running the content studio.
+- **[docs/OWNER_GUIDE.md](docs/OWNER_GUIDE.md)** — infrastructure controls and the audit trail.
+- **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** — Vercel/hosted deployment and environment variables.
+- **[docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)** — switching to Firebase Auth/Firestore/Storage.
+- **[docs/SECURITY.md](docs/SECURITY.md)** — threat model, roles and hardening notes.
 
-## License & attribution
+## Credits
 
-Application code in this repository is provided for this project. The visual design is adapted from the
-**Colorlib "Manup" template** ([CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)), which requires
-attribution — a credit link is retained in the site footer. Do not remove it unless you hold an appropriate
-Colorlib license.
+Design inspiration: [ManUp](https://github.com/themewagon/manup) by Colorlib (CC BY 3.0). Photography and
+generated artwork live in `public/images/`. Fonts: Cormorant Garamond, Inter and Great Vibes (Google Fonts).

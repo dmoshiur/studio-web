@@ -104,13 +104,13 @@ export default function AdminPagesPage() {
           </THead>
           <TBody>
             {items.map((p) => (
-              <tr key={p.id} className="transition-colors hover:bg-ink-50/50">
-                <TD className="font-mono text-[13px] text-ink-900">/{p.slug}</TD>
-                <TD className="font-semibold text-ink-900">{p.title}</TD>
+              <tr key={p.id} className="transition-colors hover:bg-white/[0.03]">
+                <TD className="font-mono text-[13px] text-ivory-50">/{p.slug}</TD>
+                <TD className="font-semibold text-ivory-50">{p.title}</TD>
                 <TD>
                   <Badge variant={p.status === "published" ? "success" : "warning"}>{p.status}</Badge>
                 </TD>
-                <TD className="text-ink-500">{formatDate(p.updatedAt)}</TD>
+                <TD className="text-ivory-400/80">{formatDate(p.updatedAt)}</TD>
                 <TD>
                   <RowActions>
                     <Button
@@ -160,7 +160,7 @@ export default function AdminPagesPage() {
             </div>
             <RichEditor label="Content *" value={editing.contentHtml} onChange={(v) => setEditing({ ...editing, contentHtml: v })} minHeight={220} />
             <div className="flex justify-end gap-2">
-              <Button variant="secondary" onClick={() => setEditing(null)}>Cancel</Button>
+              <Button variant="ghost" onClick={() => setEditing(null)}>Cancel</Button>
               <Button onClick={save} loading={saving}>Save page</Button>
             </div>
           </div>
