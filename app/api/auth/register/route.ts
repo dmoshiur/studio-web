@@ -3,12 +3,24 @@ import { registerSchema } from "@/lib/validation/schemas";
 import { apiError, handleApiError, parseBody, requestIp } from "@/lib/server/api-helpers";
 import { rateLimit, RATE_PRESETS } from "@/lib/server/rate-limit";
 import { auditLog } from "@/lib/server/audit";
-import { createIdentityUser, IdentityError } from "@/lib/server/identity";
+import { createIdentityUser, createIdentitySession, IdentityError } from "@/lib/server/identity";
+import { SESSION_COOKIE } from "@/lib/server/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/** Self-service registration for the public site (role: user). */
+function sessionCookieOptions(maxAgeSeconds: number) {
+  return {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax" as const,
+    path: "/",
+    maxAge: maxAgeSeconds,
+  };
+}
+
+/** Self-service registration for the public site (role: user).
+ *  Returns a session cookie so the user is signed in immediately. */
 export async function POST(req: Request) {
   try {
     if ((process.env.ALLOW_REGISTRATION ?? "true").toLowerCase() === "false") {
@@ -24,6 +36,10 @@ export async function POST(req: Request) {
       displayName: body.displayName,
       role: "user",
     });
+
+    // Create session token immediately — no second round-trip needed
+    const { token, maxAgeSeconds } = await createIdentitySession(user);
+
     await auditLog({
       actorId: user.uid,
       actorEmail: user.email ?? undefined,
@@ -31,7 +47,13 @@ export async function POST(req: Request) {
       result: "success",
       ip: requestIp(req),
     });
-    return NextResponse.json({ ok: true, user: { uid: user.uid, email: user.email } }, { status: 201 });
+
+    const res = NextResponse.json(
+      { ok: true, user: { uid: user.uid, email: user.email, role: user.role }, redirect: "/" },
+      { status: 201 }
+    );
+    res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions(maxAgeSeconds));
+    return res;
   } catch (err) {
     if (err instanceof IdentityError) return apiError(err.message, err.status, err.code);
     return handleApiError(err);

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminAuth, getDataBackend, isAdminConfigured } from "@/lib/firebase/admin";
-import { SESSION_COOKIE, adminSessionUser, isEnvAdmin, verifyAdminPassword } from "@/lib/server/auth";
+import { SESSION_COOKIE, adminSessionUser, isEnvAdmin, isEnvAdminConfigured, verifyAdminPassword } from "@/lib/server/auth";
 import {
   authenticateWithPassword,
   createIdentitySession,
@@ -57,32 +57,45 @@ export async function POST(req: Request) {
       const normalized = email.trim().toLowerCase();
 
       // 1) Environment master administrator — full platform access.
-      if (isEnvAdmin(normalized)) {
-        if (!verifyAdminPassword(password)) {
-          await auditLog({ actorEmail: normalized, action: "auth.login", result: "failure", metadata: { mode: "env-admin" }, ip });
-          return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+      //    Only attempt if env admin is fully configured (email AND password set).
+      if (isEnvAdmin(normalized) && isEnvAdminConfigured()) {
+        if (verifyAdminPassword(password)) {
+          // Env admin password matches → grant superadmin access
+          const user = adminSessionUser(normalized);
+          const { token, maxAgeSeconds } = await createIdentitySession(user);
+          await auditLog({ actorId: user.uid, actorEmail: normalized, actorRole: user.role, action: "auth.login", result: "success", metadata: { mode: "env-admin" }, ip });
+          const res = NextResponse.json({ ok: true, role: user.role, redirect: "/hackeradmin", user });
+          res.cookies.set(SESSION_COOKIE, `env-admin:${token}`, sessionCookieOptions(maxAgeSeconds));
+          return res;
         }
-        const user = adminSessionUser(normalized);
-        const { token, maxAgeSeconds } = await createIdentitySession(user);
-        await auditLog({ actorId: user.uid, actorEmail: normalized, actorRole: user.role, action: "auth.login", result: "success", metadata: { mode: "env-admin" }, ip });
-        const res = NextResponse.json({ ok: true, role: user.role, redirect: "/hackeradmin", user });
-        res.cookies.set(SESSION_COOKIE, `env-admin:${token}`, sessionCookieOptions(maxAgeSeconds));
-        return res;
+        // Env admin password didn't match — fall through to check database
+        // credentials. This allows a user who registered with the same email
+        // through the form to still log in with their own password.
       }
 
       // 2) Embedded backend credentials.
+      //    Covers: (a) normal user registrations, (b) env admin email with
+      //    wrong env password but correct database password.
       if (identityBackend() === "local") {
-        const user = await authenticateWithPassword(normalized, password);
-        const { token, maxAgeSeconds } = await createIdentitySession(user);
-        await auditLog({ actorId: user.uid, actorEmail: normalized, actorRole: user.role, action: "auth.login", result: "success", metadata: { mode: "password" }, ip });
-        const res = NextResponse.json({
-          ok: true,
-          role: user.role,
-          redirect: user.role === "admin" || user.role === "owner" || user.role === "superadmin" ? (user.role === "admin" ? "/admin" : "/hackeradmin") : "/",
-          user,
-        });
-        res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions(maxAgeSeconds));
-        return res;
+        try {
+          const user = await authenticateWithPassword(normalized, password);
+          const { token, maxAgeSeconds } = await createIdentitySession(user);
+          await auditLog({ actorId: user.uid, actorEmail: normalized, actorRole: user.role, action: "auth.login", result: "success", metadata: { mode: "password" }, ip });
+          const res = NextResponse.json({
+            ok: true,
+            role: user.role,
+            redirect: user.role === "admin" || user.role === "owner" || user.role === "superadmin" ? (user.role === "admin" ? "/admin" : "/hackeradmin") : "/",
+            user,
+          });
+          res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions(maxAgeSeconds));
+          return res;
+        } catch (err) {
+          if (err instanceof IdentityError) {
+            await auditLog({ actorEmail: normalized, action: "auth.login", result: "failure", metadata: { mode: "password", code: err.code }, ip });
+            return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+          }
+          throw err;
+        }
       }
 
       // 3) Firebase deployments verify passwords through the client SDK.
@@ -139,4 +152,3 @@ export async function DELETE() {
   });
   return res;
 }
-

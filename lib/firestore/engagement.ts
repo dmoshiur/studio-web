@@ -12,6 +12,43 @@ function requireDb() {
   return db;
 }
 
+/* ------------------------------------------------------------------ */
+/* In-memory cache for read-heavy, rarely-changing data                */
+/* ------------------------------------------------------------------ */
+const NAV_CACHE_TTL_MS = 60_000; // 1 minute
+const SOCIAL_CACHE_TTL_MS = 120_000; // 2 minutes
+
+interface CacheEntry<T> {
+  value: T;
+  expiresAt: number;
+}
+
+const cache = new Map<string, CacheEntry<unknown>>();
+
+function getCached<T>(key: string): T | null {
+  const entry = cache.get(key);
+  if (!entry) return null;
+  if (Date.now() > entry.expiresAt) {
+    cache.delete(key);
+    return null;
+  }
+  return entry.value as T;
+}
+
+function setCache<T>(key: string, value: T, ttlMs: number): void {
+  cache.set(key, { value, expiresAt: Date.now() + ttlMs });
+}
+
+function invalidateNavCache(id?: string) {
+  if (id) {
+    cache.delete(`nav:${id}`);
+  } else {
+    cache.delete("nav:header");
+    cache.delete("nav:footer");
+  }
+  cache.delete("socialLinks");
+}
+
 // ------------------------------ MESSAGES -----------------------------
 function mapMessage(id: string, d: Record<string, unknown>): ContactMessage {
   return {
@@ -211,6 +248,10 @@ export async function deleteMediaRecord(id: string) {
 
 // ---------------------------- NAVIGATION -----------------------------
 export async function getNavigation(id: "header" | "footer"): Promise<NavigationDoc> {
+  const cacheKey = `nav:${id}`;
+  const cached = getCached<NavigationDoc>(cacheKey);
+  if (cached) return cached;
+
   const db = getAdminDb();
   const fallback: NavigationDoc =
     id === "header"
@@ -241,11 +282,13 @@ export async function getNavigation(id: "header" | "footer"): Promise<Navigation
     const snap = await db.collection("navigation").doc(id).get();
     if (!snap.exists) return fallback;
     const d = snap.data() as { links?: NavLink[]; updatedAt?: unknown };
-    return {
+    const result: NavigationDoc = {
       id,
       links: Array.isArray(d.links) ? d.links : fallback.links,
       updatedAt: toISODate(d.updatedAt) ?? new Date(0).toISOString(),
     };
+    setCache(cacheKey, result, NAV_CACHE_TTL_MS);
+    return result;
   } catch {
     return fallback;
   }
@@ -257,15 +300,19 @@ export async function saveNavigation(id: "header" | "footer", links: NavLink[]):
     { links, updatedAt: FieldValue.serverTimestamp() },
     { merge: true }
   );
+  invalidateNavCache(id);
   return getNavigation(id);
 }
 
 export async function listSocialLinks(): Promise<SocialLink[]> {
+  const cached = getCached<SocialLink[]>("socialLinks");
+  if (cached) return cached;
+
   const db = getAdminDb();
   if (!db) return [];
   try {
     const snap = await db.collection("socialLinks").orderBy("label", "asc").limit(20).get();
-    return snap.docs.map((d) => {
+    const result = snap.docs.map((d) => {
       const m = d.data() as Record<string, unknown>;
       return {
         id: d.id,
@@ -275,6 +322,8 @@ export async function listSocialLinks(): Promise<SocialLink[]> {
         updatedAt: toISODate(m.updatedAt) ?? new Date().toISOString(),
       };
     });
+    setCache("socialLinks", result, SOCIAL_CACHE_TTL_MS);
+    return result;
   } catch {
     return [];
   }
@@ -285,14 +334,17 @@ export async function saveSocialLink(input: { id?: string; label: string; href: 
   const payload = { label: input.label, href: input.href, icon: input.icon, updatedAt: FieldValue.serverTimestamp() };
   if (input.id) {
     await db.collection("socialLinks").doc(input.id).set(payload, { merge: true });
+    invalidateNavCache();
     return { id: input.id, ...payload };
   }
   const ref = await db.collection("socialLinks").add(payload);
+  invalidateNavCache();
   return { id: ref.id, ...payload };
 }
 
 export async function deleteSocialLink(id: string) {
   await requireDb().collection("socialLinks").doc(id).delete();
+  invalidateNavCache();
 }
 
 // ----------------------------- AUDIT LOGS ----------------------------

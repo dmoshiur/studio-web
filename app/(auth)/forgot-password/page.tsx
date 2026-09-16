@@ -5,12 +5,10 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { sendPasswordResetEmail } from "firebase/auth";
-import { CheckCircle2, ArrowUpRight, KeyRound } from "lucide-react";
+import { CheckCircle2, ArrowUpRight, KeyRound, Loader2 } from "lucide-react";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { Input, Label, FieldError } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
-import { getFirebaseAuth, isFirebaseConfigured } from "@/lib/firebase/client";
 import { passwordResetRequestSchema } from "@/lib/validation/schemas";
 import { z } from "zod";
 
@@ -38,62 +36,86 @@ function ResetFlow() {
   const [resetToken, setResetToken] = React.useState<string | null>(token);
   const [newPassword, setNewPassword] = React.useState("");
   const [done, setDone] = React.useState(false);
-  const [mode, setMode] = React.useState<"session" | "firebase">("session");
+  const [submitting, setSubmitting] = React.useState(false);
+  const [resetting, setResetting] = React.useState(false);
+  const [slowNetwork, setSlowNetwork] = React.useState(false);
+  const slowTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<FormValues>({ resolver: zodResolver(passwordResetRequestSchema) });
 
-  React.useEffect(() => {
-    fetch("/api/auth/me")
-      .then((r) => r.json())
-      .then((d: { auth?: string }) => setMode(d.auth === "firebase" ? "firebase" : "session"))
-      .catch(() => undefined);
-  }, []);
-
   async function onSubmit(values: FormValues) {
+    if (submitting) return;
+    setSubmitting(true);
+    setSlowNetwork(false);
+    slowTimerRef.current = setTimeout(() => setSlowNetwork(true), 500);
+
     try {
-      if (mode === "firebase" && isFirebaseConfigured) {
-        const auth = getFirebaseAuth();
-        if (!auth) throw new Error("Authentication is not configured");
-        await sendPasswordResetEmail(auth, values.email);
-        setSent(true);
-        return;
-      }
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+
       const res = await fetch("/api/auth/password-reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
+
       const data = (await res.json().catch(() => ({}))) as { resetToken?: string; delivered?: boolean };
       if (data.resetToken) setResetToken(data.resetToken);
       setSent(true);
     } catch {
       // Never reveal whether an account exists.
       setSent(true);
+    } finally {
+      if (slowTimerRef.current) clearTimeout(slowTimerRef.current);
+      setSubmitting(false);
+      setSlowNetwork(false);
     }
   }
 
   async function completeReset() {
-    if (!resetToken) return;
+    if (!resetToken || resetting) return;
+    setResetting(true);
+    setSlowNetwork(false);
+    slowTimerRef.current = setTimeout(() => setSlowNetwork(true), 500);
+
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+
       const res = await fetch("/api/auth/password-reset", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token: resetToken, password: newPassword }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
+
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Could not update the password");
       toast({ kind: "success", title: "Password updated", message: "You can sign in now." });
       setDone(true);
     } catch (err) {
-      toast({
-        kind: "error",
-        title: "Reset failed",
-        message: err instanceof Error ? err.message : undefined,
-      });
+      let message = "Something went wrong. Please try again.";
+      if (err instanceof DOMException && err.name === "AbortError") {
+        message = "The request is taking too long. Please try again.";
+      } else if (err instanceof Error) {
+        if (/expired|invalid/i.test(err.message)) {
+          message = "This reset link is invalid or has expired. Please request a new one.";
+        } else {
+          message = err.message;
+        }
+      }
+      toast({ kind: "error", title: "Reset failed", message });
+    } finally {
+      if (slowTimerRef.current) clearTimeout(slowTimerRef.current);
+      setResetting(false);
+      setSlowNetwork(false);
     }
   }
 
@@ -131,17 +153,32 @@ function ResetFlow() {
               placeholder="At least 8 characters"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
+              disabled={resetting}
             />
           </div>
           <button
             type="button"
             onClick={completeReset}
-            disabled={newPassword.length < 8}
-            className="inline-flex h-[52px] items-center justify-center gap-3 bg-gold-gradient px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06] disabled:opacity-50"
+            disabled={newPassword.length < 8 || resetting}
+            className="group inline-flex h-[52px] items-center justify-center gap-3 bg-gold-gradient px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06] disabled:opacity-50"
           >
-            <KeyRound className="h-4 w-4" />
-            Update password
+            {resetting ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Updating password…
+              </>
+            ) : (
+              <>
+                <KeyRound className="h-4 w-4" />
+                Update password
+              </>
+            )}
           </button>
+          {slowNetwork && (
+            <p className="text-center text-[12.5px] text-ivory-400/80 animate-pulse">
+              Still working… please wait.
+            </p>
+          )}
           <p className="text-[12px] leading-relaxed text-ivory-500">
             Reset links expire after 30 minutes. If yours has expired, request a new one.
           </p>
@@ -180,18 +217,33 @@ function ResetFlow() {
               autoComplete="email"
               placeholder="you@example.com"
               error={errors.email?.message}
+              disabled={submitting}
               {...register("email")}
             />
             <FieldError message={errors.email?.message} />
           </div>
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="inline-flex h-[52px] items-center justify-center gap-3 bg-gold-gradient px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06] disabled:opacity-60"
+            disabled={submitting}
+            className="group inline-flex h-[52px] items-center justify-center gap-3 bg-gold-gradient px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06] disabled:opacity-60"
           >
-            {isSubmitting ? "Sending…" : "Send reset link"}
-            <ArrowUpRight className="h-4 w-4" />
+            {submitting ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Sending…
+              </>
+            ) : (
+              <>
+                Send reset link
+                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </>
+            )}
           </button>
+          {slowNetwork && (
+            <p className="text-center text-[12.5px] text-ivory-400/80 animate-pulse">
+              Still working… please wait.
+            </p>
+          )}
         </form>
       )}
     </AuthLayout>

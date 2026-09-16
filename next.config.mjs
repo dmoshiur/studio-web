@@ -60,11 +60,25 @@ const nextConfig = {
     // Sandboxes without outbound image fetching can disable the optimizer.
     unoptimized: (process.env.NEXT_PUBLIC_UNOPTIMIZED_IMAGES ?? "").toLowerCase() === "true",
   },
+  // Cache static assets aggressively
   async headers() {
     return [
       {
         source: "/(.*)",
         headers: securityHeaders,
+      },
+      {
+        // Cache static images/fonts for 1 year (immutable since hashed filenames)
+        source: "/images/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      {
+        source: "/fonts/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
       },
     ];
   },

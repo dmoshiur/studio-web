@@ -64,8 +64,44 @@ function mergeDefaults<T extends Record<string, unknown>>(defaults: T, data: Rec
   return out as T;
 }
 
-/** Public settings — safe for browser. Falls back to defaults when unconfigured. */
+/* ------------------------------------------------------------------ */
+/* In-memory cache (per-process) — avoids redundant DB reads           */
+/* ------------------------------------------------------------------ */
+const SETTINGS_CACHE_TTL_MS = 30_000; // 30 seconds — good balance of freshness vs speed
+const MAINTENANCE_CACHE_TTL_MS = 10_000; // 10 seconds — maintenance state needs to be responsive
+
+interface CacheEntry<T> {
+  value: T;
+  expiresAt: number;
+}
+
+const settingsCache = new Map<string, CacheEntry<unknown>>();
+
+function getCached<T>(key: string): T | null {
+  const entry = settingsCache.get(key);
+  if (!entry) return null;
+  if (Date.now() > entry.expiresAt) {
+    settingsCache.delete(key);
+    return null;
+  }
+  return entry.value as T;
+}
+
+function setCache<T>(key: string, value: T, ttlMs: number): void {
+  settingsCache.set(key, { value, expiresAt: Date.now() + ttlMs });
+}
+
+/** Invalidate settings cache (called after saves). */
+export function invalidateSettingsCache(): void {
+  settingsCache.delete("publicSettings");
+  settingsCache.delete("maintenance");
+}
+
+/** Public settings — safe for browser. Falls back to defaults when unconfigured. Cached for 30s. */
 export async function getPublicSettings(): Promise<PublicSiteSettings> {
+  const cached = getCached<PublicSiteSettings>("publicSettings");
+  if (cached) return cached;
+
   try {
     const db = getAdminDb();
     if (!db) return DEFAULT_PUBLIC_SETTINGS;
@@ -76,7 +112,7 @@ export async function getPublicSettings(): Promise<PublicSiteSettings> {
       DEFAULT_PUBLIC_SETTINGS as unknown as Record<string, unknown>,
       data
     ) as unknown as PublicSiteSettings;
-    return {
+    const result: PublicSiteSettings = {
       ...merged,
       seo: { ...DEFAULT_PUBLIC_SETTINGS.seo, ...(data.seo as object | undefined) },
       social: (data.social as Record<string, string>) ?? {},
@@ -84,6 +120,8 @@ export async function getPublicSettings(): Promise<PublicSiteSettings> {
       homepage: { ...DEFAULT_PUBLIC_SETTINGS.homepage, ...(data.homepage as object | undefined) },
       updatedAt: toISODate(data.updatedAt) ?? new Date(0).toISOString(),
     };
+    setCache("publicSettings", result, SETTINGS_CACHE_TTL_MS);
+    return result;
   } catch (err) {
     console.error("[settings] getPublicSettings failed:", err);
     return DEFAULT_PUBLIC_SETTINGS;
@@ -102,22 +140,27 @@ export async function savePublicSettings(
     updatedBy,
   };
   await db.collection("siteSettings").doc("public").set(payload, { merge: true });
+  invalidateSettingsCache();
   return getPublicSettings();
 }
 
-/** Maintenance state — cached briefly by callers; changes propagate in seconds. */
+/** Maintenance state — cached for 10s; changes propagate in seconds. */
 export async function getMaintenanceState(): Promise<MaintenanceState> {
   // Hard override (useful if Firestore is unreachable)
   if ((process.env.MAINTENANCE_MODE ?? "").toLowerCase() === "true") {
     return { ...DEFAULT_MAINTENANCE, enabled: true, message: "Scheduled maintenance is in progress." };
   }
+
+  const cached = getCached<MaintenanceState>("maintenance");
+  if (cached) return cached;
+
   try {
     const db = getAdminDb();
     if (!db) return DEFAULT_MAINTENANCE;
     const snap = await db.collection("siteSettings").doc("maintenance").get();
     if (!snap.exists) return DEFAULT_MAINTENANCE;
     const d = snap.data() as Record<string, unknown>;
-    return {
+    const result: MaintenanceState = {
       enabled: d.enabled === true,
       emergencyLock: d.emergencyLock === true,
       title: typeof d.title === "string" ? d.title : DEFAULT_MAINTENANCE.title,
@@ -127,6 +170,8 @@ export async function getMaintenanceState(): Promise<MaintenanceState> {
       updatedAt: toISODate(d.updatedAt) ?? new Date(0).toISOString(),
       updatedBy: typeof d.updatedBy === "string" ? d.updatedBy : undefined,
     };
+    setCache("maintenance", result, MAINTENANCE_CACHE_TTL_MS);
+    return result;
   } catch (err) {
     console.error("[settings] getMaintenanceState failed:", err);
     return DEFAULT_MAINTENANCE;
@@ -143,6 +188,7 @@ export async function saveMaintenanceState(
     .collection("siteSettings")
     .doc("maintenance")
     .set({ ...data, updatedAt: FieldValue.serverTimestamp(), updatedBy }, { merge: true });
+  invalidateSettingsCache();
   return getMaintenanceState();
 }
 
