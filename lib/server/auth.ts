@@ -100,7 +100,7 @@ export function isOwnerEmail(email: string | null | undefined): boolean {
 async function resolveEnvAdminSession(value: string): Promise<SessionUser | null> {
   const prefix = "env-admin:";
   if (!value.startsWith(prefix)) return null;
-  const [, token] = value.split(":");
+  const token = value.slice(prefix.length);
   const { verifySessionToken } = await import("@/lib/server/session");
   const payload = verifySessionToken(token ?? "");
   if (!payload) return null;

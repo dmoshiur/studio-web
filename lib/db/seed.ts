@@ -192,35 +192,36 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
   );
 
   /* ---------------------------- Navigation ----------------------------- */
-  await db.collection("navigation").doc("header").set(
-    {
-      links: [
-        { label: "Home", href: "/" },
-        { label: "About", href: "/about" },
-        { label: "Speakers", href: "/speakers" },
-        { label: "Events", href: "/events" },
-        { label: "Journal", href: "/blog" },
-        { label: "Contact", href: "/contact" },
-      ],
-      updatedAt: now,
-    },
-    { merge: true }
-  );
-
-  await db.collection("navigation").doc("footer").set(
-    {
-      links: [
-        { label: "About", href: "/about" },
-        { label: "Events", href: "/events" },
-        { label: "Speakers", href: "/speakers" },
-        { label: "Journal", href: "/blog" },
-        { label: "Contact", href: "/contact" },
-        { label: "Privacy", href: "/privacy" },
-      ],
-      updatedAt: now,
-    },
-    { merge: true }
-  );
+  await Promise.all([
+    db.collection("navigation").doc("header").set(
+      {
+        links: [
+          { label: "Home", href: "/" },
+          { label: "About", href: "/about" },
+          { label: "Speakers", href: "/speakers" },
+          { label: "Events", href: "/events" },
+          { label: "Journal", href: "/blog" },
+          { label: "Contact", href: "/contact" },
+        ],
+        updatedAt: now,
+      },
+      { merge: true }
+    ),
+    db.collection("navigation").doc("footer").set(
+      {
+        links: [
+          { label: "About", href: "/about" },
+          { label: "Events", href: "/events" },
+          { label: "Speakers", href: "/speakers" },
+          { label: "Journal", href: "/blog" },
+          { label: "Contact", href: "/contact" },
+          { label: "Privacy", href: "/privacy" },
+        ],
+        updatedAt: now,
+      },
+      { merge: true }
+    ),
+  ]);
 
   /* --------------------------- Social links ---------------------------- */
   const socials: { id: string; label: string; href: string; icon: string }[] = [
@@ -229,9 +230,11 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
     { id: "x", label: "X", href: "https://x.com", icon: "twitter" },
     { id: "youtube", label: "YouTube", href: "https://youtube.com", icon: "youtube" },
   ];
-  for (const s of socials) {
-    await db.collection("socialLinks").doc(s.id).set({ label: s.label, href: s.href, icon: s.icon, updatedAt: now }, { merge: true });
-  }
+  await Promise.all(
+    socials.map((s) =>
+      db.collection("socialLinks").doc(s.id).set({ label: s.label, href: s.href, icon: s.icon, updatedAt: now }, { merge: true })
+    )
+  );
 
   /* ---------------------------- Categories ----------------------------- */
   const categories = [
@@ -240,12 +243,14 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
     { id: "growth", name: "Growth", color: "#8f7b2f", description: "Distribution, story and compounding traction." },
     { id: "backstage", name: "Backstage", color: "#6f6a58", description: "Notes and interviews from behind the curtain." },
   ];
-  for (const c of categories) {
-    await db.collection("categories").doc(c.id).set(
-      { name: c.name, slug: c.id, color: c.color, description: c.description, createdAt: now, updatedAt: now },
-      { merge: true }
-    );
-  }
+  await Promise.all(
+    categories.map((c) =>
+      db.collection("categories").doc(c.id).set(
+        { name: c.name, slug: c.id, color: c.color, description: c.description, createdAt: now, updatedAt: now },
+        { merge: true }
+      )
+    )
+  );
 
   /* ------------------------------ Speakers ----------------------------- */
   const speakers = [
@@ -305,27 +310,29 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
     },
   ];
 
-  for (const s of speakers) {
-    await db.collection("speakers").doc(s.id).set(
-      {
-        name: s.name,
-        slug: s.id,
-        title: s.title,
-        company: s.company,
-        bio: s.bio,
-        photoURL: s.photoURL,
-        featured: s.featured,
-        status: "published",
-        socials: [
-          { label: "LinkedIn", url: "https://linkedin.com" },
-          { label: "X", url: "https://x.com" },
-        ],
-        createdAt: now,
-        updatedAt: now,
-      },
-      { merge: true }
-    );
-  }
+  await Promise.all(
+    speakers.map((s) =>
+      db.collection("speakers").doc(s.id).set(
+        {
+          name: s.name,
+          slug: s.id,
+          title: s.title,
+          company: s.company,
+          bio: s.bio,
+          photoURL: s.photoURL,
+          featured: s.featured,
+          status: "published",
+          socials: [
+            { label: "LinkedIn", url: "https://linkedin.com" },
+            { label: "X", url: "https://x.com" },
+          ],
+          createdAt: now,
+          updatedAt: now,
+        },
+        { merge: true }
+      )
+    )
+  );
 
   /* ------------------------------- Events ------------------------------ */
   const events = [
@@ -418,30 +425,32 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
     },
   ];
 
-  for (const e of events) {
-    await db.collection("events").doc(e.id).set(
-      {
-        title: e.title,
-        slug: e.slug,
-        description: e.description,
-        contentHtml: e.contentHtml,
-        startAt: e.startAt,
-        endAt: e.endAt,
-        timezone: "America/New_York",
-        venue: e.venue,
-        address: e.address,
-        coverImage: e.coverImage,
-        speakerIds: e.speakerIds,
-        registrationUrl: e.registrationUrl,
-        price: e.price,
-        status: "published",
-        featured: e.featured,
-        createdAt: now,
-        updatedAt: now,
-      },
-      { merge: true }
-    );
-  }
+  await Promise.all(
+    events.map((e) =>
+      db.collection("events").doc(e.id).set(
+        {
+          title: e.title,
+          slug: e.slug,
+          description: e.description,
+          contentHtml: e.contentHtml,
+          startAt: e.startAt,
+          endAt: e.endAt,
+          timezone: "America/New_York",
+          venue: e.venue,
+          address: e.address,
+          coverImage: e.coverImage,
+          speakerIds: e.speakerIds,
+          registrationUrl: e.registrationUrl,
+          price: e.price,
+          status: "published",
+          featured: e.featured,
+          createdAt: now,
+          updatedAt: now,
+        },
+        { merge: true }
+      )
+    )
+  );
 
   /* -------------------------------- Posts ------------------------------ */
   const posts = [
@@ -551,93 +560,95 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
     },
   ];
 
-  for (const post of posts) {
-    await db.collection("posts").doc(post.id).set(
+  await Promise.all(
+    posts.map((post) =>
+      db.collection("posts").doc(post.id).set(
+        {
+          title: post.title,
+          slug: post.slug,
+          excerpt: post.excerpt,
+          contentHtml: post.contentHtml,
+          coverImage: post.coverImage,
+          categoryId: post.categoryId,
+          categorySlug: post.categorySlug,
+          tags: post.tags,
+          authorName: post.authorName,
+          status: "published",
+          featured: post.featured,
+          readingMinutes: 4,
+          publishedAt: post.featured ? daysFromNow(-6, 8) : daysFromNow(-20, 8),
+          createdAt: now,
+          updatedAt: now,
+        },
+        { merge: true }
+      )
+    )
+  );
+
+  /* -------------------------------- Pages ------------------------------ */
+  await Promise.all([
+    db.collection("pages").doc("privacy").set(
       {
-        title: post.title,
-        slug: post.slug,
-        excerpt: post.excerpt,
-        contentHtml: post.contentHtml,
-        coverImage: post.coverImage,
-        categoryId: post.categoryId,
-        categorySlug: post.categorySlug,
-        tags: post.tags,
-        authorName: post.authorName,
+        slug: "privacy",
+        title: "Privacy Policy",
         status: "published",
-        featured: post.featured,
-        readingMinutes: 4,
-        publishedAt: post.featured ? daysFromNow(-6, 8) : daysFromNow(-20, 8),
-        createdAt: now,
+        contentHtml:
+          h2("What we collect") +
+          p([
+            "We collect the information you give us directly: your name, email address and any message you send through the contact form. Newsletter subscribers are recorded with the address you provide and the page you subscribed from.",
+          ]) +
+          h2("How we use it") +
+          p([
+            "Your details are used to answer your message, deliver the announcements you asked for and keep the platform secure. We never sell personal data and we do not run third-party advertising trackers on this site.",
+          ]) +
+          h2("Your choices") +
+          p([
+            "Every newsletter includes a one-click unsubscribe link. You can ask us to delete your account data at any time by writing to the contact address in the footer.",
+          ]) +
+          h2("Retention") +
+          p([
+            "Contact messages are kept for twenty-four months. Subscriber records are kept until you unsubscribe, after which only an anonymous suppression entry remains so we never contact you again.",
+          ]),
         updatedAt: now,
       },
       { merge: true }
-    );
-  }
-
-  /* -------------------------------- Pages ------------------------------ */
-  await db.collection("pages").doc("privacy").set(
-    {
-      slug: "privacy",
-      title: "Privacy Policy",
-      status: "published",
-      contentHtml:
-        h2("What we collect") +
-        p([
-          "We collect the information you give us directly: your name, email address and any message you send through the contact form. Newsletter subscribers are recorded with the address you provide and the page you subscribed from.",
-        ]) +
-        h2("How we use it") +
-        p([
-          "Your details are used to answer your message, deliver the announcements you asked for and keep the platform secure. We never sell personal data and we do not run third-party advertising trackers on this site.",
-        ]) +
-        h2("Your choices") +
-        p([
-          "Every newsletter includes a one-click unsubscribe link. You can ask us to delete your account data at any time by writing to the contact address in the footer.",
-        ]) +
-        h2("Retention") +
-        p([
-          "Contact messages are kept for twenty-four months. Subscriber records are kept until you unsubscribe, after which only an anonymous suppression entry remains so we never contact you again.",
-        ]),
-      updatedAt: now,
-    },
-    { merge: true }
-  );
-
-  await db.collection("pages").doc("about").set(
-    {
-      slug: "about",
-      title: "About ManUp",
-      status: "published",
-      contentHtml:
-        h2("Why we exist") +
-        p([
-          "ManUp began as a single room of forty operators who were tired of panels that said nothing. We kept the format that worked: fewer talks, sharper briefs and time built in for the conversations that outlast the agenda.",
-        ]) +
-        h2("How we program") +
-        p([
-          "Every speaker is asked for one idea they have never presented publicly. Sessions are rehearsed with a producer. Workshops are capped so nobody performs to a silent room.",
-        ]) +
-        h2("Who it is for") +
-        p([
-          "Founders, senior operators, designers, engineers and the people who back them. If you are in the middle of building something difficult, this stage was built for you.",
-        ]),
-      updatedAt: now,
-    },
-    { merge: true }
-  );
-
-  await db.collection("pages").doc("contact").set(
-    {
-      slug: "contact",
-      title: "Contact",
-      status: "published",
-      contentHtml:
-        p([
-          "For partnerships, press, speaker submissions and ticket support, use the form on this page or write to the address in the footer. We reply to everything within two business days.",
-        ]),
-      updatedAt: now,
-    },
-    { merge: true }
-  );
+    ),
+    db.collection("pages").doc("about").set(
+      {
+        slug: "about",
+        title: "About ManUp",
+        status: "published",
+        contentHtml:
+          h2("Why we exist") +
+          p([
+            "ManUp began as a single room of forty operators who were tired of panels that said nothing. We kept the format that worked: fewer talks, sharper briefs and time built in for the conversations that outlast the agenda.",
+          ]) +
+          h2("How we program") +
+          p([
+            "Every speaker is asked for one idea they have never presented publicly. Sessions are rehearsed with a producer. Workshops are capped so nobody performs to a silent room.",
+          ]) +
+          h2("Who it is for") +
+          p([
+            "Founders, senior operators, designers, engineers and the people who back them. If you are in the middle of building something difficult, this stage was built for you.",
+          ]),
+        updatedAt: now,
+      },
+      { merge: true }
+    ),
+    db.collection("pages").doc("contact").set(
+      {
+        slug: "contact",
+        title: "Contact",
+        status: "published",
+        contentHtml:
+          p([
+            "For partnerships, press, speaker submissions and ticket support, use the form on this page or write to the address in the footer. We reply to everything within two business days.",
+          ]),
+        updatedAt: now,
+      },
+      { merge: true }
+    ),
+  ]);
 
   const counts = {
     speakers: speakers.length,
