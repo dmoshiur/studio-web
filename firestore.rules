@@ -1,0 +1,162 @@
+rules_version = '2';
+// =====================================================================
+// ManUp Platform — Firestore Security Rules (default deny, least privilege)
+// Roles are Firebase Auth custom claims: role = "user" | "admin" | "owner"
+// Owners inherit admin privileges.
+// Sensitive settings / secrets are NEVER readable client-side.
+// =====================================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function role() {
+      return signedIn() && request.auth.token.role is string
+        ? request.auth.token.role
+        : "user";
+    }
+
+    function isOwner() {
+      return signedIn() && role() == "owner";
+    }
+
+    function isAdmin() {
+      return signedIn() && (role() == "admin" || role() == "owner");
+    }
+
+    function isSelf(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    // ---------- Public content: published docs readable by anyone ----
+    function isPublished() {
+      return resource.data.status == "published"
+        || resource.data.published == true;
+    }
+
+    match /posts/{id} {
+      allow get: if isPublished() || isAdmin();
+      allow list: if isAdmin(); // public listing goes through paginated API
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /events/{id} {
+      allow get: if isPublished() || isAdmin();
+      allow list: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /speakers/{id} {
+      allow get: if resource.data.status == "published" || isAdmin();
+      allow list: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /categories/{id} {
+      allow get: if true;
+      allow list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Public read endpoints served via API with caching; direct client
+    // list is admin-only to prevent unbounded reads/scraping.
+    match /pages/{id} {
+      allow get: if resource.data.status == "published" || isAdmin();
+      allow list: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /navigation/{id} {
+      allow get: if true;
+      allow list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /socialLinks/{id} {
+      allow get: if true;
+      allow list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ---------- Site settings ---------------------------------------
+    // `public` doc: safe, browser-readable branding/SEO/contact info.
+    // Everything else (smtp, security, secrets): server-side only.
+    match /siteSettings/public {
+      allow get: if true;
+      allow list: if true;
+      allow write: if isOwner();
+    }
+
+    match /siteSettings/maintenance {
+      // Public visitors need the flag; writes are owner-only via API.
+      allow get: if true;
+      allow list: if true;
+      allow create, update, delete: if false; // server SDK only (bypasses rules)
+    }
+
+    match /siteSettings/{doc} {
+      allow read: if isOwner();
+      allow write: if false; // server SDK only
+    }
+
+    // ---------- User data -------------------------------------------
+    match /users/{userId} {
+      allow get: if isSelf(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isSelf(userId);
+      allow update: if isSelf(userId)
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(["role"])
+        || isOwner();
+      allow delete: if isOwner();
+    }
+
+    match /admins/{userId} {
+      allow read: if isAdmin();
+      allow write: if isOwner();
+    }
+
+    // ---------- Forms ------------------------------------------------
+    match /messages/{id} {
+      allow read: if isAdmin();
+      allow create: if true; // public contact form; validated + rate-limited server-side via API
+      allow update, delete: if isAdmin();
+    }
+
+    match /newsletterSubscribers/{id} {
+      allow read: if isAdmin();
+      allow create: if true; // validated + rate-limited server-side via API
+      allow update, delete: if isAdmin();
+    }
+
+    // ---------- Media metadata --------------------------------------
+    match /media/{id} {
+      allow get: if resource.data.visibility == "public" || isAdmin();
+      allow list: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /uploads/{id} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ---------- Audit logs (append-only, owner readable) -------------
+    match /auditLogs/{id} {
+      allow read: if isOwner();
+      allow create: if isAdmin() || isOwner();
+      allow update, delete: if false;
+    }
+
+    // ---------- Rate limiting buckets (server SDK only) --------------
+    match /rateLimits/{id} {
+      allow read, write: if false;
+    }
+
+    // ---------- Everything else: deny --------------------------------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

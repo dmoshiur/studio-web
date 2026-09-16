@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+.next/
+out/
+build/
+
+# Production
+dist/
+
+# Misc
+.DS_Store
+*.pem
+*.log
+coverage/
+
+# Local env files — NEVER commit secrets
+.env
+.env*.local
+.env.development
+.env.production
+.vercel
+
+# Firebase
+.firebase/
+firebaserc
+service-account*.json
+*-service-account*.json
+serviceAccountKey.json
+
+# Editor
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
