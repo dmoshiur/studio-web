@@ -1,0 +1,91 @@
+rules_version = '2';
+// =====================================================================
+// ManUp Platform — Cloud Storage Security Rules
+// Public read for published assets; writes are admin-only and validated
+// server-side (MIME, size). Sensitive folders are admin/owner-only.
+// =====================================================================
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function role() {
+      return signedIn() && request.auth.token.role is string
+        ? request.auth.token.role
+        : "user";
+    }
+
+    function isOwner() {
+      return signedIn() && role() == "owner";
+    }
+
+    function isAdmin() {
+      return signedIn() && (role() == "admin" || role() == "owner");
+    }
+
+    function isImage() {
+      return request.resource.contentType.matches("image/.*");
+    }
+
+    function sizeOk(maxBytes) {
+      return request.resource.size < maxBytes;
+    }
+
+    // Public site assets (hero images, published content images)
+    match /media/public/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && sizeOk(8 * 1024 * 1024);
+    }
+
+    match /media/images/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && sizeOk(8 * 1024 * 1024);
+    }
+
+    match /events/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && sizeOk(8 * 1024 * 1024);
+    }
+
+    match /speakers/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && sizeOk(8 * 1024 * 1024);
+    }
+
+    match /posts/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && sizeOk(8 * 1024 * 1024);
+    }
+
+    match /avatars/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if signedIn()
+        && (request.auth.uid == userId || isAdmin())
+        && isImage()
+        && sizeOk(2 * 1024 * 1024);
+    }
+
+    // Non-public documents (admin-managed)
+    match /media/documents/{allPaths=**} {
+      allow read: if isAdmin();
+      allow write: if isAdmin() && sizeOk(20 * 1024 * 1024);
+    }
+
+    match /media/private/{allPaths=**} {
+      allow read: if isAdmin();
+      allow write: if isAdmin() && sizeOk(20 * 1024 * 1024);
+    }
+
+    // Owner-only backups/exports
+    match /backups/{allPaths=**} {
+      allow read, write: if isOwner();
+    }
+
+    // Deny everything else
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
