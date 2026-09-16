@@ -1,22 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clock, User } from "lucide-react";
+import { ArrowUpRight, Clock } from "lucide-react";
 import { getPostBySlug, listPublishedPosts } from "@/lib/firestore/content";
 import { getPublicSettings } from "@/lib/firestore/settings";
 import { formatDate } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { Badge, Diamond } from "@/components/ui/badge";
+import { PostCard } from "@/components/public/cards";
+import { Reveal } from "@/components/public/reveal";
+import { Backdrop, Section, SectionHeading, TextLink } from "@/components/public/ui-kit";
 
-export const revalidate = 120;
-
-export async function generateStaticParams() {
-  try {
-    const data = await listPublishedPosts({ limit: 50 });
-    return data.items.map((p) => ({ slug: p.slug }));
-  } catch {
-    return [];
-  }
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const post = await getPostBySlug(params.slug).catch(() => null);
@@ -42,6 +36,10 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   ]);
   if (!post || post.status !== "published") notFound();
 
+  const more = (await listPublishedPosts({ limit: 4 }).catch(() => ({ items: [], nextCursor: null }))).items.filter(
+    (p) => p.id !== post.id
+  ).slice(0, 3);
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -56,56 +54,104 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <article className="bg-white pb-16 md:pb-24">
-        <div className="bg-ink-950 pb-12 pt-32 md:pt-40">
-          <div className="container max-w-3xl">
-            <Link href="/blog" className="inline-flex items-center gap-2 text-sm font-semibold text-white/70 hover:text-white">
-              <ArrowLeft className="h-4 w-4" /> All stories
-            </Link>
-            <h1 className="mt-4 font-display text-3xl font-extrabold leading-tight text-white md:text-[2.75rem]">
-              {post.title}
-            </h1>
-            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/65">
-              <span className="inline-flex items-center gap-1.5">
-                <User className="h-4 w-4" /> {post.authorName}
-              </span>
-              <span>{formatDate(post.publishedAt)}</span>
-              <span className="inline-flex items-center gap-1.5">
-                <Clock className="h-4 w-4" /> {post.readingMinutes} min read
-              </span>
-            </div>
-          </div>
-        </div>
 
-        <div className="container max-w-3xl">
-          {post.coverImage && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={post.coverImage}
-              alt={post.title}
-              className="-mt-2 aspect-[16/9] w-full rounded-3xl object-cover shadow-card"
-            />
-          )}
-          {post.tags.length > 0 && (
-            <div className="mt-6 flex flex-wrap gap-2">
-              {post.tags.map((t) => (
-                <Badge key={t} variant="default">#{t}</Badge>
-              ))}
+      <article>
+        {/* Editorial header */}
+        <header className="relative isolate overflow-hidden pb-20 pt-40 sm:pt-48">
+          <Backdrop src={post.coverImage ?? "/images/texture-marble.jpg"} overlay="obsidian" priority alt={post.title} />
+          <div className="container relative">
+            <nav aria-label="Breadcrumb" className="mb-9 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-ivory-500">
+              <Link href="/" className="transition-colors hover:text-gold-300">
+                Home
+              </Link>
+              <Diamond className="opacity-50" />
+              <Link href="/blog" className="transition-colors hover:text-gold-300">
+                Journal
+              </Link>
+              <Diamond className="opacity-50" />
+              <span className="text-gold-300">{post.categorySlug ?? "Essay"}</span>
+            </nav>
+
+            <div className="max-w-4xl">
+              <div className="flex flex-wrap items-center gap-4 text-[11px] uppercase tracking-[0.22em] text-ivory-400/80">
+                <span className="text-gold-300">{post.authorName}</span>
+                <Diamond className="h-1 w-1" />
+                <span>{formatDate(post.publishedAt)}</span>
+                <Diamond className="h-1 w-1" />
+                <span className="inline-flex items-center gap-2">
+                  <Clock className="h-3.5 w-3.5" />
+                  {post.readingMinutes} min read
+                </span>
+              </div>
+
+              <h1 className="display-xl mt-7 text-ivory-50 text-shadow-luxe">{post.title}</h1>
+              <p className="lead mt-7 max-w-2xl">{post.excerpt}</p>
             </div>
-          )}
-          <div className="prose-manup mt-6 text-[16px]" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
-          <div className="mt-10 rounded-3xl bg-brand-gradient-soft p-6 text-center">
-            <p className="font-display text-lg font-bold text-ink-900">Enjoyed this story?</p>
-            <p className="mt-1 text-sm text-ink-500">Get the next one in your inbox.</p>
-            <Link
-              href="/contact"
-              className="mt-4 inline-flex h-11 items-center rounded-xl bg-ink-900 px-6 text-sm font-semibold text-white hover:bg-ink-700"
-            >
-              Get in touch
-            </Link>
           </div>
-        </div>
+        </header>
+
+        {/* Body */}
+        <Section className="bg-obsidian-950 !py-16">
+          <div className="mx-auto max-w-3xl">
+            {post.coverImage && (
+              <div className="relative mb-12 overflow-hidden border border-white/[0.08]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={post.coverImage} alt={post.title} className="aspect-[16/9] w-full object-cover" />
+              </div>
+            )}
+
+            {post.tags.length > 0 && (
+              <div className="mb-10 flex flex-wrap gap-2">
+                {post.tags.map((t) => (
+                  <Badge key={t} variant="outline">
+                    #{t}
+                  </Badge>
+                ))}
+              </div>
+            )}
+
+            <div className="prose-manup" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
+
+            <div className="mt-16 flex flex-wrap items-center justify-between gap-6 border-t border-white/[0.08] pt-8">
+              <p className="font-serif text-[1.15rem] italic text-ivory-300">
+                Written by <span className="text-gold-200">{post.authorName}</span>
+              </p>
+              <TextLink href="/blog" className="group">
+                All writing
+              </TextLink>
+            </div>
+
+            {/* Invitation */}
+            <div className="mt-14 border border-gold-500/25 bg-white/[0.03] p-9 text-center">
+              <p className="calligraphic gold-text text-[2rem] leading-none">the invitation list</p>
+              <p className="mt-4 font-serif text-[1.35rem] text-ivory-50">Get the next essay in your inbox</p>
+              <p className="mt-3 text-[13.5px] leading-relaxed text-ivory-400/80">
+                One long-form letter each month, plus early access to summit passes.
+              </p>
+              <Link
+                href="/contact"
+                className="mt-7 inline-flex h-[50px] items-center gap-3 bg-gold-gradient px-7 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06]"
+              >
+                Join the list
+                <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </Section>
       </article>
+
+      {more.length > 0 && (
+        <Section className="bg-obsidian-soft">
+          <SectionHeading script="Keep reading" eyebrow="Related" title="More from the journal" />
+          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {more.map((p, i) => (
+              <Reveal key={p.id} delay={i * 80}>
+                <PostCard post={p} />
+              </Reveal>
+            ))}
+          </div>
+        </Section>
+      )}
     </>
   );
 }

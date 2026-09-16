@@ -128,17 +128,17 @@ export default function AdminNavigationPage() {
           </CardHeader>
           <CardContent>
             {socials.length === 0 ? (
-              <p className="py-4 text-center text-sm text-ink-400">No social links yet.</p>
+              <p className="py-4 text-center text-sm text-ivory-500">No social links yet.</p>
             ) : (
-              <ul className="divide-y divide-ink-100">
+              <ul className="divide-y divide-white/[0.06]">
                 {socials.map((s) => (
                   <li key={s.id} className="flex items-center justify-between gap-3 py-2.5">
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-ink-900">{s.label}</p>
-                      <p className="truncate text-[13px] text-ink-400">{s.href} · icon: {s.icon}</p>
+                      <p className="text-sm font-semibold text-ivory-50">{s.label}</p>
+                      <p className="truncate text-[13px] text-ivory-500">{s.href} · icon: {s.icon}</p>
                     </div>
                     <div className="flex gap-1">
-                      <Button variant="secondary" size="sm" onClick={() => setSocialDraft({ id: s.id, label: s.label, href: s.href, icon: s.icon })}>
+                      <Button variant="ghost" size="sm" onClick={() => setSocialDraft({ id: s.id, label: s.label, href: s.href, icon: s.icon })}>
                         Edit
                       </Button>
                       <Button variant="ghost" size="iconSm" aria-label={`Delete ${s.label}`} onClick={() => void deleteSocial(s.id)}>
@@ -173,7 +173,7 @@ export default function AdminNavigationPage() {
               <Input value={socialDraft.icon} onChange={(e) => setSocialDraft({ ...socialDraft, icon: e.target.value })} placeholder="instagram" />
             </div>
             <div className="flex justify-end gap-2">
-              <Button variant="secondary" onClick={() => setSocialDraft(null)}>Cancel</Button>
+              <Button variant="ghost" onClick={() => setSocialDraft(null)}>Cancel</Button>
               <Button onClick={saveSocial} loading={saving === "social"}>Save</Button>
             </div>
           </div>
@@ -209,16 +209,16 @@ function LinkEditor({
             <CardTitle>{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
           </div>
-          <Button size="sm" variant="secondary" onClick={() => onChange([...links, { label: "", href: "/" }])}>
+          <Button size="sm" variant="ghost" onClick={() => onChange([...links, { label: "", href: "/" }])}>
             <Plus /> Add link
           </Button>
         </div>
       </CardHeader>
       <CardContent className="grid gap-2">
-        {links.length === 0 && <p className="py-2 text-sm text-ink-400">No links yet.</p>}
+        {links.length === 0 && <p className="py-2 text-sm text-ivory-500">No links yet.</p>}
         {links.map((l, i) => (
           <div key={i} className="flex items-center gap-2">
-            <GripVertical className="h-4 w-4 shrink-0 text-ink-300" />
+            <GripVertical className="h-4 w-4 shrink-0 text-ivory-500" />
             <Input
               value={l.label}
               onChange={(e) => {
@@ -241,7 +241,7 @@ function LinkEditor({
               className="flex-1"
               aria-label={`Link ${i + 1} URL`}
             />
-            <label className="flex shrink-0 items-center gap-1.5 text-[12px] font-medium text-ink-500">
+            <label className="flex shrink-0 items-center gap-1.5 text-[12px] font-medium text-ivory-400/80">
               <input
                 type="checkbox"
                 checked={Boolean(l.external)}
@@ -250,13 +250,13 @@ function LinkEditor({
                   next[i] = { ...l, external: e.target.checked };
                   onChange(next);
                 }}
-                className="h-4 w-4 accent-pink-600"
+                className="h-4 w-4 accent-gold-500"
               />
               External
             </label>
             <div className="flex shrink-0 flex-col">
-              <button type="button" aria-label="Move up" onClick={() => move(i, -1)} className="px-1 text-[10px] text-ink-400 hover:text-ink-800">▲</button>
-              <button type="button" aria-label="Move down" onClick={() => move(i, 1)} className="px-1 text-[10px] text-ink-400 hover:text-ink-800">▼</button>
+              <button type="button" aria-label="Move up" onClick={() => move(i, -1)} className="px-1 text-[10px] text-ivory-500 hover:text-ivory-100">▲</button>
+              <button type="button" aria-label="Move down" onClick={() => move(i, 1)} className="px-1 text-[10px] text-ivory-500 hover:text-ivory-100">▼</button>
             </div>
             <Button
               variant="ghost"

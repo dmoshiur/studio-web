@@ -112,14 +112,14 @@ export default function AdminMediaPage() {
       />
 
       {progress && (
-        <p role="status" className="mb-4 rounded-xl bg-brand-gradient-soft px-4 py-2.5 text-sm font-medium text-brand-700">
+        <p role="status" className="mb-4 rounded-sm border border-gold-500/25 bg-gold-500/[0.12] px-4 py-2.5 text-sm font-medium text-gold-700">
           {progress}
         </p>
       )}
 
       <div className="mb-4 flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-300" />
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ivory-500" />
           <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by name…" className="pl-10" aria-label="Search media" />
         </div>
         <Select value={folder} onChange={(e) => setFolder(e.target.value)} className="sm:w-52" aria-label="Filter by folder">
@@ -128,18 +128,18 @@ export default function AdminMediaPage() {
             <option key={f} value={f}>{f}</option>
           ))}
         </Select>
-        <div className="flex gap-1 rounded-xl border border-ink-200 bg-white p-1">
+        <div className="flex gap-1 rounded-sm border border-white/10 bg-white/[0.03] p-1">
           <button
             onClick={() => setView("grid")}
             aria-label="Grid view"
-            className={cn("rounded-lg p-2", view === "grid" ? "bg-ink-900 text-white" : "text-ink-400")}
+            className={cn("rounded-sm p-2", view === "grid" ? "bg-gold-500 text-obsidian-950" : "text-ivory-500")}
           >
             <LayoutGrid className="h-4 w-4" />
           </button>
           <button
             onClick={() => setView("list")}
             aria-label="List view"
-            className={cn("rounded-lg p-2", view === "list" ? "bg-ink-900 text-white" : "text-ink-400")}
+            className={cn("rounded-sm p-2", view === "list" ? "bg-gold-500 text-obsidian-950" : "text-ivory-500")}
           >
             <List className="h-4 w-4" />
           </button>
@@ -167,23 +167,23 @@ export default function AdminMediaPage() {
               <button
                 key={m.id}
                 onClick={() => setSelected(m)}
-                className="group overflow-hidden rounded-2xl border border-ink-100 bg-white text-left shadow-card transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                className="group overflow-hidden rounded-sm border border-white/[0.08] bg-white/[0.03] text-left shadow-luxe transition-all hover:-translate-y-0.5 hover:shadow-lg"
               >
-                <div className="aspect-square bg-ink-50">
+                <div className="aspect-square bg-white/[0.03]">
                   {m.mimeType.startsWith("image/") && m.downloadUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={m.downloadUrl} alt={m.alt || m.fileName} loading="lazy" className="h-full w-full object-cover" />
                   ) : (
                     <div className="flex h-full items-center justify-center">
-                      <span className="rounded-lg bg-white px-3 py-1.5 text-[12px] font-bold uppercase text-ink-500">
+                      <span className="rounded-sm bg-white/[0.03] px-3 py-1.5 text-[12px] font-bold uppercase text-ivory-400/80">
                         {m.mimeType.split("/")[1]?.slice(0, 8) ?? "file"}
                       </span>
                     </div>
                   )}
                 </div>
                 <div className="p-3">
-                  <p className="truncate text-[13px] font-semibold text-ink-900">{m.originalName}</p>
-                  <p className="mt-0.5 text-[12px] text-ink-400">{formatBytes(m.sizeBytes)}</p>
+                  <p className="truncate text-[13px] font-semibold text-ivory-50">{m.originalName}</p>
+                  <p className="mt-0.5 text-[12px] text-ivory-500">{formatBytes(m.sizeBytes)}</p>
                 </div>
               </button>
             ))}
@@ -191,24 +191,24 @@ export default function AdminMediaPage() {
           <LoadMore hasMore={list.hasMore} loading={list.loadingMore} onLoad={list.loadMore} />
         </>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-ink-100 bg-white">
+        <div className="overflow-hidden rounded-sm border border-white/[0.08] bg-white/[0.03]">
           {list.items.map((m) => (
             <button
               key={m.id}
               onClick={() => setSelected(m)}
-              className="flex w-full items-center gap-4 border-b border-ink-100 p-3 text-left last:border-0 hover:bg-ink-50/50"
+              className="flex w-full items-center gap-4 border-b border-white/[0.08] p-3 text-left last:border-0 hover:bg-white/[0.03]"
             >
-              <span className="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-ink-50">
+              <span className="h-12 w-12 shrink-0 overflow-hidden rounded-sm bg-white/[0.03]">
                 {m.mimeType.startsWith("image/") && m.downloadUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={m.downloadUrl} alt="" loading="lazy" className="h-full w-full object-cover" />
                 ) : (
-                  <span className="flex h-full items-center justify-center text-[10px] font-bold uppercase text-ink-400">file</span>
+                  <span className="flex h-full items-center justify-center text-[10px] font-bold uppercase text-ivory-500">file</span>
                 )}
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-semibold text-ink-900">{m.originalName}</span>
-                <span className="text-[12px] text-ink-400">{m.folder} · {formatBytes(m.sizeBytes)}</span>
+                <span className="block truncate text-sm font-semibold text-ivory-50">{m.originalName}</span>
+                <span className="text-[12px] text-ivory-500">{m.folder} · {formatBytes(m.sizeBytes)}</span>
               </span>
               <Badge variant={m.visibility === "public" ? "success" : "default"}>{m.visibility}</Badge>
             </button>
@@ -222,16 +222,16 @@ export default function AdminMediaPage() {
           <div className="grid gap-4">
             {selected.mimeType.startsWith("image/") && selected.downloadUrl && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={selected.downloadUrl} alt={selected.alt || selected.fileName} className="max-h-72 w-full rounded-xl object-contain bg-ink-50" />
+              <img src={selected.downloadUrl} alt={selected.alt || selected.fileName} className="max-h-72 w-full rounded-sm object-contain bg-white/[0.03]" />
             )}
             <dl className="grid grid-cols-2 gap-3 text-sm">
-              <div><dt className="text-ink-400">Type</dt><dd className="font-medium">{selected.mimeType}</dd></div>
-              <div><dt className="text-ink-400">Visibility</dt><dd className="font-medium">{selected.visibility}</dd></div>
-              {selected.alt && <div className="col-span-2"><dt className="text-ink-400">Alt text</dt><dd className="font-medium">{selected.alt}</dd></div>}
+              <div><dt className="text-ivory-500">Type</dt><dd className="font-medium">{selected.mimeType}</dd></div>
+              <div><dt className="text-ivory-500">Visibility</dt><dd className="font-medium">{selected.visibility}</dd></div>
+              {selected.alt && <div className="col-span-2"><dt className="text-ivory-500">Alt text</dt><dd className="font-medium">{selected.alt}</dd></div>}
             </dl>
             <div className="flex flex-wrap gap-2">
               {selected.downloadUrl && (
-                <Button variant="secondary" size="sm" onClick={() => copyUrl(selected.downloadUrl)}>
+                <Button variant="ghost" size="sm" onClick={() => copyUrl(selected.downloadUrl)}>
                   {copied ? <Check /> : <Copy />} {copied ? "Copied!" : "Copy URL"}
                 </Button>
               )}

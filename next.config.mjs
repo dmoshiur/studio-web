@@ -1,10 +1,21 @@
 /** @type {import("next").NextConfig} */
 
+/**
+ * When the app is served inside a hosting preview iframe (sandbox/preview
+ * environments proxy it as https://<port>-<id>.e2b.app) the strict
+ * "same-origin only" framing policy must be relaxed, otherwise the preview
+ * shows a blank frame. Set ALLOW_EMBEDDING=true for those environments —
+ * production deployments keep the strict defaults.
+ */
+const allowEmbedding = (process.env.ALLOW_EMBEDDING ?? "").toLowerCase() === "true";
+
 const securityHeaders = [
   { key: "X-DNS-Prefetch-Control", value: "on" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  // X-Frame-Options cannot express "any origin", so it is omitted (and the CSP
+  // frame-ancestors directive below takes over) when embedding is allowed.
+  ...(allowEmbedding ? [] : [{ key: "X-Frame-Options", value: "SAMEORIGIN" }]),
   {
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
@@ -24,7 +35,7 @@ const securityHeaders = [
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
-      "frame-ancestors 'self'",
+      allowEmbedding ? "frame-ancestors *" : "frame-ancestors 'self'",
       "upgrade-insecure-requests",
     ].join("; "),
   },
@@ -33,6 +44,11 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Embedded SQLite + filesystem uploads are server-only Node features.
+  experimental: {
+    optimizePackageImports: ["lucide-react", "date-fns"],
+    serverComponentsExternalPackages: ["node:sqlite", "firebase-admin"],
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "firebasestorage.googleapis.com" },
@@ -41,9 +57,8 @@ const nextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
     ],
     formats: ["image/avif", "image/webp"],
-  },
-  experimental: {
-    optimizePackageImports: ["lucide-react", "date-fns"],
+    // Sandboxes without outbound image fetching can disable the optimizer.
+    unoptimized: (process.env.NEXT_PUBLIC_UNOPTIMIZED_IMAGES ?? "").toLowerCase() === "true",
   },
   async headers() {
     return [

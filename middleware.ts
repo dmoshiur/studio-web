@@ -5,6 +5,7 @@ const SESSION_COOKIE = process.env.SESSION_COOKIE_NAME ?? "__session";
 
 const PUBLIC_ALWAYS = [
   "/api/health",
+  "/api/media",
   "/api/maintenance/status",
   "/api/auth",
   "/api/setup",

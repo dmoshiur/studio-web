@@ -91,16 +91,16 @@ export default function OwnerStatusPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center justify-between rounded-2xl bg-ink-50 p-4">
+            <div className="flex items-center justify-between rounded-sm bg-white/[0.03] p-4">
               <div className="flex items-center gap-3">
-                <span className={`flex h-11 w-11 items-center justify-center rounded-2xl ${offline ? "bg-red-100 text-red-600" : "bg-emerald-100 text-emerald-600"}`}>
+                <span className={`flex h-11 w-11 items-center justify-center rounded-sm ${offline ? "border border-red-400/30 bg-red-400/10 text-red-300" : "border border-emerald-400/30 bg-emerald-400/10 text-emerald-300"}`}>
                   <Power className="h-5 w-5" />
                 </span>
                 <div>
-                  <p className="font-display text-lg font-extrabold text-ink-900">
+                  <p className="font-serif text-[1.35rem] text-ivory-50">
                     {state.enabled ? "MAINTENANCE" : "ONLINE"}
                   </p>
-                  <p className="text-[13px] text-ink-500">
+                  <p className="text-[13px] text-ivory-400/80">
                     {state.enabled ? "Visitors are redirected" : "Serving public traffic"}
                   </p>
                 </div>
@@ -115,7 +115,7 @@ export default function OwnerStatusPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-red-300 bg-red-50/40">
+        <Card className="border-red-300 bg-red-400/[0.07]">
           <CardHeader>
             <CardTitle className="text-red-700">Emergency lock</CardTitle>
             <CardDescription>
@@ -123,16 +123,16 @@ export default function OwnerStatusPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center justify-between rounded-2xl bg-white p-4">
+            <div className="flex items-center justify-between rounded-sm bg-white/[0.03] p-4">
               <div className="flex items-center gap-3">
-                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-600 text-white">
+                <span className="flex h-11 w-11 items-center justify-center rounded-sm bg-red-600 text-white">
                   <AlertOctagon className="h-5 w-5" />
                 </span>
                 <div>
-                  <p className="font-display text-lg font-extrabold text-ink-900">
+                  <p className="font-serif text-[1.35rem] text-ivory-50">
                     {state.emergencyLock ? "LOCKED" : "OFF"}
                   </p>
-                  <p className="text-[13px] text-ink-500">Requires typed confirmation</p>
+                  <p className="text-[13px] text-ivory-400/80">Requires typed confirmation</p>
                 </div>
               </div>
               <Switch
@@ -171,7 +171,7 @@ export default function OwnerStatusPage() {
             </div>
           </div>
           <div className="flex items-center justify-between">
-            <p className="text-[12px] text-ink-400">
+            <p className="text-[12px] text-ivory-500">
               Last updated: {new Date(state.updatedAt).toLocaleString()}
               {state.updatedBy ? ` by ${state.updatedBy.slice(0, 8)}…` : ""}
             </p>

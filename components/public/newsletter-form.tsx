@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Send } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 
@@ -40,7 +40,7 @@ export function NewsletterForm({ variant = "light", source = "website" }: { vari
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex w-full gap-2">
+    <form onSubmit={onSubmit} className={cn("flex w-full gap-0 border p-1 transition-colors", dark ? "border-white/20 bg-white/[0.04] backdrop-blur-sm focus-within:border-gold-500/60" : "border-ink-900/10 bg-white focus-within:border-gold-500")}>
       <label htmlFor={`newsletter-${source}`} className="sr-only">
         Email address
       </label>
@@ -53,19 +53,19 @@ export function NewsletterForm({ variant = "light", source = "website" }: { vari
         placeholder="Your email address"
         disabled={loading}
         className={cn(
-          "h-12 min-w-0 flex-1 rounded-xl border px-4 text-sm outline-none transition-colors",
+          "h-11 min-w-0 flex-1 bg-transparent px-4 text-[13.5px] outline-none transition-colors",
           dark
-            ? "border-white/15 bg-white/10 text-white placeholder:text-white/40 focus:border-brand-400"
-            : "border-ink-200 bg-white text-ink-900 placeholder:text-ink-300 focus:border-brand-500"
+            ? "text-ivory-100 placeholder:text-ivory-500/60"
+            : "text-ink-900 placeholder:text-ink-300"
         )}
       />
       <button
         type="submit"
         disabled={loading}
-        className="inline-flex h-12 shrink-0 items-center gap-2 rounded-xl bg-brand-gradient px-5 text-sm font-semibold text-white shadow-pop transition-all hover:brightness-105 disabled:opacity-60"
+        className="inline-flex h-11 shrink-0 items-center gap-2 bg-gold-gradient px-5 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-obsidian-950 transition-all hover:brightness-[1.06] disabled:opacity-60"
       >
-        <Send className="h-4 w-4" />
-        <span className="hidden sm:inline">{loading ? "Joining…" : "Subscribe"}</span>
+        <span className="hidden sm:inline">{loading ? "Joining" : "Join"}</span>
+        <ArrowRight className="h-3.5 w-3.5 sm:hidden" />
       </button>
     </form>
   );

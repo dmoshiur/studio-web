@@ -33,7 +33,7 @@ export function Reveal({
           }
         }
       },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0.1, rootMargin: "0px 0px -60px 0px" }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -44,47 +44,5 @@ export function Reveal({
     <Tag ref={ref} className={cn("reveal", className)} style={delay ? { transitionDelay: `${delay}ms` } : undefined}>
       {children}
     </Tag>
-  );
-}
-
-export function SectionHeading({
-  eyebrow,
-  title,
-  description,
-  align = "center",
-  dark,
-}: {
-  eyebrow?: string;
-  title: string;
-  description?: string;
-  align?: "center" | "left";
-  dark?: boolean;
-}) {
-  return (
-    <Reveal
-      className={cn(
-        "mb-10 max-w-2xl md:mb-14",
-        align === "center" ? "mx-auto text-center" : "text-left"
-      )}
-    >
-      {eyebrow && (
-        <span
-          className={cn(
-            "mb-3 inline-block rounded-full px-4 py-1.5 text-[12px] font-bold uppercase tracking-[0.14em]",
-            dark ? "bg-white/10 text-white" : "bg-brand-gradient-soft text-brand-700"
-          )}
-        >
-          {eyebrow}
-        </span>
-      )}
-      <h2 className={cn("font-display text-3xl font-extrabold md:text-[2.75rem] md:leading-[1.1]", dark ? "text-white" : "text-ink-900")}>
-        {title}
-      </h2>
-      {description && (
-        <p className={cn("mt-4 text-[15px] leading-relaxed md:text-base", dark ? "text-white/70" : "text-ink-500")}>
-          {description}
-        </p>
-      )}
-    </Reveal>
   );
 }

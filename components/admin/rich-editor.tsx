@@ -53,9 +53,9 @@ export function RichEditor({
 
   return (
     <div>
-      {label && <p className="mb-1.5 block text-[13px] font-semibold text-ink-700">{label}</p>}
-      <div className="overflow-hidden rounded-xl border border-ink-200 bg-white">
-        <div className="flex flex-wrap items-center gap-1 border-b border-ink-100 bg-ink-50/60 p-2">
+      {label && <p className="mb-1.5 block text-[13px] font-semibold text-ivory-200">{label}</p>}
+      <div className="overflow-hidden rounded-sm border border-white/10 bg-white/[0.03]">
+        <div className="flex flex-wrap items-center gap-1 border-b border-white/[0.08] bg-white/[0.03] p-2">
           {tools.map((t) => (
             <button
               key={t.label}
@@ -63,7 +63,7 @@ export function RichEditor({
               title={t.label}
               aria-label={t.label}
               onClick={t.fn}
-              className="rounded-lg p-2 text-ink-500 hover:bg-white hover:text-ink-900"
+              className="rounded-sm p-2 text-ivory-400/80 hover:bg-white/[0.03] hover:text-ivory-50"
             >
               <t.icon className="h-4 w-4" />
             </button>
@@ -73,7 +73,7 @@ export function RichEditor({
             title="Insert image"
             aria-label="Insert image"
             onClick={() => setPickerOpen(true)}
-            className="rounded-lg p-2 text-ink-500 hover:bg-white hover:text-ink-900"
+            className="rounded-sm p-2 text-ivory-400/80 hover:bg-white/[0.03] hover:text-ivory-50"
           >
             <ImagePlus className="h-4 w-4" />
           </button>
@@ -82,8 +82,8 @@ export function RichEditor({
               type="button"
               onClick={() => setTab("write")}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] font-semibold",
-                tab === "write" ? "bg-white text-ink-900 shadow-sm" : "text-ink-400 hover:text-ink-700"
+                "inline-flex items-center gap-1.5 rounded-sm px-3 py-1.5 text-[13px] font-semibold",
+                tab === "write" ? "bg-white/[0.03] text-ivory-50 shadow-sm" : "text-ivory-500 hover:text-ivory-200"
               )}
             >
               <PenLine className="h-3.5 w-3.5" /> Write
@@ -92,8 +92,8 @@ export function RichEditor({
               type="button"
               onClick={() => setTab("preview")}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] font-semibold",
-                tab === "preview" ? "bg-white text-ink-900 shadow-sm" : "text-ink-400 hover:text-ink-700"
+                "inline-flex items-center gap-1.5 rounded-sm px-3 py-1.5 text-[13px] font-semibold",
+                tab === "preview" ? "bg-white/[0.03] text-ivory-50 shadow-sm" : "text-ivory-500 hover:text-ivory-200"
               )}
             >
               <Eye className="h-3.5 w-3.5" /> Preview
@@ -113,7 +113,7 @@ export function RichEditor({
           <div
             className="prose-manup max-w-none overflow-y-auto p-5 text-[15px]"
             style={{ minHeight }}
-            dangerouslySetInnerHTML={{ __html: value || "<p class='text-ink-300'>Nothing to preview yet.</p>" }}
+            dangerouslySetInnerHTML={{ __html: value || "<p class='text-ivory-500'>Nothing to preview yet.</p>" }}
           />
         )}
       </div>

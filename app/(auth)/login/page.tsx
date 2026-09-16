@@ -6,16 +6,22 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { ArrowUpRight, ShieldCheck } from "lucide-react";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { Input, Label, FieldError } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { getFirebaseAuth, isFirebaseConfigured } from "@/lib/firebase/client";
 import { loginSchema, type LoginInput } from "@/lib/validation/schemas";
 
 export default function LoginPage() {
   return (
-    <React.Suspense fallback={<AuthLayout title="Sign in"><p className="text-sm text-ink-500">Loading…</p></AuthLayout>}>
+    <React.Suspense
+      fallback={
+        <AuthLayout title="Sign in" script="one moment">
+          <p className="text-[13.5px] text-ivory-400">Loading…</p>
+        </AuthLayout>
+      }
+    >
       <LoginForm />
     </React.Suspense>
   );
@@ -25,7 +31,8 @@ function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const { toast } = useToast();
-  const next = params.get("next") && params.get("next")!.startsWith("/") ? params.get("next")! : "/";
+  const next = params.get("next") && params.get("next")!.startsWith("/") ? params.get("next")! : null;
+  const [mode, setMode] = React.useState<"session" | "firebase">("session");
 
   const {
     register,
@@ -33,34 +40,43 @@ function LoginForm() {
     formState: { errors, isSubmitting },
   } = useForm<LoginInput>({ resolver: zodResolver(loginSchema) });
 
+  React.useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((d: { auth?: string }) => setMode(d.auth === "firebase" ? "firebase" : "session"))
+      .catch(() => undefined);
+  }, []);
+
   async function onSubmit(values: LoginInput) {
-    if (!isFirebaseConfigured) {
-      toast({ kind: "error", title: "Authentication is not configured" });
-      return;
-    }
     try {
-      const auth = getFirebaseAuth();
-      if (!auth) throw new Error("Authentication is not configured");
-      const cred = await signInWithEmailAndPassword(auth, values.email, values.password);
-      const idToken = await cred.user.getIdToken();
+      let payload: Record<string, string> = { email: values.email, password: values.password };
+
+      // Firebase deployments exchange an ID token for the session cookie.
+      if (mode === "firebase" && isFirebaseConfigured) {
+        const auth = getFirebaseAuth();
+        if (!auth) throw new Error("Authentication is not configured");
+        const cred = await signInWithEmailAndPassword(auth, values.email, values.password);
+        payload = { idToken: await cred.user.getIdToken() };
+      }
+
       const res = await fetch("/api/auth/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idToken }),
+        body: JSON.stringify(payload),
       });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error((data as { error?: string }).error ?? "Sign in failed");
-      }
-      toast({ kind: "success", title: "Welcome back!" });
-      router.push(next);
+      const data = (await res.json().catch(() => ({}))) as { error?: string; redirect?: string; role?: string };
+      if (!res.ok) throw new Error(data.error ?? "Sign in failed");
+
+      toast({ kind: "success", title: "Welcome back", message: "Your studio is ready." });
+      const target = next ?? data.redirect ?? "/";
+      router.push(target);
       router.refresh();
     } catch (err) {
       const message = err instanceof Error ? err.message : "Sign in failed";
-      const friendly = /invalid-credential|wrong-password|user-not-found/i.test(message)
-        ? "Invalid email or password."
-        : /too-many-requests/i.test(message)
-          ? "Too many attempts. Please wait and try again."
+      const friendly = /invalid-credential|wrong-password|user-not-found|invalid email or password/i.test(message)
+        ? "That email and password combination is not recognised."
+        : /too-many-requests|too many attempts/i.test(message)
+          ? "Too many attempts. Please wait a moment and try again."
           : message;
       toast({ kind: "error", title: "Sign in failed", message: friendly });
     }
@@ -68,42 +84,75 @@ function LoginForm() {
 
   return (
     <AuthLayout
-      title="Welcome back"
-      subtitle="Sign in to your account"
+      title="Sign in"
+      script="the door is open"
+      subtitle="Members, speakers and studio staff — welcome back."
       footer={
         <>
           New here?{" "}
-          <Link href="/register" className="font-semibold text-white underline underline-offset-2">
+          <Link href="/register" className="font-semibold text-gold-300 underline underline-offset-4">
             Create an account
           </Link>
         </>
       }
     >
-      {!isFirebaseConfigured && (
-        <p role="alert" className="mb-4 rounded-xl bg-amber-50 p-3 text-sm font-medium text-amber-700">
-          Firebase is not configured yet. See the deployment guide to connect your project.
+      {mode === "firebase" && !isFirebaseConfigured && (
+        <p role="alert" className="mb-5 border border-amber-400/30 bg-amber-400/10 p-3.5 text-[12.5px] text-amber-200">
+          Firebase is not configured yet. Add your web config to enable sign-in.
         </p>
       )}
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-4">
+
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
         <div>
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" autoComplete="email" placeholder="you@example.com" error={errors.email?.message} {...register("email")} />
+          <Input
+            id="email"
+            type="email"
+            autoComplete="email"
+            placeholder="you@example.com"
+            error={errors.email?.message}
+            {...register("email")}
+          />
           <FieldError message={errors.email?.message} />
         </div>
+
         <div>
-          <div className="mb-1.5 flex items-center justify-between">
-            <label htmlFor="password" className="block text-[13px] font-semibold text-ink-700">Password</label>
-            <Link href="/forgot-password" className="text-[13px] font-semibold text-brand-600 hover:underline">
+          <div className="mb-2 flex items-center justify-between">
+            <label htmlFor="password" className="font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-ivory-400/80">
+              Password
+            </label>
+            <Link href="/forgot-password" className="text-[12px] text-gold-300 transition-colors hover:text-gold-200">
               Forgot password?
             </Link>
           </div>
-          <Input id="password" type="password" autoComplete="current-password" placeholder="••••••••" error={errors.password?.message} {...register("password")} />
+          <Input
+            id="password"
+            type="password"
+            autoComplete="current-password"
+            placeholder="••••••••"
+            error={errors.password?.message}
+            {...register("password")}
+          />
           <FieldError message={errors.password?.message} />
         </div>
-        <Button type="submit" loading={isSubmitting} size="lg" className="w-full">
-          Sign in
-        </Button>
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="group mt-1 inline-flex h-[52px] items-center justify-center gap-3 bg-gold-gradient px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06] disabled:opacity-60"
+        >
+          {isSubmitting ? "Signing in…" : "Enter the studio"}
+          <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        </button>
       </form>
+
+      <div className="mt-7 flex items-start gap-3 border-t border-white/[0.08] pt-6">
+        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-gold-400" />
+        <p className="text-[12px] leading-relaxed text-ivory-500">
+          Sessions are signed and stored in an httpOnly cookie. Staff accounts with elevated roles are audited on every
+          privileged action.
+        </p>
+      </div>
     </AuthLayout>
   );
 }

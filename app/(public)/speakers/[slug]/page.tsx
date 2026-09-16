@@ -1,19 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ExternalLink, ArrowUpRight } from "lucide-react";
 import { getSpeakerBySlug, listPublishedSpeakers } from "@/lib/firestore/content";
+import { SpeakerCard } from "@/components/public/cards";
+import { Reveal } from "@/components/public/reveal";
+import { Diamond } from "@/components/ui/badge";
+import { Backdrop, GoldRule, Script, Section, SectionHeading } from "@/components/public/ui-kit";
 
-export const revalidate = 300;
-
-export async function generateStaticParams() {
-  try {
-    const speakers = await listPublishedSpeakers({ limit: 60 });
-    return speakers.map((s) => ({ slug: s.slug }));
-  } catch {
-    return [];
-  }
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const speaker = await getSpeakerBySlug(params.slug).catch(() => null);
@@ -33,67 +28,103 @@ export default async function SpeakerDetailPage({ params }: { params: { slug: st
   const speaker = await getSpeakerBySlug(params.slug).catch(() => null);
   if (!speaker || speaker.status !== "published") notFound();
 
+  const others = (await listPublishedSpeakers({ limit: 5 }).catch(() => []))
+    .filter((s) => s.id !== speaker.id)
+    .slice(0, 4);
+
   return (
     <>
-      <section className="relative overflow-hidden bg-ink-950 pb-14 pt-32 md:pt-40">
-        <div aria-hidden className="absolute inset-0">
-          <div className="absolute -right-32 top-0 h-80 w-80 rounded-full bg-brand-600/25 blur-[120px]" />
-        </div>
+      {/* Portrait hero */}
+      <section className="relative isolate overflow-hidden pb-20 pt-40 sm:pt-48">
+        <Backdrop src="/images/texture-marble.jpg" overlay="obsidian" priority />
         <div className="container relative">
-          <Link href="/speakers" className="inline-flex items-center gap-2 text-sm font-semibold text-white/70 hover:text-white">
-            <ArrowLeft className="h-4 w-4" /> All speakers
-          </Link>
-        </div>
-      </section>
-      <section className="bg-white pb-16 md:pb-24">
-        <div className="container">
-          <div className="-mt-2 grid gap-10 md:grid-cols-[300px_1fr]">
-            <div>
-              <div className="overflow-hidden rounded-3xl shadow-card">
+          <nav aria-label="Breadcrumb" className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-ivory-500">
+            <Link href="/" className="transition-colors hover:text-gold-300">
+              Home
+            </Link>
+            <Diamond className="opacity-50" />
+            <Link href="/speakers" className="transition-colors hover:text-gold-300">
+              Speakers
+            </Link>
+            <Diamond className="opacity-50" />
+            <span className="text-gold-300">{speaker.name}</span>
+          </nav>
+
+          <div className="grid items-end gap-12 lg:grid-cols-[380px_1fr] lg:gap-16">
+            <div className="relative">
+              <div className="relative overflow-hidden border border-white/[0.08]">
                 {speaker.photoURL ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={speaker.photoURL} alt={speaker.name} className="aspect-[3/4] w-full object-cover" />
                 ) : (
-                  <div className="flex aspect-[3/4] w-full items-center justify-center bg-brand-gradient-soft">
-                    <span className="font-display text-8xl font-extrabold text-brand-200">
-                      {speaker.name.charAt(0)}
-                    </span>
+                  <div className="flex aspect-[3/4] w-full items-center justify-center bg-obsidian-soft">
+                    <span className="font-serif text-[6rem] text-gold-500/60">{speaker.name.charAt(0)}</span>
                   </div>
                 )}
+                <span aria-hidden className="absolute inset-4 border border-white/20" />
               </div>
-              {speaker.socials && speaker.socials.length > 0 && (
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {speaker.socials.map((s) => (
-                    <a
-                      key={s.url}
-                      href={s.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-xl border border-ink-200 px-3.5 py-2 text-sm font-semibold text-ink-700 transition-colors hover:border-brand-300 hover:text-brand-600"
-                    >
-                      {s.label} <ExternalLink className="h-3.5 w-3.5" />
-                    </a>
-                  ))}
-                </div>
-              )}
             </div>
-            <div className="pt-2">
-              <p className="text-[12px] font-bold uppercase tracking-[0.16em] text-brand-600">Speaker</p>
-              <h1 className="mt-2 font-display text-4xl font-extrabold text-ink-900 md:text-5xl">{speaker.name}</h1>
+
+            <div>
+              <Script className="text-[2.2rem] leading-none">on stage</Script>
+              <h1 className="display-xl mt-5 text-ivory-50 text-shadow-luxe">{speaker.name}</h1>
               {(speaker.title || speaker.company) && (
-                <p className="mt-3 text-lg text-ink-500">{[speaker.title, speaker.company].filter(Boolean).join(" · ")}</p>
+                <p className="mt-5 font-sans text-[11.5px] uppercase tracking-[0.24em] text-gold-300">
+                  {[speaker.title, speaker.company].filter(Boolean).join(" · ")}
+                </p>
               )}
-              <p className="mt-6 whitespace-pre-line leading-relaxed text-ink-600">{speaker.bio}</p>
-              <Link
-                href="/events"
-                className="mt-8 inline-flex h-12 items-center gap-2 rounded-xl bg-brand-gradient px-7 text-[15px] font-semibold text-white shadow-pop transition-all hover:brightness-105"
-              >
-                See the schedule
-              </Link>
+              <GoldRule className="mt-8 !mx-0 !max-w-[160px]" />
+              <div className="mt-8 max-w-2xl space-y-5">
+                {(speaker.bio ?? "").split("\n\n").map((para, i) => (
+                  <p key={i} className="lead">
+                    {para}
+                  </p>
+                ))}
+              </div>
+
+              <div className="mt-10 flex flex-wrap items-center gap-5">
+                <Link
+                  href="/events"
+                  className="group inline-flex h-[52px] items-center gap-3 bg-gold-gradient px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06]"
+                >
+                  See the schedule
+                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </Link>
+                {speaker.socials?.map((s) => (
+                  <a
+                    key={s.url + s.label}
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 border border-white/20 px-5 py-3 font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-ivory-200 transition-colors hover:border-gold-400/60 hover:text-gold-200"
+                  >
+                    {s.label}
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* More speakers */}
+      {others.length > 0 && (
+        <Section className="bg-obsidian-950">
+          <SectionHeading
+            script="Also on stage"
+            eyebrow="The roster"
+            title="Others sharing the stage"
+          />
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {others.map((s, i) => (
+              <Reveal key={s.id} delay={i * 80}>
+                <SpeakerCard speaker={s} />
+              </Reveal>
+            ))}
+          </div>
+        </Section>
+      )}
     </>
   );
 }

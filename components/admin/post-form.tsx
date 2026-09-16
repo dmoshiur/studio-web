@@ -96,7 +96,7 @@ export function PostForm({ initial, categories }: { initial?: Post; categories: 
 
         <Card>
           <CardContent className="grid gap-4 p-6">
-            <h2 className="font-display text-base font-bold text-ink-900">SEO</h2>
+            <h2 className="font-serif text-base font-bold text-ivory-50">SEO</h2>
             <div>
               <Label>Meta title</Label>
               <Input {...register("seo.title")} placeholder="Defaults to post title" />
@@ -116,7 +116,7 @@ export function PostForm({ initial, categories }: { initial?: Post; categories: 
       <div className="grid content-start gap-6">
         <Card>
           <CardContent className="grid gap-4 p-6">
-            <h2 className="font-display text-base font-bold text-ink-900">Publish</h2>
+            <h2 className="font-serif text-base font-bold text-ivory-50">Publish</h2>
             <div>
               <Label>Status</Label>
               <Select {...register("status")}>
@@ -130,8 +130,8 @@ export function PostForm({ initial, categories }: { initial?: Post; categories: 
               <Input {...register("authorName")} placeholder="Author name" error={errors.authorName?.message} />
               <FieldError message={errors.authorName?.message} />
             </div>
-            <div className="flex items-center justify-between rounded-xl bg-ink-50 px-4 py-3">
-              <span className="text-sm font-semibold text-ink-700">Featured post</span>
+            <div className="flex items-center justify-between rounded-sm bg-white/[0.03] px-4 py-3">
+              <span className="text-sm font-semibold text-ivory-200">Featured post</span>
               <Controller
                 name="featured"
                 control={control}
@@ -146,7 +146,7 @@ export function PostForm({ initial, categories }: { initial?: Post; categories: 
 
         <Card>
           <CardContent className="grid gap-4 p-6">
-            <h2 className="font-display text-base font-bold text-ink-900">Organization</h2>
+            <h2 className="font-serif text-base font-bold text-ivory-50">Organization</h2>
             <div>
               <Label>Category</Label>
               <Select {...register("categoryId")}>

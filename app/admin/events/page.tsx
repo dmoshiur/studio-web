@@ -64,21 +64,21 @@ export default function AdminEventsPage() {
             </THead>
             <TBody>
               {list.items.map((e) => (
-                <tr key={e.id} className="transition-colors hover:bg-ink-50/50">
+                <tr key={e.id} className="transition-colors hover:bg-white/[0.03]">
                   <TD>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-ink-900">{e.title}</span>
-                      {e.featured && <Badge variant="brand">Featured</Badge>}
+                      <span className="font-semibold text-ivory-50">{e.title}</span>
+                      {e.featured && <Badge variant="gold">Featured</Badge>}
                     </div>
-                    <p className="mt-0.5 text-[12px] text-ink-400">/{e.slug}</p>
+                    <p className="mt-0.5 text-[12px] text-ivory-500">/{e.slug}</p>
                   </TD>
                   <TD>
                     <Badge variant={e.status === "published" ? "success" : e.status === "draft" ? "warning" : "default"}>
                       {e.status}
                     </Badge>
                   </TD>
-                  <TD className="whitespace-nowrap text-ink-600">{formatDateTime(e.startAt)}</TD>
-                  <TD className="text-ink-600">{e.venue || "—"}</TD>
+                  <TD className="whitespace-nowrap text-ivory-300">{formatDateTime(e.startAt)}</TD>
+                  <TD className="text-ivory-300">{e.venue || "—"}</TD>
                   <TD>
                     <RowActions>
                       {e.status === "published" && (

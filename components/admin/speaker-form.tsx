@@ -92,7 +92,7 @@ export function SpeakerForm({ initial }: { initial?: Speaker }) {
           <div className="sm:col-span-2">
             <div className="mb-2 flex items-center justify-between">
               <Label className="mb-0">Social links</Label>
-              <Button type="button" variant="secondary" size="sm" onClick={() => append({ label: "", url: "" })}>
+              <Button type="button" variant="ghost" size="sm" onClick={() => append({ label: "", url: "" })}>
                 <Plus /> Add
               </Button>
             </div>
@@ -106,7 +106,7 @@ export function SpeakerForm({ initial }: { initial?: Speaker }) {
                   </Button>
                 </div>
               ))}
-              {fields.length === 0 && <p className="text-sm text-ink-400">No social links yet.</p>}
+              {fields.length === 0 && <p className="text-sm text-ivory-500">No social links yet.</p>}
             </div>
             {errors.socials && <FieldError message="One or more social links are invalid (label + full https URL required)" />}
           </div>
@@ -116,7 +116,7 @@ export function SpeakerForm({ initial }: { initial?: Speaker }) {
       <div className="grid content-start gap-6">
         <Card>
           <CardContent className="grid gap-4 p-6">
-            <h2 className="font-display text-base font-bold text-ink-900">Publish</h2>
+            <h2 className="font-serif text-base font-bold text-ivory-50">Publish</h2>
             <div>
               <Label>Status</Label>
               <Select {...register("status")}>
@@ -125,8 +125,8 @@ export function SpeakerForm({ initial }: { initial?: Speaker }) {
                 <option value="archived">Archived</option>
               </Select>
             </div>
-            <div className="flex items-center justify-between rounded-xl bg-ink-50 px-4 py-3">
-              <span className="text-sm font-semibold text-ink-700">Featured</span>
+            <div className="flex items-center justify-between rounded-sm bg-white/[0.03] px-4 py-3">
+              <span className="text-sm font-semibold text-ivory-200">Featured</span>
               <Controller name="featured" control={control} render={({ field }) => <Switch checked={field.value} onCheckedChange={field.onChange} label="Featured" />} />
             </div>
             <Button type="submit" loading={isSubmitting} className="w-full">

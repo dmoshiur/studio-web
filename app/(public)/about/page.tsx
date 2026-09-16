@@ -1,103 +1,164 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Target, Heart, Zap, Users } from "lucide-react";
+import { ArrowUpRight, Target, Heart, Zap } from "lucide-react";
 import { getPublicSettings } from "@/lib/firestore/settings";
 import { getPageBySlug } from "@/lib/firestore/content";
-import { PageHero } from "@/components/public/cards";
-import { Reveal, SectionHeading } from "@/components/public/reveal";
+import { Reveal } from "@/components/public/reveal";
+import {
+  Backdrop,
+  Eyebrow,
+  PageHero,
+  Script,
+  Section,
+  SectionHeading,
+  StatStrip,
+} from "@/components/public/ui-kit";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Learn about the ManUp conference — our mission, values and the team behind the stage.",
+  description:
+    "The story, the standard and the people behind ManUp — a curated summit for founders, operators and creatives.",
 };
 
 const VALUES = [
-  { icon: Target, title: "Signal over noise", body: "Every session is curated. No filler talks, no pay-to-play keynotes — only ideas worth your time." },
-  { icon: Users, title: "Community first", body: "Hallway conversations matter as much as the stage. We design for connection, not just attendance." },
-  { icon: Zap, title: "Actionable takeaways", body: "You'll leave with playbooks, contacts and experiments to run on Monday morning — not just inspiration." },
+  {
+    icon: Target,
+    title: "Signal over noise",
+    body: "Every session is programmed, not sponsored. Each speaker is asked for one idea they have never presented publicly.",
+  },
+  {
+    icon: Heart,
+    title: "Hospitality as strategy",
+    body: "Long tables, real introductions and a team that remembers your name. The room is the product.",
+  },
+  {
+    icon: Zap,
+    title: "Actionable by Monday",
+    body: "You leave with decisions made, playbooks written and three people worth emailing back.",
+  },
 ];
 
 export default async function AboutPage() {
   const settings = await getPublicSettings();
   const customPage = await getPageBySlug("about").catch(() => null);
   const h = settings.homepage;
+  const stats = h.stats ?? h.aboutStats ?? [];
 
   return (
     <>
       <PageHero
-        eyebrow="About"
-        title="The conference for people who build what's next"
+        script={settings.siteName}
+        eyebrow="Our Story"
+        title="A stage for people who refuse to settle"
         description={settings.tagline}
+        image="/images/page-header.jpg"
+        breadcrumb={[{ label: "Home", href: "/" }, { label: "About" }]}
       />
 
-      <section className="bg-white py-16 md:py-24">
-        <div className="container grid items-start gap-12 lg:grid-cols-2">
-          <Reveal>
-            <h2 className="font-display text-3xl font-extrabold text-ink-900">{h.aboutTitle}</h2>
-            {customPage?.status === "published" ? (
-              <div className="prose-manup mt-5" dangerouslySetInnerHTML={{ __html: customPage.contentHtml }} />
-            ) : (
-              <p className="mt-5 whitespace-pre-line leading-relaxed text-ink-500">{h.aboutBody}</p>
-            )}
-            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-              {h.aboutStats.map((s) => (
-                <div key={s.label} className="rounded-2xl border border-ink-100 bg-ink-50/50 p-4 text-center">
-                  <p className="font-display text-2xl font-extrabold text-ink-900">{s.value}</p>
-                  <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-ink-400">{s.label}</p>
-                </div>
-              ))}
+      {/* Narrative */}
+      <Section tone="light">
+        <div className="grid items-start gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
+          <div>
+            <SectionHeading
+              align="left"
+              tone="light"
+              script="Seven editions"
+              eyebrow="About the house"
+              title={h.aboutTitle}
+            />
+            <Reveal className="mt-8">
+              {customPage?.status === "published" ? (
+                <div
+                  className="space-y-5 text-[15.5px] leading-[1.95] text-ink-500 [&_h2]:mt-10 [&_h2]:font-serif [&_h2]:text-[1.7rem] [&_h2]:text-ink-900 [&_p]:mt-5"
+                  dangerouslySetInnerHTML={{ __html: customPage.contentHtml }}
+                />
+              ) : (
+                (h.aboutBody ?? "").split("\n\n").map((para, i) => (
+                  <p key={i} className="lead-dark mt-5">
+                    {para}
+                  </p>
+                ))
+              )}
+            </Reveal>
+          </div>
+
+          <Reveal delay={120} className="relative">
+            <div className="relative overflow-hidden rounded-sm">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={h.aboutImage ?? "/images/audience.jpg"}
+                alt="The audience"
+                loading="lazy"
+                className="aspect-[4/5] w-full object-cover"
+              />
+              <span aria-hidden className="absolute inset-4 border border-white/30" />
+            </div>
+            <div className="mt-8 border border-ink-900/10 bg-white p-7 shadow-luxe">
+              <Script className="text-[2.1rem] leading-none">our promise</Script>
+              <p className="mt-3 font-serif text-[1.15rem] italic leading-relaxed text-ink-700">
+                “If an idea cannot be used within a week of leaving the room, it does not belong on the stage.”
+              </p>
             </div>
           </Reveal>
-          <Reveal delay={100}>
-            {h.aboutImage ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={h.aboutImage} alt="Conference audience" className="aspect-[4/5] w-full rounded-3xl object-cover shadow-card" loading="lazy" />
-            ) : (
-              <div className="flex aspect-[4/5] w-full flex-col justify-between rounded-3xl bg-ink-950 p-8">
-                <div className="flex gap-3">
-                  <span className="h-3 w-3 rounded-full bg-brand-500" />
-                  <span className="h-3 w-3 rounded-full bg-ember-500" />
-                  <span className="h-3 w-3 rounded-full bg-white/20" />
-                </div>
-                <div>
-                  <Heart className="h-10 w-10 text-brand-400" />
-                  <p className="mt-4 font-display text-2xl font-bold leading-snug text-white">
-                    “The most energizing two days of my year. I came for the talks and stayed for the people.”
-                  </p>
-                  <p className="mt-3 text-sm text-white/60">— Past attendee</p>
-                </div>
-              </div>
-            )}
-          </Reveal>
         </div>
-      </section>
 
-      <section className="bg-ink-50/60 py-16 md:py-24">
-        <div className="container">
-          <SectionHeading eyebrow="Values" title="What we optimize for" />
-          <div className="grid gap-6 md:grid-cols-3">
+        <div className="mt-24">
+          <StatStrip stats={stats} tone="light" />
+        </div>
+      </Section>
+
+      {/* Values */}
+      <Section className="relative isolate overflow-hidden bg-obsidian-950">
+        <Backdrop src="/images/texture-marble.jpg" overlay="soft" className="opacity-40" />
+        <div className="relative">
+          <SectionHeading
+            script="What we hold to"
+            eyebrow="Values"
+            title="Three things we refuse to compromise"
+          />
+          <div className="mt-16 grid gap-6 md:grid-cols-3">
             {VALUES.map((v, i) => (
-              <Reveal key={v.title} delay={i * 70} className="rounded-2xl border border-ink-100 bg-white p-7 shadow-card">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-gradient-soft text-brand-600">
-                  <v.icon className="h-6 w-6" />
-                </div>
-                <h3 className="mt-4 font-display text-lg font-bold text-ink-900">{v.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-500">{v.body}</p>
+              <Reveal key={v.title} delay={i * 110}>
+                <article className="h-full rounded-sm border border-white/[0.08] bg-white/[0.025] p-9">
+                  <span className="flex h-12 w-12 items-center justify-center border border-gold-500/40 text-gold-300">
+                    <v.icon className="h-5 w-5" />
+                  </span>
+                  <h3 className="mt-7 font-serif text-[1.4rem] text-ivory-50">{v.title}</h3>
+                  <p className="mt-3 text-[13.5px] leading-[1.9] text-ivory-400/80">{v.body}</p>
+                </article>
               </Reveal>
             ))}
           </div>
-          <Reveal className="mt-10 text-center">
+        </div>
+      </Section>
+
+      {/* CTA */}
+      <Section tone="light">
+        <Reveal className="mx-auto max-w-3xl text-center">
+          <Eyebrow>Next step</Eyebrow>
+          <h2 className="display-lg mt-6 text-ink-900">Come and see the room for yourself</h2>
+          <p className="lead-dark mx-auto mt-5 max-w-xl">
+            Seats are released in three waves and the Founder&apos;s Pass has sold out every edition.
+          </p>
+          <div className="mt-9 flex flex-wrap justify-center gap-4">
             <Link
               href="/events"
-              className="inline-flex h-12 items-center gap-2 rounded-xl bg-brand-gradient px-7 text-[15px] font-semibold text-white shadow-pop transition-all hover:brightness-105"
+              className="group inline-flex h-[52px] items-center gap-3 bg-obsidian-900 px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-ivory-100 transition-colors hover:bg-obsidian-800"
             >
-              Browse events <ArrowRight className="h-4 w-4" />
+              Browse the calendar
+              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </Link>
-          </Reveal>
-        </div>
-      </section>
+            <Link
+              href="/contact"
+              className="inline-flex h-[52px] items-center gap-3 border border-ink-900/20 px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-ink-900 transition-colors hover:border-gold-600 hover:text-gold-700"
+            >
+              Talk to the team
+            </Link>
+          </div>
+        </Reveal>
+      </Section>
     </>
   );
 }

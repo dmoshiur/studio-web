@@ -41,30 +41,30 @@ export default function AdminProfilePage() {
           </CardHeader>
           <CardContent>
             {loading ? (
-              <p className="text-sm text-ink-500">Loading…</p>
+              <p className="text-sm text-ivory-400/80">Loading…</p>
             ) : user ? (
               <dl className="grid gap-3 text-sm">
-                <div className="flex items-center justify-between rounded-xl bg-ink-50 px-4 py-3">
-                  <dt className="text-ink-500">Name</dt>
-                  <dd className="font-semibold text-ink-900">{user.displayName ?? "—"}</dd>
+                <div className="flex items-center justify-between rounded-sm bg-white/[0.03] px-4 py-3">
+                  <dt className="text-ivory-400/80">Name</dt>
+                  <dd className="font-semibold text-ivory-50">{user.displayName ?? "—"}</dd>
                 </div>
-                <div className="flex items-center justify-between rounded-xl bg-ink-50 px-4 py-3">
-                  <dt className="text-ink-500">Email</dt>
-                  <dd className="font-semibold text-ink-900">{user.email ?? "—"}</dd>
+                <div className="flex items-center justify-between rounded-sm bg-white/[0.03] px-4 py-3">
+                  <dt className="text-ivory-400/80">Email</dt>
+                  <dd className="font-semibold text-ivory-50">{user.email ?? "—"}</dd>
                 </div>
-                <div className="flex items-center justify-between rounded-xl bg-ink-50 px-4 py-3">
-                  <dt className="text-ink-500">Role</dt>
-                  <dd><Badge variant={user.role === "owner" ? "dark" : "brand"}>{user.role}</Badge></dd>
+                <div className="flex items-center justify-between rounded-sm bg-white/[0.03] px-4 py-3">
+                  <dt className="text-ivory-400/80">Role</dt>
+                  <dd><Badge variant={user.role === "owner" || user.role === "superadmin" ? "gold" : "info"}>{user.role}</Badge></dd>
                 </div>
-                <div className="flex items-center justify-between rounded-xl bg-ink-50 px-4 py-3">
-                  <dt className="text-ink-500">Email verified</dt>
+                <div className="flex items-center justify-between rounded-sm bg-white/[0.03] px-4 py-3">
+                  <dt className="text-ivory-400/80">Email verified</dt>
                   <dd>
                     {user.emailVerified ? <Badge variant="success">Verified</Badge> : <Badge variant="warning">Unverified</Badge>}
                   </dd>
                 </div>
               </dl>
             ) : (
-              <p className="text-sm text-ink-500">Not signed in.</p>
+              <p className="text-sm text-ivory-400/80">Not signed in.</p>
             )}
           </CardContent>
         </Card>
@@ -75,7 +75,7 @@ export default function AdminProfilePage() {
             <CardDescription>Change your password via a secure email link</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="secondary" onClick={sendReset} loading={sending} disabled={!user?.email}>
+            <Button variant="ghost" onClick={sendReset} loading={sending} disabled={!user?.email}>
               Send password reset email
             </Button>
           </CardContent>

@@ -51,7 +51,7 @@ export default function AdminSubscribersPage() {
       <PageHeader
         title="Subscribers"
         description="Newsletter audience"
-        action={<Button variant="secondary" onClick={exportCsv} disabled={list.items.length === 0}><Download /> Export CSV</Button>}
+        action={<Button variant="ghost" onClick={exportCsv} disabled={list.items.length === 0}><Download /> Export CSV</Button>}
       />
       {list.loading ? (
         <TableSkeleton />
@@ -71,13 +71,13 @@ export default function AdminSubscribersPage() {
             </THead>
             <TBody>
               {list.items.map((s) => (
-                <tr key={s.id} className="transition-colors hover:bg-ink-50/50">
-                  <TD className="font-medium text-ink-900">{s.email}</TD>
+                <tr key={s.id} className="transition-colors hover:bg-white/[0.03]">
+                  <TD className="font-medium text-ivory-50">{s.email}</TD>
                   <TD>
                     <Badge variant={s.status === "active" ? "success" : "default"}>{s.status}</Badge>
                   </TD>
-                  <TD className="text-ink-500">{s.source ?? "—"}</TD>
-                  <TD className="text-ink-500">{formatDate(s.createdAt)}</TD>
+                  <TD className="text-ivory-400/80">{s.source ?? "—"}</TD>
+                  <TD className="text-ivory-400/80">{formatDate(s.createdAt)}</TD>
                   <TD>
                     <RowActions>
                       <Button variant="ghost" size="iconSm" aria-label="Remove subscriber" onClick={() => setDeleting(s)}>

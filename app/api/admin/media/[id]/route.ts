@@ -1,4 +1,4 @@
-import { getAdminBucketName, getAdminStorage } from "@/lib/firebase/admin";
+import { deleteObject } from "@/lib/storage/media";
 import { requireAdmin } from "@/lib/server/auth";
 import { deleteMediaRecord, getMediaById, updateMediaRecord } from "@/lib/firestore/engagement";
 import { mediaUpdateSchema } from "@/lib/validation/schemas";
@@ -25,15 +25,7 @@ export async function DELETE(_req: Request, { params }: { params: { id: string }
     const user = await requireAdmin();
     const media = await getMediaById(params.id);
     if (!media) return apiError("Media not found", 404, "not_found");
-    const storage = getAdminStorage();
-    const bucketName = getAdminBucketName();
-    if (storage && bucketName && media.storagePath) {
-      try {
-        await storage.bucket(bucketName).file(media.storagePath).delete({ ignoreNotFound: true });
-      } catch (err) {
-        console.error("[media] storage delete failed:", err);
-      }
-    }
+    if (media.storagePath) await deleteObject(media.storagePath);
     await deleteMediaRecord(params.id);
     await auditLog({ actor: user, action: "media.delete", resource: params.id, metadata: { path: media.storagePath } });
     return ok({ ok: true });

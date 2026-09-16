@@ -1,21 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarDays, MapPin, Clock, ArrowLeft, Ticket, User } from "lucide-react";
+import { ArrowUpRight, CalendarDays, MapPin, Clock, Users } from "lucide-react";
 import { getEventBySlug, getSpeakersByIds, listPublishedEvents } from "@/lib/firestore/content";
 import { getPublicSettings } from "@/lib/firestore/settings";
 import { formatDate } from "@/lib/utils";
+import { Countdown } from "@/components/public/countdown";
+import { Badge, Diamond } from "@/components/ui/badge";
+import { Backdrop, GoldRule, Script } from "@/components/public/ui-kit";
 
-export const revalidate = 120;
-
-export async function generateStaticParams() {
-  try {
-    const data = await listPublishedEvents({ limit: 50 });
-    return data.items.map((e) => ({ slug: e.slug }));
-  } catch {
-    return [];
-  }
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const event = await getEventBySlug(params.slug).catch(() => null);
@@ -52,71 +46,131 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
     organizer: { "@type": "Organization", name: settings.siteName },
   };
 
+  const details: { label: string; value: string }[] = [
+    { label: "Date", value: formatDate(event.startAt, { weekday: "long", month: "long", day: "numeric", year: "numeric" }) },
+    {
+      label: "Time",
+      value: `${new Date(event.startAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}${
+        event.endAt ? ` – ${new Date(event.endAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}` : ""
+      }`,
+    },
+    ...(event.venue ? [{ label: "Venue", value: event.venue }] : []),
+    ...(event.address ? [{ label: "Address", value: event.address }] : []),
+    ...(event.timezone ? [{ label: "Time zone", value: event.timezone }] : []),
+    ...(event.price ? [{ label: "Passes from", value: event.price }] : []),
+  ];
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <section className="relative overflow-hidden bg-ink-950 pb-14 pt-32 md:pb-16 md:pt-40">
-        <div aria-hidden className="absolute inset-0">
-          <div className="absolute -left-32 top-0 h-80 w-80 rounded-full bg-brand-600/25 blur-[120px]" />
-          <div className="absolute right-0 top-20 h-80 w-80 rounded-full bg-ember-500/20 blur-[120px]" />
-        </div>
+
+      {/* Hero */}
+      <section className="relative isolate overflow-hidden pb-20 pt-40 sm:pb-24 sm:pt-48">
+        <Backdrop src={event.coverImage ?? "/images/hero-stage.jpg"} overlay="obsidian" priority alt={event.title} />
         <div className="container relative">
-          <Link href="/events" className="inline-flex items-center gap-2 text-sm font-semibold text-white/70 hover:text-white">
-            <ArrowLeft className="h-4 w-4" /> All events
-          </Link>
-          <h1 className="mt-4 max-w-3xl font-display text-3xl font-extrabold text-white md:text-5xl">{event.title}</h1>
-          <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/70">
-            <span className="inline-flex items-center gap-2">
-              <CalendarDays className="h-4 w-4 text-brand-400" />
-              {formatDate(event.startAt, { weekday: "long" })}
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <Clock className="h-4 w-4 text-brand-400" />
-              {new Date(event.startAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
-              {event.endAt && ` – ${new Date(event.endAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}`}
-            </span>
-            {event.venue && (
-              <span className="inline-flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-brand-400" />{event.venue}
-              </span>
+          <nav aria-label="Breadcrumb" className="mb-8 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-ivory-500">
+            <Link href="/" className="transition-colors hover:text-gold-300">
+              Home
+            </Link>
+            <Diamond className="opacity-50" />
+            <Link href="/events" className="transition-colors hover:text-gold-300">
+              Events
+            </Link>
+            <Diamond className="opacity-50" />
+            <span className="text-gold-300">{event.title}</span>
+          </nav>
+
+          <div className="grid gap-12 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
+            <div>
+              {event.featured && (
+                <span className="mb-6 inline-block">
+                  <Badge variant="solidGold">Flagship event</Badge>
+                </span>
+              )}
+              <h1 className="display-xl max-w-3xl text-ivory-50 text-shadow-luxe">{event.title}</h1>
+              <GoldRule className="mt-9 !mx-0 !max-w-[170px]" />
+              <p className="lead mt-7 max-w-2xl">{event.description}</p>
+
+              <div className="mt-9 flex flex-wrap gap-x-9 gap-y-3 text-[12.5px] text-ivory-300/80">
+                <span className="flex items-center gap-2.5">
+                  <CalendarDays className="h-4 w-4 text-gold-500" />
+                  {formatDate(event.startAt, { weekday: "long", month: "long", day: "numeric" })}
+                </span>
+                <span className="flex items-center gap-2.5">
+                  <Clock className="h-4 w-4 text-gold-500" />
+                  {new Date(event.startAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
+                </span>
+                {event.venue && (
+                  <span className="flex items-center gap-2.5">
+                    <MapPin className="h-4 w-4 text-gold-500" />
+                    {event.venue}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {new Date(event.startAt).getTime() > Date.now() && (
+              <div className="border border-gold-500/20 bg-white/[0.03] p-7 backdrop-blur-sm">
+                <p className="eyebrow mb-5">Doors open in</p>
+                <Countdown targetISO={event.startAt} />
+              </div>
             )}
           </div>
         </div>
       </section>
 
-      <section className="bg-white py-12 md:py-16">
-        <div className="container grid gap-10 lg:grid-cols-[1fr_340px]">
+      {/* Body + booking rail */}
+      <section className="relative bg-obsidian-950 py-20 sm:py-24">
+        <div className="container grid gap-14 lg:grid-cols-[1fr_380px] lg:gap-16">
           <article>
             {event.coverImage && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={event.coverImage} alt={event.title} className="aspect-[16/9] w-full rounded-3xl object-cover shadow-card" />
+              <div className="relative overflow-hidden rounded-sm border border-white/[0.08]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={event.coverImage} alt={event.title} className="aspect-[16/9] w-full object-cover" />
+                <span aria-hidden className="absolute inset-4 border border-white/20" />
+              </div>
             )}
-            <p className="mt-6 whitespace-pre-line text-[16px] leading-relaxed text-ink-600">{event.description}</p>
+
+            <div className="mt-10">
+              <p className="font-serif text-[1.35rem] italic leading-relaxed text-ivory-200">{event.description}</p>
+            </div>
+
             {event.contentHtml && (
-              <div className="prose-manup mt-6" dangerouslySetInnerHTML={{ __html: event.contentHtml }} />
+              <div className="prose-manup mt-10" dangerouslySetInnerHTML={{ __html: event.contentHtml }} />
             )}
+
             {speakers.length > 0 && (
-              <div className="mt-10">
-                <h2 className="font-display text-xl font-bold text-ink-900">Speakers</h2>
-                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div className="mt-16">
+                <div className="flex items-center gap-5">
+                  <h2 className="font-serif text-[1.6rem] text-ivory-50">On this stage</h2>
+                  <span className="h-px flex-1 bg-gradient-to-r from-gold-500/40 to-transparent" />
+                </div>
+                <div className="mt-8 grid gap-4 sm:grid-cols-2">
                   {speakers.map((s) => (
                     <Link
                       key={s.id}
                       href={`/speakers/${s.slug}`}
-                      className="flex items-center gap-4 rounded-2xl border border-ink-100 p-4 transition-all hover:border-brand-200 hover:shadow-card"
+                      className="group flex items-center gap-5 border border-white/[0.08] bg-white/[0.02] p-5 transition-colors hover:border-gold-500/40"
                     >
                       {s.photoURL ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={s.photoURL} alt={s.name} className="h-14 w-14 rounded-full object-cover" loading="lazy" />
+                        <img
+                          src={s.photoURL}
+                          alt={s.name}
+                          loading="lazy"
+                          className="h-16 w-16 shrink-0 object-cover grayscale-[30%] transition-all group-hover:grayscale-0"
+                        />
                       ) : (
-                        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-gradient-soft font-display text-xl font-extrabold text-brand-600">
+                        <span className="flex h-16 w-16 shrink-0 items-center justify-center border border-gold-500/30 font-serif text-[1.4rem] text-gold-300">
                           {s.name.charAt(0)}
                         </span>
                       )}
                       <div>
-                        <p className="font-semibold text-ink-900">{s.name}</p>
+                        <p className="font-serif text-[1.2rem] text-ivory-50">{s.name}</p>
                         {(s.title || s.company) && (
-                          <p className="text-sm text-ink-500">{[s.title, s.company].filter(Boolean).join(" · ")}</p>
+                          <p className="mt-1 font-sans text-[10.5px] uppercase tracking-[0.18em] text-gold-400">
+                            {[s.title, s.company].filter(Boolean).join(" · ")}
+                          </p>
                         )}
                       </div>
                     </Link>
@@ -126,58 +180,51 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
             )}
           </article>
 
+          {/* Booking rail */}
           <aside>
-            <div className="rounded-3xl border border-ink-100 bg-ink-50/50 p-6 lg:sticky lg:top-24">
-              <h2 className="font-display text-lg font-bold text-ink-900">Event details</h2>
-              <dl className="mt-4 space-y-3 text-sm">
-                <div className="flex justify-between gap-4">
-                  <dt className="text-ink-400">Date</dt>
-                  <dd className="text-right font-semibold text-ink-900">{formatDate(event.startAt)}</dd>
-                </div>
-                {event.venue && (
-                  <div className="flex justify-between gap-4">
-                    <dt className="text-ink-400">Venue</dt>
-                    <dd className="text-right font-semibold text-ink-900">{event.venue}</dd>
+            <div className="border border-gold-500/20 bg-white/[0.03] p-8 lg:sticky lg:top-28">
+              <Script className="text-[2rem] leading-none">reserve</Script>
+              <h2 className="mt-3 font-serif text-[1.5rem] text-ivory-50">Passes for this date</h2>
+
+              <dl className="mt-7 divide-y divide-white/[0.08]">
+                {details.map((d) => (
+                  <div key={d.label} className="flex items-start justify-between gap-6 py-3.5">
+                    <dt className="font-sans text-[10.5px] uppercase tracking-[0.2em] text-ivory-500">{d.label}</dt>
+                    <dd className="max-w-[62%] text-right text-[13.5px] leading-relaxed text-ivory-200">{d.value}</dd>
                   </div>
-                )}
-                {event.address && (
-                  <div className="flex justify-between gap-4">
-                    <dt className="text-ink-400">Address</dt>
-                    <dd className="text-right font-semibold text-ink-900">{event.address}</dd>
-                  </div>
-                )}
-                {event.price && (
-                  <div className="flex justify-between gap-4">
-                    <dt className="text-ink-400">Price</dt>
-                    <dd className="text-right font-semibold text-ink-900">{event.price}</dd>
-                  </div>
-                )}
+                ))}
                 {speakers.length > 0 && (
-                  <div className="flex justify-between gap-4">
-                    <dt className="text-ink-400">Speakers</dt>
-                    <dd className="inline-flex items-center gap-1 text-right font-semibold text-ink-900">
-                      <User className="h-4 w-4" />{speakers.length}
+                  <div className="flex items-center justify-between gap-6 py-3.5">
+                    <dt className="font-sans text-[10.5px] uppercase tracking-[0.2em] text-ivory-500">Speakers</dt>
+                    <dd className="inline-flex items-center gap-2 text-[13.5px] text-ivory-200">
+                      <Users className="h-3.5 w-3.5 text-gold-500" />
+                      {speakers.length}
                     </dd>
                   </div>
                 )}
               </dl>
+
               {event.registrationUrl ? (
                 <a
                   href={event.registrationUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-gradient text-[15px] font-semibold text-white shadow-pop transition-all hover:brightness-105"
+                  {...(event.registrationUrl.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="group mt-8 inline-flex h-[52px] w-full items-center justify-center gap-3 bg-gold-gradient px-6 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06]"
                 >
-                  <Ticket className="h-4 w-4" /> Register now
+                  Reserve now
+                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </a>
               ) : (
                 <Link
                   href="/contact"
-                  className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-ink-900 text-[15px] font-semibold text-white transition-all hover:bg-ink-700"
+                  className="mt-8 inline-flex h-[52px] w-full items-center justify-center gap-3 border border-gold-500/40 px-6 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-gold-200 transition-colors hover:bg-gold-500/10"
                 >
-                  Ask about this event
+                  Enquire about this date
                 </Link>
               )}
+
+              <p className="mt-5 text-[12px] leading-relaxed text-ivory-500">
+                Transfers are free up to 72 hours before doors. Every pass includes the session recordings.
+              </p>
             </div>
           </aside>
         </div>

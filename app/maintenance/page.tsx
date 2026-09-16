@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { Wrench } from "lucide-react";
+import Link from "next/link";
+import { Clock } from "lucide-react";
 import { getMaintenanceState, getPublicSettings } from "@/lib/firestore/settings";
+import { Backdrop, GoldRule, Script } from "@/components/public/ui-kit";
+import { Diamond } from "@/components/ui/badge";
 
 export const dynamic = "force-dynamic";
 
@@ -13,30 +16,52 @@ export default async function MaintenancePage() {
   const [state, settings] = await Promise.all([getMaintenanceState(), getPublicSettings()]);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-ink-950 px-4">
-      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-32 top-1/4 h-96 w-96 rounded-full bg-brand-600/20 blur-[140px]" />
-        <div className="absolute -right-32 bottom-1/4 h-96 w-96 rounded-full bg-ember-500/15 blur-[140px]" />
-      </div>
-      <div className="relative w-full max-w-lg text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-brand-gradient shadow-pop">
-          <Wrench className="h-8 w-8 text-white" />
-        </div>
-        <p className="mt-6 text-[12px] font-bold uppercase tracking-[0.2em] text-white/50">
-          {state.emergencyLock ? "Temporarily unavailable" : settings.siteName}
-        </p>
-        <h1 className="mt-3 font-display text-4xl font-extrabold text-white md:text-5xl">{state.title}</h1>
-        <p className="mt-4 leading-relaxed text-white/65">{state.message}</p>
+    <main className="relative isolate flex min-h-screen items-center justify-center overflow-hidden px-6 py-24">
+      <Backdrop src={state.imageUrl || "/images/hero-stage.jpg"} overlay="obsidian" priority />
+      <span aria-hidden className="pointer-events-none absolute inset-6 hidden border border-gold-500/20 lg:block" />
+
+      <div className="relative w-full max-w-xl text-center">
+        {state.emergencyLock ? (
+          <>
+            <Script className="text-[2.9rem] leading-none">we will return</Script>
+            <p className="mt-6 font-sans text-[10.5px] uppercase tracking-luxe text-ivory-500">Temporarily unavailable</p>
+          </>
+        ) : (
+          <>
+            <Script className="text-[2.9rem] leading-none">{settings.siteName}</Script>
+            <p className="mt-6 font-sans text-[10.5px] uppercase tracking-luxe text-gold-400">Private viewings only</p>
+          </>
+        )}
+
+        <h1 className="display-lg mt-6 text-ivory-50 text-shadow-luxe">{state.title}</h1>
+        <GoldRule className="mt-8" />
+        <p className="lead mx-auto mt-7 max-w-md">{state.message}</p>
+
         {state.expectedReturn && (
-          <p className="mt-4 inline-block rounded-full bg-white/10 px-5 py-2 text-sm font-semibold text-white/85">
+          <p className="mt-8 inline-flex items-center gap-3 border border-gold-500/30 px-5 py-2.5 font-sans text-[10.5px] uppercase tracking-[0.2em] text-gold-200">
+            <Clock className="h-3.5 w-3.5" />
             {state.expectedReturn}
           </p>
         )}
-        <p className="mt-8 text-[13px] text-white/40">
-          Need help? Contact us at{" "}
-          <a href={`mailto:${settings.contactEmail}`} className="underline underline-offset-2 hover:text-white/70">
+
+        <div className="mt-10 flex flex-col items-center gap-4">
+          <span className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-ivory-500">
+            <Diamond className="h-1 w-1" />
+            Contact the team
+            <Diamond className="h-1 w-1" />
+          </span>
+          <a
+            href={`mailto:${settings.contactEmail}`}
+            className="font-serif text-[1.2rem] text-gold-200 underline-offset-4 transition-colors hover:text-gold-100 hover:underline"
+          >
             {settings.contactEmail}
           </a>
+        </div>
+
+        <p className="mt-12 text-[11px] uppercase tracking-[0.2em] text-ivory-500">
+          <Link href="/login" className="transition-colors hover:text-gold-300">
+            Studio sign in →
+          </Link>
         </p>
       </div>
     </main>

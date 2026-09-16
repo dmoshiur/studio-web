@@ -1,7 +1,9 @@
-import { getAdminAuth, getAdminDb, getAdminStorage, isAdminConfigured } from "@/lib/firebase/admin";
+import { getAdminAuth, getAdminDb, getAdminStorage, getDataBackend, isAdminConfigured } from "@/lib/firebase/admin";
 import { getMaintenanceState } from "@/lib/firestore/settings";
 import { isSmtpConfigured } from "@/lib/email/mailer";
 import { ok } from "@/lib/server/api-helpers";
+import { identityBackend, listIdentityUsers } from "@/lib/server/identity";
+import { isEnvAdminConfigured } from "@/lib/server/auth";
 import type { HealthStatus } from "@/types";
 
 export const runtime = "nodejs";
@@ -34,12 +36,18 @@ export async function GET() {
   });
 
   checks.auth = await check("auth", async () => {
+    if (identityBackend() === "local") {
+      const users = await listIdentityUsers(1);
+      void users;
+      return;
+    }
     const auth = getAdminAuth();
     if (!auth) throw new Error("not configured");
     await auth.listUsers(1);
   });
 
   checks.storage = await check("storage", async () => {
+    if (getDataBackend() === "local") return; // embedded store always available
     const storage = getAdminStorage();
     if (!storage || !isAdminConfigured()) throw new Error("not configured");
     // Lightweight: just verify bucket handle resolves
@@ -67,9 +75,11 @@ export async function GET() {
   return ok<HealthStatus>({
     status,
     checks,
-    version: "2.0.0",
+    version: "2.1.0",
     environment: process.env.VERCEL_ENV ?? process.env.NODE_ENV ?? "development",
     commit: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7),
+    backend: getDataBackend(),
+    masterAdminConfigured: isEnvAdminConfigured(),
     checkedAt: new Date().toISOString(),
   });
 }

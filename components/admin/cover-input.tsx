@@ -21,19 +21,19 @@ export function CoverInput({
       <Label>{label}</Label>
       <div className="flex gap-2">
         <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="https://… or pick from library" />
-        <Button type="button" variant="secondary" onClick={() => setPickerOpen(true)}>
+        <Button type="button" variant="ghost" onClick={() => setPickerOpen(true)}>
           <ImagePlus /> Library
         </Button>
       </div>
       {value && (
-        <div className="relative mt-3 overflow-hidden rounded-xl border border-ink-100">
+        <div className="relative mt-3 overflow-hidden rounded-sm border border-white/[0.08]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={value} alt="Cover preview" className="max-h-48 w-full object-cover" />
           <button
             type="button"
             onClick={() => onChange("")}
             aria-label="Remove image"
-            className="absolute right-2 top-2 rounded-lg bg-ink-950/70 p-1.5 text-white hover:bg-danger"
+            className="absolute right-2 top-2 rounded-sm bg-ink-950/70 p-1.5 text-white hover:bg-danger"
           >
             <X className="h-4 w-4" />
           </button>
