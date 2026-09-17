@@ -1,9 +1,11 @@
 import type { Config } from "tailwindcss";
 
 /**
- * ManUp — Maison Noir design tokens.
- * Obsidian surfaces, champagne gold accents, ivory editorial sections and
- * a serif/script typographic voice.
+ * ManUp — Maison Lumière design tokens.
+ * A premium editorial light theme: warm paper whites, near-black ink,
+ * hairline borders and a restrained champagne-gold accent.
+ * Obsidian + ivory scales are retained for the dark footer, imagery
+ * overlays and the internal studio surfaces.
  */
 const config: Config = {
   darkMode: ["class"],
@@ -32,6 +34,35 @@ const config: Config = {
           800: "#6f591a",
           900: "#4c3d12",
         },
+        /* Warm paper surfaces — the light-theme canvas. */
+        paper: {
+          DEFAULT: "#fafaf8",
+          50: "#ffffff",
+          100: "#fafaf8",
+          200: "#f5f5f1",
+          300: "#efefea",
+          400: "#e8e8e2",
+        },
+        /* Hairline borders for cards, tables and separators. */
+        line: {
+          DEFAULT: "#e8e8e5",
+          strong: "#dcdcd5",
+        },
+        /* Neutral ink — primary & secondary typography on light. */
+        ink: {
+          DEFAULT: "#111111",
+          50: "#f7f7f5",
+          100: "#edede9",
+          200: "#dcdcd6",
+          300: "#a8a8a2",
+          400: "#6f6f6a",
+          500: "#6b6b6b",
+          600: "#3e3e3a",
+          700: "#2b2b28",
+          800: "#1c1c1a",
+          900: "#111111",
+          950: "#0b0b0b",
+        },
         obsidian: {
           50: "#f6f6f7",
           100: "#e6e6e9",
@@ -54,20 +85,6 @@ const config: Config = {
           500: "#9b9382",
           600: "#776f60",
         },
-        ink: {
-          DEFAULT: "#14141a",
-          50: "#f7f7f8",
-          100: "#ececed",
-          200: "#d6d6d9",
-          300: "#b0b0b6",
-          400: "#8a8a92",
-          500: "#63636c",
-          600: "#45454d",
-          700: "#2e2e36",
-          800: "#1d1d24",
-          900: "#14141a",
-          950: "#0a0a0d",
-        },
         crimson: {
           400: "#a94450",
           500: "#8c2f39",
@@ -87,12 +104,18 @@ const config: Config = {
         "obsidian-gradient": "linear-gradient(180deg, #101015 0%, #08080a 100%)",
         "obsidian-soft": "linear-gradient(180deg, #14141a 0%, #0e0e12 100%)",
         "ivory-gradient": "linear-gradient(180deg, #ffffff 0%, #f8f5ef 100%)",
+        /* Light-theme section washes */
+        "paper-gradient": "linear-gradient(180deg, #fafaf8 0%, #f6f6f2 100%)",
+        "paper-soft": "linear-gradient(180deg, #f7f7f4 0%, #f2f2ee 100%)",
+        "card-sheen": "linear-gradient(180deg, #ffffff 0%, #fcfcfb 100%)",
       },
       boxShadow: {
-        luxe: "0 1px 2px rgba(8,8,10,.06), 0 30px 60px -30px rgba(8,8,10,.35)",
-        gold: "0 18px 50px -22px rgba(201,162,39,.55)",
-        "gold-sm": "0 10px 30px -18px rgba(201,162,39,.5)",
-        inset: "inset 0 1px 0 rgba(255,255,255,.06)",
+        luxe: "0 1px 2px rgba(17,17,17,.05), 0 24px 60px -28px rgba(17,17,17,.22)",
+        card: "0 1px 2px rgba(17,17,17,.04), 0 10px 28px -14px rgba(17,17,17,.10)",
+        lift: "0 2px 4px rgba(17,17,17,.05), 0 26px 52px -22px rgba(17,17,17,.18)",
+        gold: "0 18px 50px -22px rgba(201,162,39,.45)",
+        "gold-sm": "0 10px 30px -18px rgba(201,162,39,.4)",
+        inset: "inset 0 1px 0 rgba(255,255,255,.6)",
       },
       borderRadius: {
         xl2: "1.25rem",

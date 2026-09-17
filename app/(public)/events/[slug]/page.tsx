@@ -67,18 +67,18 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
 
       {/* Hero */}
       <section className="relative isolate overflow-hidden pb-20 pt-40 sm:pb-24 sm:pt-48">
-        <Backdrop src={event.coverImage ?? "/images/hero-stage.jpg"} overlay="obsidian" priority alt={event.title} />
+        <Backdrop src={event.coverImage ?? "/images/hero-stage.jpg"} overlay="paper" priority alt={event.title} />
         <div className="container relative">
-          <nav aria-label="Breadcrumb" className="mb-8 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-ivory-500">
-            <Link href="/" className="transition-colors hover:text-gold-300">
+          <nav aria-label="Breadcrumb" className="mb-8 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-ink-400">
+            <Link href="/" className="transition-colors hover:text-gold-700">
               Home
             </Link>
             <Diamond className="opacity-50" />
-            <Link href="/events" className="transition-colors hover:text-gold-300">
+            <Link href="/events" className="transition-colors hover:text-gold-700">
               Events
             </Link>
             <Diamond className="opacity-50" />
-            <span className="text-gold-300">{event.title}</span>
+            <span className="text-gold-700">{event.title}</span>
           </nav>
 
           <div className="grid gap-12 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
@@ -88,11 +88,11 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
                   <Badge variant="solidGold">Flagship event</Badge>
                 </span>
               )}
-              <h1 className="display-xl max-w-3xl text-ivory-50 text-shadow-luxe">{event.title}</h1>
+              <h1 className="display-xl max-w-3xl text-ink-900 text-shadow-luxe">{event.title}</h1>
               <GoldRule className="mt-9 !mx-0 !max-w-[170px]" />
               <p className="lead mt-7 max-w-2xl">{event.description}</p>
 
-              <div className="mt-9 flex flex-wrap gap-x-9 gap-y-3 text-[12.5px] text-ivory-300/80">
+              <div className="mt-9 flex flex-wrap gap-x-9 gap-y-3 text-[12.5px] text-ink-500">
                 <span className="flex items-center gap-2.5">
                   <CalendarDays className="h-4 w-4 text-gold-500" />
                   {formatDate(event.startAt, { weekday: "long", month: "long", day: "numeric" })}
@@ -111,7 +111,7 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
             </div>
 
             {new Date(event.startAt).getTime() > Date.now() && (
-              <div className="border border-gold-500/20 bg-white/[0.03] p-7 backdrop-blur-sm">
+              <div className="border border-gold-600/25 bg-white p-7 shadow-card">
                 <p className="eyebrow mb-5">Doors open in</p>
                 <Countdown targetISO={event.startAt} />
               </div>
@@ -121,19 +121,19 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
       </section>
 
       {/* Body + booking rail */}
-      <section className="relative bg-obsidian-950 py-20 sm:py-24">
+      <section className="relative bg-white py-20 sm:py-24">
         <div className="container grid gap-14 lg:grid-cols-[1fr_380px] lg:gap-16">
           <article>
             {event.coverImage && (
-              <div className="relative overflow-hidden rounded-sm border border-white/[0.08]">
+              <div className="relative overflow-hidden rounded-sm border border-line">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={event.coverImage} alt={event.title} className="aspect-[16/9] w-full object-cover" />
-                <span aria-hidden className="absolute inset-4 border border-white/20" />
+                <span aria-hidden className="absolute inset-4 border border-line-strong" />
               </div>
             )}
 
             <div className="mt-10">
-              <p className="font-serif text-[1.35rem] italic leading-relaxed text-ivory-200">{event.description}</p>
+              <p className="font-serif text-[1.35rem] italic leading-relaxed text-ink-700">{event.description}</p>
             </div>
 
             {event.contentHtml && (
@@ -143,7 +143,7 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
             {speakers.length > 0 && (
               <div className="mt-16">
                 <div className="flex items-center gap-5">
-                  <h2 className="font-serif text-[1.6rem] text-ivory-50">On this stage</h2>
+                  <h2 className="font-serif text-[1.6rem] text-ink-900">On this stage</h2>
                   <span className="h-px flex-1 bg-gradient-to-r from-gold-500/40 to-transparent" />
                 </div>
                 <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -151,7 +151,7 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
                     <Link
                       key={s.id}
                       href={`/speakers/${s.slug}`}
-                      className="group flex items-center gap-5 border border-white/[0.08] bg-white/[0.02] p-5 transition-colors hover:border-gold-500/40"
+                      className="group flex items-center gap-5 border border-line bg-white p-5 shadow-card transition-all hover:border-gold-600/40 hover:shadow-card"
                     >
                       {s.photoURL ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -162,14 +162,14 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
                           className="h-16 w-16 shrink-0 object-cover grayscale-[30%] transition-all group-hover:grayscale-0"
                         />
                       ) : (
-                        <span className="flex h-16 w-16 shrink-0 items-center justify-center border border-gold-500/30 font-serif text-[1.4rem] text-gold-300">
+                        <span className="flex h-16 w-16 shrink-0 items-center justify-center border border-gold-600/35 font-serif text-[1.4rem] text-gold-700">
                           {s.name.charAt(0)}
                         </span>
                       )}
                       <div>
-                        <p className="font-serif text-[1.2rem] text-ivory-50">{s.name}</p>
+                        <p className="font-serif text-[1.2rem] text-ink-900">{s.name}</p>
                         {(s.title || s.company) && (
-                          <p className="mt-1 font-sans text-[10.5px] uppercase tracking-[0.18em] text-gold-400">
+                          <p className="mt-1 font-sans text-[10.5px] uppercase tracking-[0.18em] text-gold-700">
                             {[s.title, s.company].filter(Boolean).join(" · ")}
                           </p>
                         )}
@@ -183,21 +183,21 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
 
           {/* Booking rail */}
           <aside>
-            <div className="border border-gold-500/20 bg-white/[0.03] p-8 lg:sticky lg:top-28">
+            <div className="border border-gold-600/25 bg-white p-8 shadow-luxe lg:sticky lg:top-28">
               <Script className="text-[2rem] leading-none">reserve</Script>
-              <h2 className="mt-3 font-serif text-[1.5rem] text-ivory-50">Passes for this date</h2>
+              <h2 className="mt-3 font-serif text-[1.5rem] text-ink-900">Passes for this date</h2>
 
-              <dl className="mt-7 divide-y divide-white/[0.08]">
+              <dl className="mt-7 divide-y divide-line">
                 {details.map((d) => (
                   <div key={d.label} className="flex items-start justify-between gap-6 py-3.5">
-                    <dt className="font-sans text-[10.5px] uppercase tracking-[0.2em] text-ivory-500">{d.label}</dt>
-                    <dd className="max-w-[62%] text-right text-[13.5px] leading-relaxed text-ivory-200">{d.value}</dd>
+                    <dt className="font-sans text-[10.5px] uppercase tracking-[0.2em] text-ink-400">{d.label}</dt>
+                    <dd className="max-w-[62%] text-right text-[13.5px] leading-relaxed text-ink-700">{d.value}</dd>
                   </div>
                 ))}
                 {speakers.length > 0 && (
                   <div className="flex items-center justify-between gap-6 py-3.5">
-                    <dt className="font-sans text-[10.5px] uppercase tracking-[0.2em] text-ivory-500">Speakers</dt>
-                    <dd className="inline-flex items-center gap-2 text-[13.5px] text-ivory-200">
+                    <dt className="font-sans text-[10.5px] uppercase tracking-[0.2em] text-ink-400">Speakers</dt>
+                    <dd className="inline-flex items-center gap-2 text-[13.5px] text-ink-700">
                       <Users className="h-3.5 w-3.5 text-gold-500" />
                       {speakers.length}
                     </dd>
@@ -209,7 +209,7 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
                 <a
                   href={event.registrationUrl}
                   {...(event.registrationUrl.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  className="group mt-8 inline-flex h-[52px] w-full items-center justify-center gap-3 bg-gold-gradient px-6 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06]"
+                  className="btn-editorial group mt-8 w-full"
                 >
                   Reserve now
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -217,13 +217,13 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
               ) : (
                 <Link
                   href="/contact"
-                  className="mt-8 inline-flex h-[52px] w-full items-center justify-center gap-3 border border-gold-500/40 px-6 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-gold-200 transition-colors hover:bg-gold-500/10"
+                  className="btn-quiet mt-8 w-full"
                 >
                   Enquire about this date
                 </Link>
               )}
 
-              <p className="mt-5 text-[12px] leading-relaxed text-ivory-500">
+              <p className="mt-5 text-[12px] leading-relaxed text-ink-400">
                 Transfers are free up to 72 hours before doors. Every pass includes the session recordings.
               </p>
             </div>

@@ -16,6 +16,12 @@ const badgeVariants = cva(
         info: "border-sky-400/30 bg-sky-400/10 text-sky-200",
         ivory: "border-transparent bg-ivory-100 text-obsidian-900",
         outline: "border-gold-500/30 text-gold-200",
+        /* Light-theme chips */
+        neutral: "border-line bg-white text-ink-500 shadow-card",
+        goldSoft: "border-gold-600/30 bg-gold-500/[0.08] text-gold-700",
+        outlineInk: "border-ink-900/20 bg-white text-ink-700",
+        successSoft: "border-emerald-600/25 bg-emerald-600/[0.08] text-emerald-700",
+        dangerSoft: "border-red-500/25 bg-red-500/[0.06] text-red-600",
       },
     },
     defaultVariants: { variant: "default" },

@@ -58,23 +58,23 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       <article>
         {/* Editorial header */}
         <header className="relative isolate overflow-hidden pb-20 pt-40 sm:pt-48">
-          <Backdrop src={post.coverImage ?? "/images/texture-marble.jpg"} overlay="obsidian" priority alt={post.title} />
+          <Backdrop src={post.coverImage ?? "/images/texture-marble.jpg"} overlay="paper" priority alt={post.title} />
           <div className="container relative">
-            <nav aria-label="Breadcrumb" className="mb-9 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-ivory-500">
-              <Link href="/" className="transition-colors hover:text-gold-300">
+            <nav aria-label="Breadcrumb" className="mb-9 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-ink-400">
+              <Link href="/" className="transition-colors hover:text-gold-700">
                 Home
               </Link>
               <Diamond className="opacity-50" />
-              <Link href="/blog" className="transition-colors hover:text-gold-300">
+              <Link href="/blog" className="transition-colors hover:text-gold-700">
                 Journal
               </Link>
               <Diamond className="opacity-50" />
-              <span className="text-gold-300">{post.categorySlug ?? "Essay"}</span>
+              <span className="text-gold-700">{post.categorySlug ?? "Essay"}</span>
             </nav>
 
             <div className="max-w-4xl">
-              <div className="flex flex-wrap items-center gap-4 text-[11px] uppercase tracking-[0.22em] text-ivory-400/80">
-                <span className="text-gold-300">{post.authorName}</span>
+              <div className="flex flex-wrap items-center gap-4 text-[11px] uppercase tracking-[0.22em] text-ink-500">
+                <span className="text-gold-700">{post.authorName}</span>
                 <Diamond className="h-1 w-1" />
                 <span>{formatDate(post.publishedAt)}</span>
                 <Diamond className="h-1 w-1" />
@@ -84,17 +84,17 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                 </span>
               </div>
 
-              <h1 className="display-xl mt-7 text-ivory-50 text-shadow-luxe">{post.title}</h1>
+              <h1 className="display-xl mt-7 text-ink-900 text-shadow-luxe">{post.title}</h1>
               <p className="lead mt-7 max-w-2xl">{post.excerpt}</p>
             </div>
           </div>
         </header>
 
         {/* Body */}
-        <Section className="bg-obsidian-950 !py-16">
+        <Section className="bg-white !py-16">
           <div className="mx-auto max-w-3xl">
             {post.coverImage && (
-              <div className="relative mb-12 overflow-hidden border border-white/[0.08]">
+              <div className="relative mb-12 overflow-hidden border border-line shadow-luxe">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={post.coverImage} alt={post.title} className="aspect-[16/9] w-full object-cover" />
               </div>
@@ -103,7 +103,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             {post.tags.length > 0 && (
               <div className="mb-10 flex flex-wrap gap-2">
                 {post.tags.map((t) => (
-                  <Badge key={t} variant="outline">
+                  <Badge key={t} variant="goldSoft">
                     #{t}
                   </Badge>
                 ))}
@@ -112,9 +112,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
             <div className="prose-manup" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
 
-            <div className="mt-16 flex flex-wrap items-center justify-between gap-6 border-t border-white/[0.08] pt-8">
-              <p className="font-serif text-[1.15rem] italic text-ivory-300">
-                Written by <span className="text-gold-200">{post.authorName}</span>
+            <div className="mt-16 flex flex-wrap items-center justify-between gap-6 border-t border-line pt-8">
+              <p className="font-serif text-[1.15rem] italic text-ink-600">
+                Written by <span className="text-gold-700">{post.authorName}</span>
               </p>
               <TextLink href="/blog" className="group">
                 All writing
@@ -122,15 +122,15 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             </div>
 
             {/* Invitation */}
-            <div className="mt-14 border border-gold-500/25 bg-white/[0.03] p-9 text-center">
+            <div className="mt-14 border border-gold-600/30 bg-paper-100 p-9 text-center shadow-card">
               <p className="calligraphic gold-text text-[2rem] leading-none">the invitation list</p>
-              <p className="mt-4 font-serif text-[1.35rem] text-ivory-50">Get the next essay in your inbox</p>
-              <p className="mt-3 text-[13.5px] leading-relaxed text-ivory-400/80">
+              <p className="mt-4 font-serif text-[1.35rem] text-ink-900">Get the next essay in your inbox</p>
+              <p className="mt-3 text-[13.5px] leading-relaxed text-ink-500">
                 One long-form letter each month, plus early access to summit passes.
               </p>
               <Link
                 href="/contact"
-                className="mt-7 inline-flex h-[50px] items-center gap-3 bg-gold-gradient px-7 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06]"
+                className="btn-editorial mt-7"
               >
                 Join the list
                 <ArrowUpRight className="h-4 w-4" />
@@ -141,7 +141,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       </article>
 
       {more.length > 0 && (
-        <Section className="bg-obsidian-soft">
+        <Section className="bg-paper-200">
           <SectionHeading script="Keep reading" eyebrow="Related" title="More from the journal" />
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {more.map((p, i) => (

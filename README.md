@@ -15,14 +15,19 @@ and the studio switches over automatically.
 
 ---
 
-## Design language — “Maison Noir”
+## Design language — “Maison Lumière”
 
-- **Obsidian & champagne gold** — deep black surfaces (`#08080a`) with gold hairlines, thin rules and diamond separators.
+- **Warm paper & ink** — off-white surfaces (`#fafaf8`, `#f5f5f1`, `#ffffff`) with near-black ink (`#111111`),
+  muted gray secondary text (`#6b6b6b`), hairline borders (`#e8e8e5`) and a restrained champagne-gold accent.
+- **Dark endings** — the footer (and the internal studio/owner consoles) stay obsidian so the mostly-white
+  site closes on a strong, high-contrast note.
 - **Calligraphic display type** — Cormorant Garamond for headlines, *Great Vibes* for the script accents
   (“the door is open”, “join the circle”), Inter for UI text.
-- **Editorial imagery** — full-bleed photographic backdrops with obsidian/editorial overlays, gold frames and grain textures.
+- **Editorial imagery** — full-bleed photographic backdrops ghosted through warm paper scrims on light
+  sections, gold frames and grain textures; obsidian overlays remain on imagery and in the footer.
 - **Motion** — reveal-on-scroll, marquee, count-up and gold-line animations, all respecting `prefers-reduced-motion`.
-- Every surface is themed: public site, auth screens, error/utility pages, the studio (`/admin`) and the owner console (`/hackeradmin`),
+- Every surface is themed: public site, auth screens, error/utility pages and member profiles are light;
+  the studio (`/admin`) and the owner console (`/hackeradmin`) remain intentionally dark,
   down to tables, dialogs, toasts, skeletons and empty states.
 
 ## Highlights

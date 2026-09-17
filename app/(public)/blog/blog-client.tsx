@@ -37,7 +37,7 @@ export function BlogClient({ initialCursor, category }: { initialCursor: string 
           ))}
         </div>
       )}
-      <LoadMore hasMore={cursor !== null} loading={loading} onLoad={loadMore} />
+      <LoadMore tone="light" hasMore={cursor !== null} loading={loading} onLoad={loadMore} />
     </>
   );
 }

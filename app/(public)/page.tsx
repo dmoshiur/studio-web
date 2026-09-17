@@ -64,12 +64,24 @@ export default async function HomePage() {
   return (
     <>
       {/* ================= HERO ================= */}
-      <section className="relative isolate flex min-h-[92vh] items-center overflow-hidden pb-24 pt-40 sm:pt-48">
-        <Backdrop src={h.heroImage ?? "/images/hero-stage.jpg"} overlay="obsidian" priority alt="Conference stage" />
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-obsidian-950 to-transparent" />
+      <section className="relative isolate flex min-h-[92vh] items-center overflow-hidden bg-paper-100 pb-24 pt-40 sm:pt-48">
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={h.heroImage ?? "/images/hero-stage.jpg"}
+            alt=""
+            aria-hidden
+            loading="eager"
+            fetchPriority="high"
+            className="h-full w-full scale-[1.02] object-cover opacity-[0.15] saturate-[0.9]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-paper-100/50 via-paper-100/80 to-paper-100" />
+          <div className="absolute inset-0 bg-gradient-to-r from-paper-100 via-paper-100/70 to-paper-100/25" />
+        </div>
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-paper-100 to-transparent" />
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-x-6 inset-y-6 hidden border border-gold-500/20 lg:block"
+          className="pointer-events-none absolute inset-x-6 inset-y-6 hidden border border-ink-900/[0.08] lg:block"
         />
 
         <div className="container relative">
@@ -79,15 +91,15 @@ export default async function HomePage() {
                 <div className="flex flex-wrap items-center gap-4">
                   <Eyebrow align="left">{h.heroBadge}</Eyebrow>
                   {h.eventVenue && (
-                    <span className="hidden items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-ivory-400/70 sm:flex">
-                      <MapPin className="h-3.5 w-3.5 text-gold-500" />
+                    <span className="hidden items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-ink-400 sm:flex">
+                      <MapPin className="h-3.5 w-3.5 text-gold-600" />
                       {h.eventVenue}
                     </span>
                   )}
                 </div>
               )}
 
-              <h1 className="display-xl mt-8 text-ivory-50 text-shadow-luxe">
+              <h1 className="display-xl mt-8 font-semibold text-ink-900">
                 {h.heroTitle}
               </h1>
 
@@ -96,18 +108,12 @@ export default async function HomePage() {
               <p className="lead mt-8 max-w-2xl">{h.heroSubtitle}</p>
 
               <div className="mt-11 flex flex-wrap items-center gap-4">
-                <Link
-                  href={h.heroCtaPrimary.href}
-                  className="group inline-flex h-[54px] items-center gap-3 bg-gold-gradient px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 shadow-gold-sm transition-all duration-300 hover:shadow-gold hover:brightness-[1.06]"
-                >
+                <Link href={h.heroCtaPrimary.href} className="btn-editorial group shadow-card">
                   {h.heroCtaPrimary.label}
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </Link>
                 {h.heroCtaSecondary && (
-                  <Link
-                    href={h.heroCtaSecondary.href}
-                    className="inline-flex h-[54px] items-center gap-3 border border-white/25 px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-ivory-100 backdrop-blur-sm transition-all duration-300 hover:border-gold-400/70 hover:bg-white/[0.06]"
-                  >
+                  <Link href={h.heroCtaSecondary.href} className="btn-quiet">
                     {h.heroCtaSecondary.label}
                   </Link>
                 )}
@@ -122,11 +128,11 @@ export default async function HomePage() {
                     <Countdown targetISO={h.eventDateISO} />
                   </div>
                   <div className="pb-1">
-                    <p className="font-sans text-[10.5px] uppercase tracking-[0.24em] text-ivory-500">
+                    <p className="font-sans text-[10.5px] uppercase tracking-[0.24em] text-ink-400">
                       {formatDate(h.eventDateISO, { weekday: "long", month: "long", day: "numeric" })}
                     </p>
                     {h.eventVenue && (
-                      <p className="mt-2 font-serif text-[1.2rem] text-ivory-200">{h.eventVenue}</p>
+                      <p className="mt-2 font-serif text-[1.2rem] text-ink-700">{h.eventVenue}</p>
                     )}
                   </div>
                 </div>
@@ -136,8 +142,8 @@ export default async function HomePage() {
         </div>
 
         <div aria-hidden className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-3 lg:flex">
-          <span className="font-sans text-[9.5px] uppercase tracking-luxe text-ivory-500">Scroll</span>
-          <span className="h-14 w-px bg-gradient-to-b from-gold-500/70 to-transparent" />
+          <span className="font-sans text-[9.5px] uppercase tracking-luxe text-ink-400">Scroll</span>
+          <span className="h-14 w-px bg-gradient-to-b from-gold-600/70 to-transparent" />
         </div>
       </section>
 
@@ -157,7 +163,7 @@ export default async function HomePage() {
       <Section tone="light">
         <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-20">
           <Reveal className="relative">
-            <div className="relative overflow-hidden rounded-sm">
+            <div className="relative overflow-hidden rounded-sm border border-line shadow-luxe">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={h.aboutImage ?? "/images/audience.jpg"}
@@ -165,9 +171,9 @@ export default async function HomePage() {
                 loading="lazy"
                 className="aspect-[4/5] w-full object-cover"
               />
-              <span aria-hidden className="absolute inset-4 border border-white/25" />
+              <span aria-hidden className="absolute inset-4 border border-white/40" />
             </div>
-            <div className="absolute -bottom-10 -right-4 hidden w-[58%] border border-ink-900/10 bg-white p-7 shadow-luxe sm:block lg:-right-10">
+            <div className="absolute -bottom-10 -right-4 hidden w-[58%] border border-line bg-white p-7 shadow-luxe sm:block lg:-right-10">
               <Script className="text-[2.4rem] leading-none">est. 2019</Script>
               <p className="mt-3 text-[13px] leading-relaxed text-ink-500">
                 Seven editions, one standard: no filler on stage, no strangers in the room.
@@ -191,10 +197,7 @@ export default async function HomePage() {
               ))}
             </Reveal>
             <Reveal className="mt-9 flex flex-wrap items-center gap-8">
-              <Link
-                href="/about"
-                className="group inline-flex h-[52px] items-center gap-3 bg-obsidian-900 px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-ivory-100 transition-colors hover:bg-obsidian-800"
-              >
+              <Link href="/about" className="btn-editorial group">
                 Our story
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>
@@ -219,7 +222,7 @@ export default async function HomePage() {
 
       {/* ================= EXPERIENCE ================= */}
       {experience?.items?.length ? (
-        <Section className="bg-obsidian-950 bg-grain">
+        <Section className="bg-white texture-grain">
           <SectionHeading
             script={experience.eyebrow ?? "The Experience"}
             eyebrow={experience.title ?? "What you'll find"}
@@ -229,7 +232,7 @@ export default async function HomePage() {
           <div className="mt-16 grid gap-6 lg:grid-cols-3">
             {experience.items.map((item, i) => (
               <Reveal key={item.title} delay={i * 110}>
-                <article className="group relative h-full overflow-hidden rounded-sm border border-white/[0.08]">
+                <article className="group relative h-full overflow-hidden rounded-sm border border-line bg-white shadow-card transition-shadow duration-500 hover:shadow-lift">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={item.image ?? "/images/gallery-panel.jpg"}
@@ -239,7 +242,7 @@ export default async function HomePage() {
                   />
                   <span className="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/50 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-8">
-                    <span className="font-serif text-[1rem] text-gold-400">0{i + 1}</span>
+                    <span className="font-serif text-[1rem] text-gold-300">0{i + 1}</span>
                     <h3 className="mt-3 font-serif text-[1.6rem] leading-tight text-ivory-50">{item.title}</h3>
                     <p className="mt-3 text-[13.5px] leading-[1.85] text-ivory-300/80">{item.description}</p>
                   </div>
@@ -252,48 +255,45 @@ export default async function HomePage() {
 
       {/* ================= FEATURED EVENT ================= */}
       {featuredEvent && (
-        <Section className="bg-obsidian-soft">
-          <Reveal className="relative overflow-hidden rounded-sm border border-gold-500/20">
+        <Section className="bg-paper-200">
+          <Reveal className="relative overflow-hidden rounded-sm border border-gold-600/25 bg-white shadow-luxe">
             <Backdrop
               src={featuredEvent.coverImage ?? "/images/hero-stage.jpg"}
               overlay="none"
-              className="opacity-45"
+              className="opacity-[0.1]"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-obsidian-950 via-obsidian-950/90 to-obsidian-950/50" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/92 to-white/60" />
             <div className="relative grid gap-10 p-8 sm:p-12 lg:grid-cols-[1.3fr_0.9fr] lg:p-16">
               <div>
                 <Eyebrow align="left">The flagship gathering</Eyebrow>
-                <h2 className="display-md mt-6 text-ivory-50">{featuredEvent.title}</h2>
+                <h2 className="display-md mt-6 text-ink-900">{featuredEvent.title}</h2>
                 <p className="lead mt-5 max-w-xl">{featuredEvent.description}</p>
 
-                <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4 text-[13px] text-ivory-300/80">
+                <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4 text-[13px] text-ink-500">
                   <span className="flex items-center gap-2.5">
-                    <CalendarDays className="h-4 w-4 text-gold-500" />
+                    <CalendarDays className="h-4 w-4 text-gold-600" />
                     {formatDate(featuredEvent.startAt, { weekday: "long", month: "long", day: "numeric" })}
                   </span>
                   {featuredEvent.venue && (
                     <span className="flex items-center gap-2.5">
-                      <MapPin className="h-4 w-4 text-gold-500" />
+                      <MapPin className="h-4 w-4 text-gold-600" />
                       {featuredEvent.venue}
                     </span>
                   )}
                 </div>
 
                 <div className="mt-10 flex flex-wrap items-center gap-5">
-                  <Link
-                    href={`/events/${featuredEvent.slug}`}
-                    className="inline-flex h-[52px] items-center gap-3 bg-gold-gradient px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06]"
-                  >
+                  <Link href={`/events/${featuredEvent.slug}`} className="btn-editorial">
                     Reserve your seat
                   </Link>
-                  {featuredEvent.price && <Badge variant="outline">{featuredEvent.price}</Badge>}
+                  {featuredEvent.price && <Badge variant="goldSoft">{featuredEvent.price}</Badge>}
                 </div>
               </div>
 
-              <div className="flex flex-col justify-center border-t border-white/10 pt-10 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
+              <div className="flex flex-col justify-center border-t border-line pt-10 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
                 <p className="eyebrow mb-5">Begins in</p>
                 <Countdown targetISO={featuredEvent.startAt} />
-                <p className="mt-7 text-[12.5px] leading-relaxed text-ivory-400/80">
+                <p className="mt-7 text-[12.5px] leading-relaxed text-ink-500">
                   Held under the chandeliers of Grand Meridian Hall — with a private lounge for pass holders.
                 </p>
               </div>
@@ -304,7 +304,7 @@ export default async function HomePage() {
 
       {/* ================= UPCOMING EVENTS ================= */}
       {events.items.length > 0 && (
-        <Section className="bg-obsidian-950">
+        <Section className="bg-white">
           <div className="flex flex-wrap items-end justify-between gap-8">
             <SectionHeading
               align="left"
@@ -330,8 +330,8 @@ export default async function HomePage() {
 
       {/* ================= SPEAKERS ================= */}
       {speakers.length > 0 && (
-        <Section className="relative isolate overflow-hidden bg-obsidian-soft">
-          <Backdrop src="/images/texture-marble.jpg" overlay="soft" className="opacity-40" />
+        <Section className="relative isolate overflow-hidden bg-paper-200">
+          <Backdrop src="/images/texture-marble.jpg" overlay="none" className="opacity-[0.05]" />
           <div className="relative">
             <SectionHeading
               script="On Stage"
@@ -349,7 +349,7 @@ export default async function HomePage() {
             <Reveal className="mt-14 text-center">
               <Link
                 href="/speakers"
-                className="inline-flex h-[52px] items-center gap-3 border border-gold-500/40 px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-gold-200 transition-all hover:border-gold-400 hover:bg-gold-500/10"
+                className="inline-flex h-[52px] items-center gap-3 border border-gold-600/40 bg-white px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-gold-700 transition-all hover:border-gold-600 hover:bg-gold-500/[0.08]"
               >
                 The full roster
                 <ArrowUpRight className="h-4 w-4" />
@@ -360,7 +360,7 @@ export default async function HomePage() {
       )}
 
       {/* ================= GALLERY ================= */}
-      <Section className="bg-obsidian-950">
+      <Section className="bg-white">
         <SectionHeading
           script="Moments"
           eyebrow="The room"
@@ -388,8 +388,8 @@ export default async function HomePage() {
                 <article
                   className={
                     tier.featured
-                      ? "relative flex h-full flex-col border border-gold-500/50 bg-obsidian-950 p-9 text-ivory-100 shadow-luxe"
-                      : "relative flex h-full flex-col border border-ink-900/10 bg-white p-9 shadow-sm"
+                      ? "relative flex h-full flex-col border border-gold-600/50 bg-white p-9 text-ink-900 shadow-lift"
+                      : "relative flex h-full flex-col border border-line bg-white p-9 shadow-card"
                   }
                 >
                   {tier.featured && (
@@ -402,42 +402,28 @@ export default async function HomePage() {
                   <p
                     className={
                       tier.featured
-                        ? "font-sans text-[10.5px] uppercase tracking-[0.26em] text-gold-300"
-                        : "font-sans text-[10.5px] uppercase tracking-[0.26em] text-gold-700"
+                        ? "font-sans text-[10.5px] uppercase tracking-[0.26em] text-gold-700"
+                        : "font-sans text-[10.5px] uppercase tracking-[0.26em] text-ink-400"
                     }
                   >
                     {tier.note ?? "Pass"}
                   </p>
-                  <h3 className={tier.featured ? "mt-4 font-serif text-[1.75rem] text-ivory-50" : "mt-4 font-serif text-[1.75rem] text-ink-900"}>
-                    {tier.name}
-                  </h3>
-                  <p
-                    className={
-                      tier.featured
-                        ? "mt-5 font-serif text-[2.6rem] leading-none text-gold-200"
-                        : "mt-5 font-serif text-[2.6rem] leading-none text-ink-900"
-                    }
-                  >
+                  <h3 className="mt-4 font-serif text-[1.75rem] text-ink-900">{tier.name}</h3>
+                  <p className="mt-5 font-serif text-[2.6rem] leading-none text-ink-900">
                     {tier.price}
                   </p>
-                  <span className={tier.featured ? "mt-7 h-px w-full bg-white/10" : "mt-7 h-px w-full bg-ink-900/10"} />
+                  <span className="mt-7 h-px w-full bg-line" />
                   <ul className="mt-7 flex-1 space-y-3.5">
                     {tier.perks.map((perk) => (
                       <li key={perk} className="flex gap-3">
                         <Diamond
                           className={
                             tier.featured
-                              ? "mt-2 h-1 w-1 shrink-0 bg-gold-400"
-                              : "mt-2 h-1 w-1 shrink-0 bg-gold-600"
+                              ? "mt-2 h-1 w-1 shrink-0 bg-gold-600"
+                              : "mt-2 h-1 w-1 shrink-0 bg-gold-600/70"
                           }
                         />
-                        <span
-                          className={
-                            tier.featured
-                              ? "text-[13.5px] leading-relaxed text-ivory-300/80"
-                              : "text-[13.5px] leading-relaxed text-ink-500"
-                          }
-                        >
+                        <span className="text-[13.5px] leading-relaxed text-ink-500">
                           {perk}
                         </span>
                       </li>
@@ -447,8 +433,8 @@ export default async function HomePage() {
                     href="/contact"
                     className={
                       tier.featured
-                        ? "mt-9 inline-flex h-[52px] items-center justify-center bg-gold-gradient px-6 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06]"
-                        : "mt-9 inline-flex h-[52px] items-center justify-center border border-ink-900/20 px-6 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-ink-900 transition-colors hover:border-gold-600 hover:text-gold-700"
+                        ? "btn-editorial mt-9 w-full"
+                        : "btn-quiet mt-9 w-full"
                     }
                   >
                     Request this pass
@@ -462,7 +448,7 @@ export default async function HomePage() {
 
       {/* ================= TESTIMONIALS ================= */}
       {testimonials.length > 0 && (
-        <Section className="bg-obsidian-soft">
+        <Section className="bg-paper-200">
           <div className="grid gap-8 lg:grid-cols-2">
             {testimonials.slice(0, 2).map((t, i) => (
               <QuoteBlock key={t.name + i} quote={t.quote} name={t.name} role={t.role} />
@@ -473,7 +459,7 @@ export default async function HomePage() {
 
       {/* ================= JOURNAL ================= */}
       {posts.items.length > 0 && (
-        <Section className="bg-obsidian-950">
+        <Section className="bg-white">
           <div className="flex flex-wrap items-end justify-between gap-8">
             <SectionHeading
               align="left"
@@ -516,21 +502,21 @@ export default async function HomePage() {
       )}
 
       {/* ================= CTA / NEWSLETTER ================= */}
-      <section className="relative isolate overflow-hidden">
-        <Backdrop src="/images/cta-silk.jpg" overlay="none" />
-        <div className="absolute inset-0 bg-obsidian-950/90" />
-        <span aria-hidden className="pointer-events-none absolute inset-x-6 inset-y-6 hidden border border-gold-500/20 lg:block" />
+      <section className="relative isolate overflow-hidden border-t border-line bg-white">
+        <Backdrop src="/images/cta-silk.jpg" overlay="none" className="opacity-[0.07]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/40 to-white/80" />
+        <span aria-hidden className="pointer-events-none absolute inset-x-6 inset-y-6 hidden border border-ink-900/[0.07] lg:block" />
         <div className="container relative py-24 text-center sm:py-28">
           <Reveal className="mx-auto max-w-2xl">
             <Script className="text-[2.6rem] leading-none sm:text-[3.2rem]">Join the inner circle</Script>
-            <h2 className="display-lg mt-6 text-ivory-50">Never miss an announcement</h2>
+            <h2 className="display-lg mt-6 text-ink-900">Never miss an announcement</h2>
             <p className="lead mt-5">
               Speaker drops, early-bird tickets and the occasional letter from the founders. One email a month, no noise.
             </p>
             <div className="mx-auto mt-10 max-w-lg">
-              <NewsletterForm variant="dark" source="homepage" />
+              <NewsletterForm variant="light" source="homepage" />
             </div>
-            <p className="mt-5 flex items-center justify-center gap-3 text-[11.5px] uppercase tracking-[0.2em] text-ivory-500">
+            <p className="mt-5 flex items-center justify-center gap-3 text-[11.5px] uppercase tracking-[0.2em] text-ink-400">
               <Diamond className="h-1 w-1" />
               Unsubscribe in one click
             </p>

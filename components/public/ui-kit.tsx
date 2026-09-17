@@ -10,22 +10,23 @@ import { Diamond } from "@/components/ui/badge";
 /* ------------------------------------------------------------------ */
 
 /**
- * Full-bleed background image with the signature obsidian overlay.
- * Rendered as a plain <img> so the sandbox never depends on the
- * Next.js image optimizer being able to reach the network.
+ * Full-bleed background image. On the light theme imagery ghosts through
+ * a warm paper scrim; the obsidian scrims remain for the dark footer and
+ * studio surfaces. Rendered as a plain <img> so the sandbox never depends
+ * on the Next.js image optimizer being able to reach the network.
  */
 export function Backdrop({
   src,
   alt = "",
   className,
-  overlay = "obsidian",
+  overlay = "paper",
   priority = false,
   children,
 }: {
   src: string;
   alt?: string;
   className?: string;
-  overlay?: "obsidian" | "editorial" | "soft" | "none";
+  overlay?: "paper" | "paper-soft" | "obsidian" | "editorial" | "soft" | "none";
   priority?: boolean;
   children?: React.ReactNode;
 }) {
@@ -44,6 +45,8 @@ export function Backdrop({
         <div
           className={cn(
             "absolute inset-0",
+            overlay === "paper" && "overlay-paper",
+            overlay === "paper-soft" && "overlay-paper-soft",
             overlay === "obsidian" && "overlay-obsidian",
             overlay === "editorial" && "overlay-editorial",
             overlay === "soft" && "bg-obsidian-950/70"
@@ -60,7 +63,7 @@ export function GoldFrame({ className }: { className?: string }) {
   return (
     <span
       aria-hidden
-      className={cn("pointer-events-none absolute inset-3 border border-gold-500/25 sm:inset-5", className)}
+      className={cn("pointer-events-none absolute inset-3 border border-gold-600/30 sm:inset-5", className)}
     />
   );
 }
@@ -92,21 +95,21 @@ export function Eyebrow({
   return (
     <p
       className={cn(
-        "flex items-center gap-3 text-[11px] font-semibold uppercase tracking-luxe text-gold-300",
+        "flex items-center gap-3 text-[11px] font-semibold uppercase tracking-luxe text-gold-700",
         align === "center" ? "justify-center" : "justify-start",
         className
       )}
     >
-      <span aria-hidden className="h-px w-8 bg-gradient-to-r from-transparent to-gold-500/70" />
+      <span aria-hidden className="h-px w-8 bg-gradient-to-r from-transparent to-gold-600/70" />
       {children}
-      {align === "center" && <span aria-hidden className="h-px w-8 bg-gradient-to-l from-transparent to-gold-500/70" />}
+      {align === "center" && <span aria-hidden className="h-px w-8 bg-gradient-to-l from-transparent to-gold-600/70" />}
     </p>
   );
 }
 
 export function GoldRule({ className }: { className?: string }) {
   return (
-    <span aria-hidden className={cn("relative block h-px w-full max-w-[220px] bg-gradient-to-r from-transparent via-gold-500/70 to-transparent", className)}>
+    <span aria-hidden className={cn("relative block h-px w-full max-w-[220px] bg-gradient-to-r from-transparent via-gold-600/70 to-transparent", className)}>
       <Diamond className="absolute -top-[3px] left-1/2 -translate-x-1/2" />
     </span>
   );
@@ -150,7 +153,7 @@ export function SectionHeading({
       <h2
         className={cn(
           "display-lg",
-          tone === "light" ? "text-ink-900" : "text-ivory-50"
+          tone === "light" ? "text-ink-900" : "text-ink-900"
         )}
       >
         {title}
@@ -160,8 +163,8 @@ export function SectionHeading({
       )}
       <span
         className={cn(
-          "mt-8 block h-px w-24 bg-gradient-to-r via-gold-500 to-transparent",
-          align === "center" ? "mx-auto from-transparent" : "from-gold-500/70 to-transparent"
+          "mt-8 block h-px w-24 bg-gradient-to-r via-gold-600 to-transparent",
+          align === "center" ? "mx-auto from-transparent" : "from-gold-600/70 to-transparent"
         )}
       />
     </Reveal>
@@ -184,7 +187,7 @@ export function StatStrip({
     <div
       className={cn(
         "grid grid-cols-2 sm:grid-cols-4",
-        tone === "light" ? "text-ink-900" : "text-ivory-100"
+        tone === "light" ? "text-ink-900" : "text-ink-900"
       )}
     >
       {stats.map((s, i) => (
@@ -194,18 +197,13 @@ export function StatStrip({
           className={cn(
             "px-4 py-8 text-center sm:px-6",
             i > 0 && "sm:border-l",
-            tone === "light" ? "sm:border-ink-900/10" : "sm:border-white/10"
+            "sm:border-line"
           )}
         >
-          <p className="font-serif text-[2.5rem] font-medium leading-none text-gold-300 sm:text-[3.1rem]">
+          <p className="font-serif text-[2.5rem] font-medium leading-none tracking-[-0.02em] text-ink-900 sm:text-[3.1rem]">
             {s.value}
           </p>
-          <p
-            className={cn(
-              "mt-3 text-[10.5px] font-semibold uppercase tracking-[0.28em]",
-              tone === "light" ? "text-ink-400" : "text-ivory-500"
-            )}
-          >
+          <p className="mt-3 text-[10.5px] font-semibold uppercase tracking-[0.28em] text-gold-700">
             {s.label}
           </p>
         </Reveal>
@@ -218,17 +216,17 @@ export function Marquee({ items, className }: { items: string[]; className?: str
   if (!items?.length) return null;
   const doubled = [...items, ...items];
   return (
-    <div className={cn("relative overflow-hidden border-y border-white/[0.06] bg-obsidian-950 py-6", className)}>
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-obsidian-950 to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-obsidian-950 to-transparent" />
+    <div className={cn("relative overflow-hidden border-y border-line bg-white py-6", className)}>
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-white to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-white to-transparent" />
       <ul className="flex w-max animate-marquee items-center gap-14 whitespace-nowrap">
         {doubled.map((item, i) => (
           <li
             key={`${item}-${i}`}
-            className="flex items-center gap-14 font-serif text-[1.15rem] tracking-[0.16em] text-ivory-400/70"
+            className="flex items-center gap-14 font-serif text-[1.15rem] tracking-[0.16em] text-ink-400"
           >
             <span className="uppercase">{item}</span>
-            <Diamond className="opacity-60" />
+            <Diamond className="opacity-70" />
           </li>
         ))}
       </ul>
@@ -245,19 +243,18 @@ export function Accordion({
 }) {
   if (!items?.length) return null;
   return (
-    <div className={cn("divide-y", tone === "light" ? "divide-ink-900/10" : "divide-white/[0.08]")}>
+    <div className={cn("divide-y", tone === "light" ? "divide-line" : "divide-line")}>
       {items.map((item, i) => (
         <details key={item.q + i} className="group py-1">
           <summary
             className={cn(
-              "flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-left transition-colors",
-              tone === "light" ? "text-ink-900 hover:text-gold-700" : "text-ivory-100 hover:text-gold-200"
+              "flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-left text-ink-900 transition-colors hover:text-gold-700"
             )}
           >
             <span className="font-serif text-[1.25rem] leading-snug sm:text-[1.4rem]">{item.q}</span>
-            <ChevronDown className="h-5 w-5 shrink-0 text-gold-400 transition-transform duration-300 group-open:rotate-180" />
+            <ChevronDown className="h-5 w-5 shrink-0 text-gold-600 transition-transform duration-300 group-open:rotate-180" />
           </summary>
-          <p className={cn("max-w-3xl pb-7 pr-10 text-[14.5px] leading-[1.9]", tone === "light" ? "text-ink-500" : "text-ivory-400/80")}>
+          <p className="max-w-3xl pb-7 pr-10 text-[14.5px] leading-[1.9] text-ink-500 group-open:animate-fade">
             {item.a}
           </p>
         </details>
@@ -277,7 +274,7 @@ export function Gallery({
   return (
     <div
       className={cn(
-        "grid gap-4",
+        "grid gap-5",
         columns === 2 && "sm:grid-cols-2",
         columns === 3 && "sm:grid-cols-2 lg:grid-cols-3",
         columns === 4 && "sm:grid-cols-2 lg:grid-cols-4"
@@ -285,7 +282,7 @@ export function Gallery({
     >
       {items.map((item, i) => (
         <Reveal key={item.image + i} delay={i * 80}>
-          <figure className="group relative overflow-hidden rounded-sm border border-white/[0.08]">
+          <figure className="group relative overflow-hidden rounded-sm border border-line bg-white shadow-card transition-shadow duration-500 hover:shadow-lift">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={item.image}
@@ -316,20 +313,20 @@ export function QuoteBlock({
   role?: string;
 }) {
   return (
-    <Reveal className="relative rounded-sm border border-white/[0.08] bg-white/[0.025] p-9 sm:p-12">
+    <Reveal className="relative rounded-sm border border-line bg-white p-9 shadow-card sm:p-12">
       <span aria-hidden className="calligraphic absolute -top-2 left-7 text-[5rem] leading-none text-gold-500/40">
         &ldquo;
       </span>
-      <blockquote className="relative font-serif text-[1.4rem] italic leading-[1.6] text-ivory-100 sm:text-[1.65rem]">
+      <blockquote className="relative font-serif text-[1.4rem] italic leading-[1.6] text-ink-800 sm:text-[1.65rem]">
         {quote}
       </blockquote>
       <figcaption className="mt-8 flex items-center gap-4">
-        <span aria-hidden className="h-px w-10 bg-gold-500/70" />
+        <span aria-hidden className="h-px w-10 bg-gold-600/70" />
         <span>
-          <span className="block font-sans text-[12px] font-semibold uppercase tracking-[0.22em] text-gold-200">
+          <span className="block font-sans text-[12px] font-semibold uppercase tracking-[0.22em] text-gold-700">
             {name}
           </span>
-          {role && <span className="mt-1 block text-[12.5px] text-ivory-500">{role}</span>}
+          {role && <span className="mt-1 block text-[12.5px] text-ink-400">{role}</span>}
         </span>
       </figcaption>
     </Reveal>
@@ -355,20 +352,32 @@ export function PageHero({
   children?: React.ReactNode;
 }) {
   return (
-    <section className="relative isolate overflow-hidden pb-20 pt-40 sm:pb-24 sm:pt-48">
-      <Backdrop src={image} overlay="obsidian" priority />
+    <section className="relative isolate overflow-hidden border-b border-line bg-paper-100 pb-20 pt-40 sm:pb-24 sm:pt-48">
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={image}
+          alt=""
+          aria-hidden
+          loading="eager"
+          fetchPriority="high"
+          className="h-full w-full scale-[1.02] object-cover opacity-[0.13] saturate-[0.85]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-paper-100/60 via-paper-100/85 to-paper-100" />
+        <div className="absolute inset-0 bg-gradient-to-r from-paper-100 via-paper-100/60 to-paper-100/20" />
+      </div>
       <div className="container relative">
         {breadcrumb?.length ? (
-          <nav aria-label="Breadcrumb" className="mb-8 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-ivory-500">
+          <nav aria-label="Breadcrumb" className="mb-8 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-ink-400">
             {breadcrumb.map((crumb, i) => (
               <span key={crumb.label} className="flex items-center gap-2">
-                {i > 0 && <Diamond className="opacity-50" />}
+                {i > 0 && <Diamond className="opacity-60" />}
                 {crumb.href ? (
-                  <Link href={crumb.href} className="transition-colors hover:text-gold-300">
+                  <Link href={crumb.href} className="transition-colors hover:text-gold-700">
                     {crumb.label}
                   </Link>
                 ) : (
-                  <span className="text-gold-300">{crumb.label}</span>
+                  <span className="text-gold-700">{crumb.label}</span>
                 )}
               </span>
             ))}
@@ -377,7 +386,7 @@ export function PageHero({
         <div className="max-w-3xl">
           {script && <Script className="text-[2.1rem] leading-none sm:text-[2.6rem]">{script}</Script>}
           {eyebrow && <Eyebrow align="left" className="mt-4">{eyebrow}</Eyebrow>}
-          <h1 className="display-xl mt-6 text-ivory-50 text-shadow-luxe">{title}</h1>
+          <h1 className="display-xl mt-6 font-semibold text-ink-900">{title}</h1>
           {description && <p className="lead mt-6 max-w-2xl">{description}</p>}
           {children && <div className="mt-9">{children}</div>}
         </div>
@@ -403,8 +412,8 @@ export function Section({
       id={id}
       className={cn(
         "relative py-20 sm:py-24 lg:py-28",
-        tone === "light" && "bg-ivory-gradient text-ink-900",
-        tone === "obsidian" && "bg-obsidian-soft",
+        tone === "light" && "bg-paper-gradient text-ink-900",
+        tone === "obsidian" && "bg-paper-200 text-ink-900",
         className
       )}
     >
@@ -430,7 +439,7 @@ export function TextLink({
       href={href}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       className={cn(
-        "link-underline inline-flex items-center gap-2 font-sans text-[11.5px] font-semibold uppercase tracking-[0.2em] text-gold-300 transition-colors hover:text-gold-200",
+        "link-underline inline-flex items-center gap-2 font-sans text-[11.5px] font-semibold uppercase tracking-[0.2em] text-gold-700 transition-colors hover:text-gold-600",
         className
       )}
     >

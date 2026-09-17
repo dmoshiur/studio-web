@@ -43,19 +43,36 @@ export function EmptyState({
   title,
   message,
   action,
+  tone = "dark",
 }: {
   icon?: React.ReactNode;
   title: string;
   message?: string;
   action?: React.ReactNode;
+  tone?: "dark" | "light";
 }) {
+  const light = tone === "light";
   return (
-    <div className="flex flex-col items-center justify-center rounded-sm border border-dashed border-white/15 bg-white/[0.02] px-8 py-16 text-center">
-      <div className="mb-6 flex h-14 w-14 items-center justify-center border border-gold-500/40 text-gold-300">
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center rounded-sm border border-dashed px-8 py-16 text-center",
+        light ? "border-line bg-white" : "border-white/15 bg-white/[0.02]"
+      )}
+    >
+      <div
+        className={cn(
+          "mb-6 flex h-14 w-14 items-center justify-center border",
+          light ? "border-gold-600/40 text-gold-700" : "border-gold-500/40 text-gold-300"
+        )}
+      >
         {icon ?? <Inbox className="h-6 w-6" />}
       </div>
-      <h3 className="font-serif text-[1.35rem] text-ivory-50">{title}</h3>
-      {message && <p className="mt-2 max-w-sm text-[13.5px] leading-relaxed text-ivory-400/80">{message}</p>}
+      <h3 className={cn("font-serif text-[1.35rem]", light ? "text-ink-900" : "text-ivory-50")}>{title}</h3>
+      {message && (
+        <p className={cn("mt-2 max-w-sm text-[13.5px] leading-relaxed", light ? "text-ink-500" : "text-ivory-400/80")}>
+          {message}
+        </p>
+      )}
       {action && <div className="mt-6">{action}</div>}
     </div>
   );
@@ -78,11 +95,21 @@ export function ErrorState({ title = "Something went wrong", message, onRetry }:
   );
 }
 
-export function LoadMore({ hasMore, loading, onLoad }: { hasMore: boolean; loading: boolean; onLoad: () => void }) {
+export function LoadMore({
+  hasMore,
+  loading,
+  onLoad,
+  tone = "dark",
+}: {
+  hasMore: boolean;
+  loading: boolean;
+  onLoad: () => void;
+  tone?: "dark" | "light";
+}) {
   if (!hasMore) return null;
   return (
     <div className="mt-6 flex justify-center">
-      <Button variant="outline" onClick={onLoad} loading={loading}>
+      <Button variant={tone === "light" ? "outlineInk" : "outline"} onClick={onLoad} loading={loading}>
         Load more
       </Button>
     </div>

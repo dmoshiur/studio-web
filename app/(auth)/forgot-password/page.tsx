@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
     <React.Suspense
       fallback={
         <AuthLayout title="Reset password" script="recover">
-          <p className="text-[13.5px] text-ivory-400">Loading…</p>
+          <p className="text-[13.5px] text-ink-500">Loading…</p>
         </AuthLayout>
       }
     >
@@ -125,11 +125,11 @@ function ResetFlow() {
       <AuthLayout title="Password updated" script="all set">
         <div className="text-center">
           <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-400" />
-          <p className="mt-5 font-serif text-[1.35rem] text-ivory-50">Your new password is active</p>
-          <p className="mt-2 text-[13.5px] text-ivory-400/80">Sign in with it and we will take you to your studio.</p>
+          <p className="mt-5 font-serif text-[1.35rem] text-ink-900">Your new password is active</p>
+          <p className="mt-2 text-[13.5px] text-ink-500">Sign in with it and we will take you to your studio.</p>
           <Link
             href="/login"
-            className="mt-8 inline-flex h-[50px] items-center gap-3 bg-gold-gradient px-7 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950"
+            className="btn-editorial mt-8"
           >
             Sign in
             <ArrowUpRight className="h-4 w-4" />
@@ -145,8 +145,9 @@ function ResetFlow() {
       <AuthLayout title="Choose a new password" script="almost there">
         <div className="grid gap-5">
           <div>
-            <Label htmlFor="new-password">New password</Label>
+            <Label tone="light" htmlFor="new-password">New password</Label>
             <Input
+            tone="light"
               id="new-password"
               type="password"
               autoComplete="new-password"
@@ -160,7 +161,7 @@ function ResetFlow() {
             type="button"
             onClick={completeReset}
             disabled={newPassword.length < 8 || resetting}
-            className="group inline-flex h-[52px] items-center justify-center gap-3 bg-gold-gradient px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06] disabled:opacity-50"
+            className="btn-editorial group w-full disabled:opacity-50"
           >
             {resetting ? (
               <>
@@ -175,11 +176,11 @@ function ResetFlow() {
             )}
           </button>
           {slowNetwork && (
-            <p className="text-center text-[12.5px] text-ivory-400/80 animate-pulse">
+            <p className="text-center text-[12.5px] text-ink-500 animate-pulse">
               Still working… please wait.
             </p>
           )}
-          <p className="text-[12px] leading-relaxed text-ivory-500">
+          <p className="text-[12px] leading-relaxed text-ink-400">
             Reset links expire after 30 minutes. If yours has expired, request a new one.
           </p>
         </div>
@@ -194,7 +195,7 @@ function ResetFlow() {
       script="no trouble"
       subtitle="We will email you a secure link to choose a new password."
       footer={
-        <Link href="/login" className="font-semibold text-gold-300 underline underline-offset-4">
+        <Link href="/login" className="font-semibold text-gold-700 underline underline-offset-4">
           Back to sign in
         </Link>
       }
@@ -202,16 +203,17 @@ function ResetFlow() {
       {sent ? (
         <div className="text-center">
           <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-400" />
-          <p className="mt-5 font-serif text-[1.35rem] text-ivory-50">Check your inbox</p>
-          <p className="mt-2 text-[13.5px] leading-relaxed text-ivory-400/80">
+          <p className="mt-5 font-serif text-[1.35rem] text-ink-900">Check your inbox</p>
+          <p className="mt-2 text-[13.5px] leading-relaxed text-ink-500">
             If an account exists for that address, a reset link is on its way. The link stays valid for 30 minutes.
           </p>
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label tone="light" htmlFor="email">Email</Label>
             <Input
+            tone="light"
               id="email"
               type="email"
               autoComplete="email"
@@ -225,7 +227,7 @@ function ResetFlow() {
           <button
             type="submit"
             disabled={submitting}
-            className="group inline-flex h-[52px] items-center justify-center gap-3 bg-gold-gradient px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06] disabled:opacity-60"
+            className="btn-editorial group w-full disabled:opacity-60"
           >
             {submitting ? (
               <>
@@ -240,7 +242,7 @@ function ResetFlow() {
             )}
           </button>
           {slowNetwork && (
-            <p className="text-center text-[12.5px] text-ivory-400/80 animate-pulse">
+            <p className="text-center text-[12.5px] text-ink-500 animate-pulse">
               Still working… please wait.
             </p>
           )}

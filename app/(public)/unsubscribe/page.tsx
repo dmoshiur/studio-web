@@ -60,7 +60,7 @@ function UnsubscribeForm() {
   if (!token) {
     return (
       <form
-        className="border border-ink-900/10 bg-white p-10 shadow-luxe"
+        className="border border-line bg-white p-10 shadow-luxe"
         onSubmit={(e) => {
           e.preventDefault();
           void confirm();
@@ -89,7 +89,7 @@ function UnsubscribeForm() {
             {error}
           </p>
         )}
-        <Button className="mt-5 w-full" variant="obsidian" size="lg" type="submit" loading={state === "loading"}>
+        <Button className="mt-5 w-full" variant="ink" size="lg" type="submit" loading={state === "loading"}>
           Unsubscribe me
         </Button>
       </form>
@@ -98,7 +98,7 @@ function UnsubscribeForm() {
 
   if (state === "done") {
     return (
-      <div className="border border-emerald-600/20 bg-white p-10 text-center shadow-luxe">
+      <div className="border border-emerald-600/25 bg-white p-10 text-center shadow-luxe">
         <CheckCircle2 className="mx-auto h-9 w-9 text-emerald-600" />
         <Script className="mt-5 block text-[2.2rem] leading-none">thank you</Script>
         <p className="mt-3 font-serif text-[1.35rem] text-ink-900">You have been unsubscribed</p>
@@ -113,7 +113,7 @@ function UnsubscribeForm() {
   }
 
   return (
-    <div className="border border-ink-900/10 bg-white p-10 text-center shadow-luxe">
+    <div className="border border-line bg-white p-10 text-center shadow-luxe">
       <p className="font-serif text-[1.45rem] text-ink-900">Confirm unsubscribe?</p>
       <p className="mt-2 text-[13.5px] text-ink-500">
         You will stop receiving newsletter emails immediately and can resubscribe at any time.
@@ -123,7 +123,7 @@ function UnsubscribeForm() {
           {error}
         </p>
       )}
-      <Button className="mt-7 w-full" variant="obsidian" size="lg" loading={state === "loading"} onClick={confirm}>
+      <Button className="mt-7 w-full" variant="ink" size="lg" loading={state === "loading"} onClick={confirm}>
         Yes, unsubscribe me
       </Button>
     </div>

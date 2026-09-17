@@ -3,9 +3,11 @@
 @tailwind utilities;
 
 /* =====================================================================
-   ManUp — Maison Noir design system
-   Obsidian + champagne gold, editorial serif typography with calligraphic
-   accents. Tokens here are the single source of truth for the UI.
+   ManUp — Maison Lumière design system
+   Warm paper whites, near-black ink and a restrained champagne-gold
+   accent. Tokens here are the single source of truth for the UI.
+   The obsidian scale survives only in the footer, on imagery and in
+   the internal studio surfaces.
    ===================================================================== */
 
 :root {
@@ -16,20 +18,33 @@
   --gold-deep: #8f7320;
   --crimson: #8c2f39;
 
-  /* Surfaces */
+  /* Light surfaces */
+  --paper: #fafaf8;
+  --paper-soft: #f5f5f1;
+  --paper-deep: #efefea;
+  --card: #ffffff;
+  --line: #e8e8e5;
+  --line-strong: #dcdcd5;
+
+  /* Ink */
+  --ink: #111111;
+  --ink-soft: #3e3e3a;
+  --muted: #6b6b6b;
+  --muted-soft: #8b8b86;
+
+  /* Dark surfaces (footer, imagery, studio) */
   --obsidian: #08080a;
   --obsidian-soft: #0e0e12;
   --obsidian-raised: #14141a;
   --ivory: #f8f5ef;
-  --ivory-soft: #f1ece1;
-  --ink: #14141a;
-  --ink-muted: #6b6a63;
 
   --brand: var(--gold);
   --ember: var(--gold-light);
 
-  --shadow-luxe: 0 1px 2px rgba(8, 8, 10, 0.06), 0 30px 60px -30px rgba(8, 8, 10, 0.35);
-  --shadow-gold: 0 18px 50px -20px rgba(201, 162, 39, 0.55);
+  --shadow-card: 0 1px 2px rgba(17, 17, 17, 0.04), 0 10px 28px -14px rgba(17, 17, 17, 0.1);
+  --shadow-lift: 0 2px 4px rgba(17, 17, 17, 0.05), 0 26px 52px -22px rgba(17, 17, 17, 0.18);
+  --shadow-luxe: 0 1px 2px rgba(17, 17, 17, 0.05), 0 24px 60px -28px rgba(17, 17, 17, 0.22);
+  --shadow-gold: 0 18px 50px -20px rgba(201, 162, 39, 0.45);
 }
 
 html {
@@ -38,31 +53,31 @@ html {
 }
 
 body {
-  @apply bg-obsidian-950 text-ivory-100 font-sans antialiased;
+  @apply bg-paper-100 text-ink-900 font-sans antialiased;
   text-rendering: optimizeLegibility;
   font-feature-settings: "kern" 1, "liga" 1;
 }
 
 ::selection {
-  background: rgba(201, 162, 39, 0.32);
-  color: #fff;
+  background: rgba(201, 162, 39, 0.24);
+  color: #111111;
 }
 
 :focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--gold-deep);
   outline-offset: 3px;
   border-radius: 2px;
 }
 
-/* Scrollbar — quiet, gold-tinted */
+/* Scrollbar — quiet, paper-toned */
 ::-webkit-scrollbar { width: 11px; height: 11px; }
-::-webkit-scrollbar-track { background: #0b0b0e; }
+::-webkit-scrollbar-track { background: #f2f2ee; }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #3a3527, #24211a);
+  background: linear-gradient(180deg, #cfcfc8, #b9b9b2);
   border-radius: 999px;
-  border: 2px solid #0b0b0e;
+  border: 2px solid #f2f2ee;
 }
-::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #5a5136, #36301f); }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #b4b4ac, #9d9d96); }
 
 /* ------------------------------------------------------------------ */
 /* Typography                                                          */
@@ -73,7 +88,7 @@ body {
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif font-medium tracking-[-0.01em];
+    @apply font-serif font-medium tracking-[-0.01em] text-ink-900;
   }
 
   /* Calligraphic accent — reserved for eyebrows, flourishes and signatures */
@@ -85,7 +100,7 @@ body {
   }
 
   .eyebrow {
-    @apply text-[11px] font-semibold uppercase tracking-[0.42em] text-gold-400;
+    @apply text-[11px] font-semibold uppercase tracking-[0.42em] text-gold-700;
   }
 
   .display-xl {
@@ -101,7 +116,7 @@ body {
   }
 
   .lead {
-    @apply text-[15px] leading-[1.85] text-ivory-300/80 sm:text-[16.5px];
+    @apply text-[15px] leading-[1.85] text-ink-500 sm:text-[16.5px];
   }
 
   .lead-dark {
@@ -114,19 +129,21 @@ body {
   }
 
   .gold-frame {
-    @apply relative border border-gold-500/25;
+    @apply relative border border-gold-500/30;
   }
 
-  .surface-dark {
-    @apply border border-white/[0.07] bg-white/[0.03] backdrop-blur-sm;
-  }
-
+  /* Editorial card surfaces ---------------------------------------- */
   .surface-light {
-    @apply border border-ink-900/[0.08] bg-white;
+    @apply border border-line bg-white shadow-card;
+  }
+
+  /* Formerly the translucent dark card — now a clean white panel. */
+  .surface-dark {
+    @apply border border-line bg-white shadow-card;
   }
 
   .link-gold {
-    @apply relative inline-flex items-center gap-2 text-gold-300 transition-colors hover:text-gold-200;
+    @apply relative inline-flex items-center gap-2 text-gold-700 transition-colors hover:text-gold-600;
   }
 
   .link-underline {
@@ -134,20 +151,39 @@ body {
   }
   .link-underline::after {
     content: "";
-    @apply absolute -bottom-1 left-0 h-px w-0 bg-gold-400 transition-all duration-300;
+    @apply absolute -bottom-1 left-0 h-px w-0 bg-gold-600 transition-all duration-300;
   }
   .link-underline:hover::after { @apply w-full; }
+
+  /* Editorial buttons — minimal, high contrast, premium ------------- */
+  .btn-editorial {
+    @apply inline-flex h-[52px] items-center justify-center gap-3 bg-ink-900 px-8
+      font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-white
+      transition-all duration-300 hover:bg-ink-800 hover:shadow-lift;
+  }
+
+  .btn-quiet {
+    @apply inline-flex h-[52px] items-center justify-center gap-3 border border-line bg-white px-8
+      font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-ink-900
+      transition-all duration-300 hover:border-gold-600/50 hover:text-gold-700;
+  }
+
+  .btn-quiet-on-dark {
+    @apply inline-flex h-[52px] items-center justify-center gap-3 border border-white/25 px-8
+      font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-ivory-100
+      transition-all duration-300 hover:border-gold-400/70 hover:text-gold-200;
+  }
 }
 
 /* ------------------------------------------------------------------ */
 /* Backgrounds, textures & overlays                                    */
 /* ------------------------------------------------------------------ */
-.bg-grain::before {
+.texture-grain::before {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.055;
+  opacity: 0.035;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
@@ -156,17 +192,18 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.14;
+  opacity: 0.5;
   background-image: repeating-linear-gradient(
     90deg,
-    rgba(201, 162, 39, 0.22) 0,
-    rgba(201, 162, 39, 0.22) 1px,
+    rgba(17, 17, 17, 0.05) 0,
+    rgba(17, 17, 17, 0.05) 1px,
     transparent 1px,
     transparent 96px
   );
   mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
 }
 
+/* Dark scrims — kept for the footer and studio surfaces */
 .overlay-obsidian {
   background:
     radial-gradient(120% 80% at 15% 0%, rgba(201, 162, 39, 0.14) 0%, transparent 55%),
@@ -178,29 +215,44 @@ body {
   background: linear-gradient(180deg, rgba(8, 8, 10, 0.55) 0%, rgba(8, 8, 10, 0.35) 40%, rgba(8, 8, 10, 0.92) 100%);
 }
 
+/* Light scrim — imagery ghosts through warm paper */
+.overlay-paper {
+  background:
+    radial-gradient(120% 90% at 85% 0%, rgba(201, 162, 39, 0.07) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(250, 250, 248, 0.82) 0%, rgba(250, 250, 248, 0.9) 45%, rgba(250, 250, 248, 0.98) 100%);
+}
+
+.overlay-paper-soft {
+  background: linear-gradient(180deg, rgba(250, 250, 248, 0.9) 0%, rgba(245, 245, 241, 0.96) 100%);
+}
+
+/* Kept for API compatibility — neutral on the light theme */
 .text-shadow-luxe {
-  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.55);
+  text-shadow: none;
 }
 
 .gold-text {
-  background: linear-gradient(100deg, #8f7320 0%, #e6c65c 32%, #f3e6b8 52%, #c9a227 78%, #8f7320 100%);
+  background: linear-gradient(100deg, #6f591a 0%, #ad8a1e 34%, #c9a227 52%, #8f7320 78%, #6f591a 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .gold-text-soft {
-  background: linear-gradient(100deg, #c9a227 0%, #f3e6b8 45%, #c9a227 100%);
+  background: linear-gradient(100deg, #8f7320 0%, #ad8a1e 45%, #8f7320 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .hairline {
-  @apply h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent;
+  @apply h-px w-full bg-gradient-to-r from-transparent via-ink-900/10 to-transparent;
 }
 .hairline-dark {
   @apply h-px w-full bg-gradient-to-r from-transparent via-ink-900/10 to-transparent;
+}
+.hairline-on-dark {
+  @apply h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent;
 }
 
 /* ------------------------------------------------------------------ */
@@ -264,21 +316,22 @@ body {
 
 /* ------------------------------------------------------------------ */
 /* Rich text (sanitized HTML from the studio)                           */
+/* Light by default — the public site is a light theme.                 */
 /* ------------------------------------------------------------------ */
 .prose-manup {
-  @apply text-[15.5px] leading-[1.95] text-ivory-300/80;
+  @apply text-[15.5px] leading-[1.95] text-ink-500;
 }
 .prose-manup > * + * { margin-top: 1.35em; }
 .prose-manup h2 {
-  @apply mt-14 font-serif text-[1.75rem] leading-tight text-ivory-50 sm:text-[2.1rem];
+  @apply mt-14 font-serif text-[1.75rem] leading-tight text-ink-900 sm:text-[2.1rem];
 }
 .prose-manup h3 {
-  @apply mt-10 font-serif text-[1.35rem] text-ivory-50;
+  @apply mt-10 font-serif text-[1.35rem] text-ink-900;
 }
-.prose-manup p { @apply text-ivory-300/80; }
-.prose-manup strong { @apply text-ivory-100; }
+.prose-manup p { @apply text-ink-500; }
+.prose-manup strong { @apply text-ink-900; }
 .prose-manup a {
-  @apply text-gold-300 underline decoration-gold-500/40 underline-offset-4 transition-colors hover:text-gold-200;
+  @apply text-gold-700 underline decoration-gold-500/50 underline-offset-4 transition-colors hover:text-gold-600;
 }
 .prose-manup ul { @apply list-none pl-0; }
 .prose-manup ul > li {
@@ -286,29 +339,45 @@ body {
 }
 .prose-manup ul > li::before {
   content: "";
-  @apply absolute left-1 top-[0.85em] h-1.5 w-1.5 rotate-45 bg-gold-500;
+  @apply absolute left-1 top-[0.85em] h-1.5 w-1.5 rotate-45 bg-gold-600;
 }
-.prose-manup ol { @apply list-decimal pl-6 marker:text-gold-500; }
+.prose-manup ol { @apply list-decimal pl-6 marker:text-gold-600; }
 .prose-manup blockquote {
-  @apply my-10 border-l-2 border-gold-500/70 pl-6 font-serif text-[1.35rem] italic leading-relaxed text-ivory-100;
+  @apply my-10 border-l-2 border-gold-500/70 pl-6 font-serif text-[1.35rem] italic leading-relaxed text-ink-800;
 }
 .prose-manup img {
-  @apply my-10 w-full rounded-sm border border-white/10 shadow-2xl;
+  @apply my-10 w-full rounded-sm border border-line shadow-luxe;
 }
 .prose-manup hr {
-  @apply my-12 border-0 border-t border-white/10;
+  @apply my-12 border-0 border-t border-line;
 }
 .prose-manup pre {
-  @apply overflow-x-auto rounded-sm border border-white/10 bg-black/60 p-5 text-[13px] leading-relaxed text-ivory-200;
+  @apply overflow-x-auto rounded-sm border border-line bg-paper-200 p-5 text-[13px] leading-relaxed text-ink-700;
 }
 .prose-manup code:not(pre code) {
-  @apply rounded-sm bg-gold-500/10 px-1.5 py-0.5 text-[0.9em] text-gold-200;
+  @apply rounded-sm bg-gold-500/10 px-1.5 py-0.5 text-[0.9em] text-gold-800;
 }
 .prose-manup table { @apply w-full border-collapse text-[14px]; }
-.prose-manup th, .prose-manup td { @apply border border-white/10 px-3 py-2 text-left; }
-.prose-manup th { @apply bg-white/[0.04] font-sans text-[12px] uppercase tracking-wider text-gold-300; }
+.prose-manup th, .prose-manup td { @apply border border-line px-3 py-2 text-left; }
+.prose-manup th { @apply bg-paper-200 font-sans text-[12px] uppercase tracking-wider text-ink-600; }
 
-/* Light variant used inside the studio (ivory surfaces) */
+/* Dark variant — used by the studio preview pane on obsidian. */
+.prose-on-dark { @apply text-ivory-300/80; }
+.prose-on-dark h2, .prose-on-dark h3 { @apply text-ivory-50; }
+.prose-on-dark p { @apply text-ivory-300/80; }
+.prose-on-dark strong { @apply text-ivory-100; }
+.prose-on-dark a { @apply text-gold-300 underline decoration-gold-500/40 hover:text-gold-200; }
+.prose-on-dark ul > li::before { @apply bg-gold-500; }
+.prose-on-dark ol { @apply marker:text-gold-500; }
+.prose-on-dark blockquote { @apply border-gold-500/70 text-ivory-100; }
+.prose-on-dark img { @apply border-white/10 shadow-2xl; }
+.prose-on-dark hr { @apply border-white/10; }
+.prose-on-dark pre { @apply border-white/10 bg-black/60 text-ivory-200; }
+.prose-on-dark code:not(pre code) { @apply bg-gold-500/10 text-gold-200; }
+.prose-on-dark th, .prose-on-dark td { @apply border-white/10; }
+.prose-on-dark th { @apply bg-white/[0.04] text-gold-300; }
+
+/* Legacy light alias kept for compatibility */
 .prose-light { @apply text-ink-600; }
 .prose-light h2, .prose-light h3 { @apply text-ink-900; }
 .prose-light p { @apply text-ink-600; }
@@ -316,7 +385,7 @@ body {
 .prose-light blockquote { @apply border-gold-500/60 text-ink-800; }
 
 /* ------------------------------------------------------------------ */
-/* Studio (admin/owner) surfaces                                       */
+/* Studio (admin/owner) surfaces — intentionally dark                  */
 /* ------------------------------------------------------------------ */
 .studio-sidebar {
   background:
