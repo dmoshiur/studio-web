@@ -212,8 +212,8 @@ export const publicSettingsSchema = z.object({
   }),
   social: z.record(z.string().max(2048)).default({}),
   appearance: z.object({
-    primaryColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).default("#f9488b"),
-    secondaryColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).default("#ee8425"),
+    primaryColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).default("#b99352"),
+    secondaryColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).default("#ddc99e"),
     theme: z.enum(["light", "dark", "system"]).default("light"),
   }),
   homepage: z.object({

@@ -23,8 +23,8 @@ export const DEFAULT_PUBLIC_SETTINGS: PublicSiteSettings = {
   },
   social: {},
   appearance: {
-    primaryColor: "#f9488b",
-    secondaryColor: "#ee8425",
+    primaryColor: "#b99352",
+    secondaryColor: "#ddc99e",
     theme: "light",
   },
   homepage: {

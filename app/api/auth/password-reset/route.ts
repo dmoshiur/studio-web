@@ -42,7 +42,7 @@ export async function POST(req: Request) {
           html: baseEmailTemplate({
             title: "Reset your password",
             bodyHtml: `<p>Use the button below to choose a new password. The link expires in 30 minutes.</p>
-              <p><a href="${link}" style="display:inline-block;padding:12px 20px;border-radius:10px;background:#c9a227;color:#0b0b0d;font-weight:600;text-decoration:none">Choose a new password</a></p>
+              <p><a href="${link}" style="display:inline-block;padding:12px 20px;border-radius:10px;background:#b99352;color:#0b0b0d;font-weight:600;text-decoration:none">Choose a new password</a></p>
               <p style="color:#8b8b93;font-size:12px">If you didn't request this, you can safely ignore this email.</p>`,
           }),
           text: `Reset your password: ${link}`,

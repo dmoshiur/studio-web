@@ -134,7 +134,7 @@ async function deliverPasscodeEmail(passcode: string, expiresAt: Date, siteName:
         <tr><td style="padding:6px 0;color:#6a6b7c;font-size:13px;">Passcode</td><td style="padding:6px 0;font-family:monospace;font-size:20px;letter-spacing:3px;font-weight:bold;">${passcode}</td></tr>
         <tr><td style="padding:6px 0;color:#6a6b7c;font-size:13px;">Valid until (UTC)</td><td style="padding:6px 0;">${expiresAt.toUTCString()}</td></tr>
       </table>
-      <p style="background:#f6f1e3;border-left:3px solid #c9a227;padding:12px 14px;font-size:13px;color:#4a4433;">
+      <p style="background:#f6f1e3;border-left:3px solid #b99352;padding:12px 14px;font-size:13px;color:#4a4433;">
         <strong>Security notice:</strong> this passcode grants access to the protected operations
         panel of ${siteName}. It expires in one hour and is replaced automatically. It was sent only
         to this address. If you did not expect this email, treat it as an attempted intrusion and
@@ -335,7 +335,7 @@ export async function setCustomPassphrase(passphrase: string): Promise<{ ok: boo
     html: baseEmailTemplate({
       title: `${siteName} — Passphrase Changed`,
       bodyHtml: `<p>The operations panel passphrase was changed to a <strong>custom value</strong> and automatic hourly rotation was paused (manual mode).</p>
-        <p style="background:#f6f1e3;border-left:3px solid #c9a227;padding:12px 14px;font-size:13px;color:#4a4433;">For security, the custom passphrase itself is not included in this email. If you did not make this change, regain access by switching back to automatic rotation.</p>`,
+        <p style="background:#f6f1e3;border-left:3px solid #b99352;padding:12px 14px;font-size:13px;color:#4a4433;">For security, the custom passphrase itself is not included in this email. If you did not make this change, regain access by switching back to automatic rotation.</p>`,
     }),
   })
     .then(() => true)

@@ -58,7 +58,7 @@ async function main() {
         twitterCard: "summary_large_image",
       },
       social: {},
-      appearance: { primaryColor: "#f9488b", secondaryColor: "#ee8425", theme: "light" },
+      appearance: { primaryColor: "#b99352", secondaryColor: "#ddc99e", theme: "light" },
       homepage: {
         heroBadge: "Annual Tech Conference",
         heroTitle: "Change Your Mind To Become Success",
@@ -134,8 +134,8 @@ async function main() {
   }
 
   console.log("→ categories");
-  const keynote = await ensureBySlug("categories", "keynotes", { name: "Keynotes", description: "Main-stage talks", color: "#f9488b" });
-  await ensureBySlug("categories", "workshops", { name: "Workshops", description: "Hands-on sessions", color: "#ee8425" });
+  const keynote = await ensureBySlug("categories", "keynotes", { name: "Keynotes", description: "Main-stage talks", color: "#b99352" });
+  await ensureBySlug("categories", "workshops", { name: "Workshops", description: "Hands-on sessions", color: "#ddc99e" });
   await ensureBySlug("categories", "community", { name: "Community", description: "Stories from attendees", color: "#673ab7" });
 
   console.log("→ speakers");

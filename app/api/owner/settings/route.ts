@@ -33,8 +33,8 @@ export async function PUT(req: Request) {
         },
         social: body.social ?? {},
         appearance: {
-          primaryColor: body.appearance.primaryColor ?? "#f9488b",
-          secondaryColor: body.appearance.secondaryColor ?? "#ee8425",
+          primaryColor: body.appearance.primaryColor ?? "#b99352",
+          secondaryColor: body.appearance.secondaryColor ?? "#ddc99e",
           theme: body.appearance.theme ?? "light",
         },
         homepage: {
