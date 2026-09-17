@@ -34,6 +34,43 @@ const config: Config = {
           800: "#6f591a",
           900: "#4c3d12",
         },
+        /* Primary brand — deep conference violet. Buttons, active states, highlights. */
+        brand: {
+          50: "#f4f1ff",
+          100: "#ebe4ff",
+          200: "#d9ccff",
+          300: "#bda3ff",
+          400: "#9d72fb",
+          500: "#7f45f0",
+          600: "#6d28d9",
+          700: "#5b21b6",
+          800: "#4c1d95",
+          900: "#331367",
+          950: "#1d0b3f",
+        },
+        /* Secondary accent — warm ember orange. Badges, dots, highlights. */
+        ember: {
+          50: "#fff7ed",
+          100: "#ffedd5",
+          200: "#fed7aa",
+          300: "#fdba74",
+          400: "#fb923c",
+          500: "#f97316",
+          600: "#ea580c",
+          700: "#c2410c",
+          800: "#9a3412",
+        },
+        /* Supporting accent — confident royal blue (used sparingly). */
+        royal: {
+          50: "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          300: "#93c5fd",
+          400: "#60a5fa",
+          500: "#3b82f6",
+          600: "#2563eb",
+          700: "#1d4ed8",
+        },
         /* Warm paper surfaces — the light-theme canvas. */
         paper: {
           DEFAULT: "#fafaf8",
@@ -108,6 +145,13 @@ const config: Config = {
         "paper-gradient": "linear-gradient(180deg, #fafaf8 0%, #f6f6f2 100%)",
         "paper-soft": "linear-gradient(180deg, #f7f7f4 0%, #f2f2ee 100%)",
         "card-sheen": "linear-gradient(180deg, #ffffff 0%, #fcfcfb 100%)",
+        /* Brand color system — violet primary, ember secondary */
+        "brand-gradient": "linear-gradient(120deg, #4c1d95 0%, #6d28d9 48%, #7f45f0 100%)",
+        "brand-deep": "linear-gradient(150deg, #1d0b3f 0%, #331367 45%, #4c1d95 100%)",
+        "brand-ember": "linear-gradient(100deg, #6d28d9 0%, #a855f7 45%, #f97316 100%)",
+        "tint-lavender": "linear-gradient(180deg, #faf8ff 0%, #f3efff 100%)",
+        "tint-peach": "linear-gradient(180deg, #fffdf9 0%, #fdf3e7 100%)",
+        "tint-sky": "linear-gradient(180deg, #fbfdff 0%, #eef4ff 100%)",
       },
       boxShadow: {
         luxe: "0 1px 2px rgba(17,17,17,.05), 0 24px 60px -28px rgba(17,17,17,.22)",
@@ -115,6 +159,9 @@ const config: Config = {
         lift: "0 2px 4px rgba(17,17,17,.05), 0 26px 52px -22px rgba(17,17,17,.18)",
         gold: "0 18px 50px -22px rgba(201,162,39,.45)",
         "gold-sm": "0 10px 30px -18px rgba(201,162,39,.4)",
+        brand: "0 18px 50px -20px rgba(109,40,217,.5)",
+        "brand-sm": "0 10px 30px -14px rgba(109,40,217,.45)",
+        ember: "0 18px 50px -22px rgba(249,115,22,.45)",
         inset: "inset 0 1px 0 rgba(255,255,255,.6)",
       },
       borderRadius: {

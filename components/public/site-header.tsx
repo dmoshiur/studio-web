@@ -64,10 +64,12 @@ export function SiteHeader({
           "fixed inset-x-0 z-50 transition-all duration-500",
           announcement ? "top-0 md:top-[34px]" : "top-0",
           scrolled
-            ? "border-b border-line bg-white/85 shadow-[0_1px_20px_rgba(17,17,17,0.04)] backdrop-blur-xl"
-            : "border-b border-transparent bg-gradient-to-b from-paper-100/90 via-paper-100/50 to-transparent"
+            ? "border-b border-brand-600/10 bg-white/85 shadow-[0_8px_30px_-12px_rgba(76,29,149,0.18)] backdrop-blur-xl"
+            : "border-b border-ink-900/[0.06] bg-white/70 backdrop-blur-md"
         )}
       >
+        {/* Brand hairline — violet → gold → ember */}
+        <span aria-hidden className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-brand-700 via-gold-500 to-ember-500" />
         <div className="container flex h-[78px] items-center justify-between gap-6">
           {/* Wordmark */}
           <Link href="/" className="group flex items-center gap-3" aria-label={`${siteName} — home`}>
@@ -75,7 +77,7 @@ export function SiteHeader({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={logoUrl} alt={siteName} className="h-9 w-auto" />
             ) : (
-              <span className="flex h-10 w-10 items-center justify-center border border-ink-900/25 font-serif text-[1.3rem] font-semibold text-ink-900 transition-colors group-hover:border-gold-600 group-hover:text-gold-700">
+              <span className="flex h-10 w-10 items-center justify-center bg-brand-gradient font-serif text-[1.35rem] font-semibold text-white shadow-brand-sm transition-transform duration-300 group-hover:-translate-y-0.5">
                 {siteName.charAt(0).toUpperCase()}
               </span>
             )}
@@ -83,7 +85,7 @@ export function SiteHeader({
               <span className="font-serif text-[1.35rem] font-medium tracking-[0.06em] text-ink-900">
                 {siteName}
               </span>
-              <span className="mt-1 hidden font-sans text-[8.5px] uppercase tracking-luxe text-gold-700 sm:block">
+              <span className="mt-1 hidden font-sans text-[8.5px] uppercase tracking-luxe text-brand-700 sm:block">
                 Summit &amp; Salon
               </span>
             </span>
@@ -100,15 +102,15 @@ export function SiteHeader({
                   {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "relative px-4 py-2 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] transition-colors",
-                    active ? "text-gold-700" : "text-ink-600 hover:text-ink-900"
+                    "relative rounded-full px-4 py-2 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] transition-colors",
+                    active ? "bg-brand-50 text-brand-700" : "text-ink-600 hover:bg-paper-200 hover:text-brand-700"
                   )}
                 >
                   {link.label}
                   <span
                     aria-hidden
                     className={cn(
-                      "absolute inset-x-3.5 -bottom-0.5 h-px bg-gold-600 transition-transform duration-300",
+                      "absolute inset-x-4 -bottom-0.5 h-[2px] rounded-full bg-gradient-to-r from-brand-600 to-ember-500 transition-transform duration-300",
                       active ? "scale-x-100" : "scale-x-0"
                     )}
                   />
@@ -138,7 +140,7 @@ export function SiteHeader({
             )}
             <Link
               href="/events"
-              className="group inline-flex h-11 items-center gap-2 bg-ink-900 px-6 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-white transition-all hover:bg-gold-700"
+              className="group inline-flex h-11 items-center gap-2 rounded-full bg-brand-gradient px-6 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-white shadow-brand-sm transition-all hover:-translate-y-0.5 hover:shadow-brand"
             >
               Reserve Seat
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -188,7 +190,7 @@ export function SiteHeader({
             </Link>
             <Link
               href="/events"
-              className="flex h-12 items-center justify-center bg-ink-900 font-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-white"
+              className="flex h-12 items-center justify-center rounded-full bg-brand-gradient font-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-white shadow-brand-sm"
             >
               Reserve your seat
             </Link>
