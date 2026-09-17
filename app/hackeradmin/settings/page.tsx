@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useForm, Controller, useFieldArray, type Control } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
 import { OwnerPageHeader } from "@/components/hackeradmin/owner-ui";
@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { CardSkeleton, ErrorState } from "@/components/ui/feedback";
 import { useToast } from "@/components/ui/toast";
 import { CoverInput } from "@/components/admin/cover-input";
+import { OwnerSectionEditor } from "@/components/admin/owner-section-editor";
+import { normaliseOwnerProfile } from "@/lib/owner-defaults";
 import { publicSettingsSchema } from "@/lib/validation/schemas";
 import { api } from "@/hooks/use-api";
 import { z } from "zod";
@@ -129,6 +131,7 @@ function SettingsForm({
         aboutBody: initial.homepage.aboutBody,
         aboutImage: initial.homepage.aboutImage ?? "",
         aboutStats: initial.homepage.aboutStats ?? [],
+        owner: normaliseOwnerProfile(initial.homepage.owner),
       },
     },
   });
@@ -194,6 +197,8 @@ function SettingsForm({
               </div>
             </CardContent>
           </Card>
+
+          <OwnerSectionCard control={control} />
 
           <Card>
             <CardHeader><CardTitle>About section</CardTitle><CardDescription>Homepage about block</CardDescription></CardHeader>
@@ -294,6 +299,33 @@ function SettingsForm({
         </Button>
       </div>
     </form>
+  );
+}
+
+/** Owner spotlight — same editor the studio uses (Studio → Owner Section). */
+function OwnerSectionCard({ control }: { control: Control<FormValues> }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Owner section</CardTitle>
+        <CardDescription>
+          Portrait, name and personal message shown on the homepage and the about page
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Controller
+          name="homepage.owner"
+          control={control}
+          render={({ field }) => (
+            <OwnerSectionEditor
+              variant="plain"
+              value={normaliseOwnerProfile(field.value)}
+              onChange={field.onChange}
+            />
+          )}
+        />
+      </CardContent>
+    </Card>
   );
 }
 

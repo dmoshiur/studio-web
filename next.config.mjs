@@ -28,9 +28,10 @@ const securityHeaders = [
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://apis.google.com https://www.googletagmanager.com https://www.google-analytics.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
-      "img-src 'self' data: blob: https: http:",
-      "media-src 'self' blob: https:",
-      "connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.cloudfunctions.net wss://*.firebaseio.com https://*.google-analytics.com https://firebasestorage.googleapis.com https://storage.googleapis.com",
+      "img-src 'self' data: blob: https: http: https://res.cloudinary.com",
+      "media-src 'self' blob: https: https://res.cloudinary.com",
+      // api.cloudinary.com is required for browser-direct (signed) uploads.
+      "connect-src 'self' https://api.cloudinary.com https://res.cloudinary.com https://*.googleapis.com https://*.firebaseio.com https://*.cloudfunctions.net wss://*.firebaseio.com https://*.google-analytics.com https://firebasestorage.googleapis.com https://storage.googleapis.com",
       "frame-src 'self' https://*.firebaseapp.com https://*.web.app",
       "object-src 'none'",
       "base-uri 'self'",
@@ -55,6 +56,8 @@ const nextConfig = {
       { protocol: "https", hostname: "storage.googleapis.com" },
       { protocol: "https", hostname: "**.googleusercontent.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
+      // Cloudinary CDN — images, video posters and media library thumbnails.
+      { protocol: "https", hostname: "res.cloudinary.com" },
     ],
     formats: ["image/avif", "image/webp"],
     // Sandboxes without outbound image fetching can disable the optimizer.

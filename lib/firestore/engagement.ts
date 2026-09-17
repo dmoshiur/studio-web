@@ -196,6 +196,13 @@ function mapMedia(id: string, d: Record<string, unknown>): MediaItem {
     alt: (d.alt as string) || undefined,
     uploadedBy: String(d.uploadedBy ?? ""),
     createdAt: toISODate(d.createdAt) ?? new Date().toISOString(),
+    provider: (d.provider as MediaItem["provider"]) || undefined,
+    publicId: (d.publicId as string) || undefined,
+    resourceType: (d.resourceType as MediaItem["resourceType"]) || undefined,
+    thumbnailUrl: (d.thumbnailUrl as string) || undefined,
+    posterUrl: (d.posterUrl as string) || undefined,
+    format: (d.format as string) || undefined,
+    durationSeconds: d.durationSeconds != null ? Number(d.durationSeconds) : undefined,
   };
 }
 

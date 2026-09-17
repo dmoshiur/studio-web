@@ -9,6 +9,10 @@ It runs **with zero external services**: an embedded SQLite data layer, on-disk 
 identity (email + password) and an administrator defined entirely by environment variables. Point it at
 Firebase instead by supplying credentials — the same code paths serve both backends.
 
+Uploads can be served by **Cloudinary** (recommended — images, video, audio and documents, signed
+browser-direct uploads, CDN delivery), Firebase Storage, or the embedded disk. Set `CLOUDINARY_*`
+and the studio switches over automatically.
+
 ---
 
 ## Design language — “Maison Noir”
@@ -25,8 +29,12 @@ Firebase instead by supplying credentials — the same code paths serve both bac
 
 - **Public site** — home, about, events + detail, speakers + detail, journal (`/blog`) + post, contact, privacy,
   unsubscribe; SEO-ready (metadata, OG/Twitter, sitemap, robots, JSON-LD, **RSS at `/feed.xml`**).
-- **Studio (`/admin`)** — dashboard, posts, events, speakers, categories, pages, media library, messages,
-  subscribers, navigation & social links, accounts, profile. Role-gated to admin/owner/superadmin.
+- **Studio (`/admin`)** — dashboard, posts, events, speakers, categories, pages, media library (images,
+  video, audio, documents), messages, subscribers, navigation & social links, **owner section**, accounts,
+  profile. Role-gated to admin/owner/superadmin.
+- **Owner section** — a portrait, a name, a personal message, a pull quote, an optional signature image
+  and an optional video message, shown on the homepage and the about page. Every field (including the
+  visibility per page) is editable from **Studio → Owner Section** and from the owner console.
 - **Operations console (`/hackeradmin`)** — protected by a **rotating hourly passcode** emailed exclusively to the
   security recipient (never logged, never exposed; brute-force locked). Inside: live system status, runtime controls,
   a real live log terminal, passcode management, backend status (secrets masked), site settings, SMTP (+ test send),
@@ -46,7 +54,8 @@ Firebase instead by supplying credentials — the same code paths serve both bac
 ## Tech stack
 
 Next.js 14 (App Router) · TypeScript (strict) · React 18 · Tailwind CSS · embedded SQLite (`node:sqlite`) **or**
-Firestore · local credentials **or** Firebase Auth · Zod + React Hook Form · Nodemailer (SMTP) · Lucide icons
+Firestore · local credentials **or** Firebase Auth · **Cloudinary** / Firebase Storage / embedded disk ·
+Zod + React Hook Form · Nodemailer (SMTP) · Lucide icons
 
 ## Quick start
 
@@ -81,12 +90,36 @@ components/public/ shared editorial UI kit (heroes, sections, cards, reveal, for
 components/ui/     design-system primitives (button, badge, input, card, table, dialog, feedback, toast)
 lib/db/            embedded store + seed;  lib/server/ session, identity, auth, audit, rate limiting
 lib/firestore/     content & settings repositories (backend-agnostic)
+lib/storage/       media facade + Cloudinary client (signed uploads, deletes, transforms)
 docs/              admin, owner, deployment, Firebase and security guides
 ```
 
+## Media storage — Cloudinary
+
+Add three values (locally in `.env.local`, in production in your host's environment) and every
+upload — cover images, videos, audio, documents, avatars, the owner portrait — goes to Cloudinary:
+
+```bash
+CLOUDINARY_CLOUD_NAME=your-cloud
+CLOUDINARY_API_KEY=…
+CLOUDINARY_API_SECRET=…
+CLOUDINARY_FOLDER=manup        # optional root folder
+# or the single-variable form:
+# CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
+```
+
+- Browsers upload **directly to Cloudinary** with a short-lived server signature
+  (`/api/admin/media/sign` → Cloudinary → `/api/admin/media/record`), so large video uploads are not
+  capped by serverless request-body limits. Allowed formats, size ceiling and target folder are
+  signed in, and the asset is re-verified through the Cloudinary Admin API before it is filed.
+- The API secret stays server-side; the browser never sees it.
+- Deleting a file in the studio destroys the Cloudinary asset (CDN purge included).
+- Fallbacks: Firebase Storage (when Firebase credentials exist) or the embedded
+  `./data/uploads` directory — no configuration needed for local development.
+
 ## Documentation
 
-- **[docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md)** — running the content studio.
+- **[docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md)** — running the content studio + the owner section.
 - **[docs/OWNER_GUIDE.md](docs/OWNER_GUIDE.md)** — infrastructure controls and the audit trail.
 - **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** — Vercel/hosted deployment and environment variables.
 - **[docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)** — switching to Firebase Auth/Firestore/Storage.

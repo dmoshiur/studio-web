@@ -4,6 +4,7 @@ import { isSmtpConfigured } from "@/lib/email/mailer";
 import { ok } from "@/lib/server/api-helpers";
 import { identityBackend, listIdentityUsers } from "@/lib/server/identity";
 import { isEnvAdminConfigured } from "@/lib/server/auth";
+import { describeStorage } from "@/lib/storage/media";
 import type { HealthStatus } from "@/types";
 
 export const runtime = "nodejs";
@@ -54,6 +55,18 @@ export async function GET() {
     const bucketName = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
     if (!bucketName) throw new Error("bucket not configured");
   });
+
+  // Where media uploads land: Cloudinary, Firebase Storage or embedded disk.
+  const media = describeStorage();
+  checks.mediaStorage = {
+    status: "configured",
+    message:
+      media.provider === "cloudinary"
+        ? `Cloudinary${media.cloudName ? ` (${media.cloudName}${media.rootFolder ? `/${media.rootFolder}` : ""})` : ""}`
+        : media.provider === "firebase"
+          ? "Firebase Storage"
+          : "Embedded disk storage",
+  };
 
   checks.email = isSmtpConfigured()
     ? { status: "configured" }

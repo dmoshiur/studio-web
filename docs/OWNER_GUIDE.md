@@ -47,13 +47,18 @@ Safe connection details: project ID, auth domain, bucket (copyable), masked API 
 service-account presence indicator. **The private key is never displayed** — rotate it in the
 Firebase console + Vercel env vars (instructions on the page).
 
+A **Media storage** card reports where uploads actually live — Cloudinary (with the account name
+and root folder), Firebase Storage, or the embedded disk — so you can confirm at a glance which
+backend is active. The same status appears in `/api/health`.
+
 ## Site Settings (`/hackeradmin/settings`)
 
 Global configuration stored in `siteSettings/public`, live within seconds:
 
 - **General**: site name, tagline, logo, favicon, contact email/phone/address, timezone.
 - **Homepage**: hero badge/title/subtitle/CTAs/image, event date (countdown) + venue, about
-  title/body/image, stat blocks.
+  title/body/image, stat blocks, and the **owner section** (portrait, name, message, quote,
+  signature image, video message, contact + social links, per-page visibility).
 - **SEO**: default meta title/description/keywords, OG image, Twitter card.
 - **Social**: profile URLs per network.
 - **Appearance**: brand primary/secondary colors, theme default.

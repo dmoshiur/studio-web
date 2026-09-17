@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { requireSession } from "@/lib/server/auth";
 import { getIdentityUser, updateIdentityProfile } from "@/lib/server/identity";
-import { putObject, deleteObject, isLocalStorage } from "@/lib/storage/media";
+import { deleteObjectByUrl, putObject } from "@/lib/storage/media";
 import { apiError, handleApiError, ok, rateLimitKey } from "@/lib/server/api-helpers";
 import { rateLimit, RATE_PRESETS } from "@/lib/server/rate-limit";
 import { auditLog } from "@/lib/server/audit";
@@ -67,12 +67,9 @@ export async function POST(req: Request) {
       originalName: (file.name || "avatar").slice(0, 200),
     });
 
-    // Best-effort cleanup of the previous avatar file.
+    // Best-effort cleanup of the previous avatar file (any backend).
     const previous = (await getIdentityUser(user.uid))?.photoURL ?? null;
-    if (previous && previous.startsWith("/api/media/")) {
-      const prevPath = decodeURIComponent(previous.slice("/api/media/".length));
-      if (prevPath.startsWith("avatars/")) await deleteObject(prevPath).catch(() => undefined);
-    }
+    if (previous && previous.includes("/avatars/")) await deleteObjectByUrl(previous);
 
     await updateIdentityProfile(user.uid, { photoURL: stored.downloadUrl });
     await auditLog({ actor: user, action: "account.avatar.upload", result: "success", metadata: { bytes: file.size, type: detected } });
@@ -87,10 +84,7 @@ export async function DELETE() {
   try {
     const user = await requireSession();
     const current = (await getIdentityUser(user.uid))?.photoURL ?? null;
-    if (current && current.startsWith("/api/media/")) {
-      const prevPath = decodeURIComponent(current.slice("/api/media/".length));
-      if (prevPath.startsWith("avatars/")) await deleteObject(prevPath).catch(() => undefined);
-    }
+    if (current && current.includes("/avatars/")) await deleteObjectByUrl(current);
     await updateIdentityProfile(user.uid, { photoURL: "" });
     await auditLog({ actor: user, action: "account.avatar.remove", result: "success" });
     return ok({ photoURL: null });
