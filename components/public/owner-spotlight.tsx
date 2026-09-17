@@ -36,13 +36,19 @@ export function OwnerSpotlight({
     <Section className="relative isolate overflow-hidden bg-paper-200" id="owner">
       <span
         aria-hidden
-        className="pointer-events-none absolute -left-24 top-10 hidden h-72 w-72 rounded-full bg-gold-500/[0.06] blur-3xl lg:block"
+        className="pointer-events-none absolute -left-24 top-10 hidden h-72 w-72 rounded-full bg-brand-500/[0.07] blur-3xl lg:block"
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -right-20 bottom-10 hidden h-64 w-64 rounded-full bg-ember-400/[0.08] blur-3xl lg:block"
       />
 
       <div className="relative grid items-center gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
         {/* Portrait */}
         <Reveal className="relative mx-auto w-full max-w-md lg:mx-0">
-          <div className="relative overflow-hidden rounded-sm border border-line bg-white shadow-luxe">
+          <div aria-hidden className="absolute -inset-3 rotate-1 rounded-[1.8rem] bg-gradient-to-br from-brand-600/10 via-transparent to-gold-500/10" />
+          <div className="relative overflow-hidden rounded-2xl border border-white bg-white shadow-luxe">
+            <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-1.5 bg-gradient-to-r from-brand-700 via-gold-500 to-ember-500" />
             {hasPhoto ? (
               <>
                 {/* eslint-disable-next-line @next/next/no-img-element */}

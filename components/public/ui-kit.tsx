@@ -180,30 +180,42 @@ export function StatStrip({
   tone = "dark",
 }: {
   stats: { value: string; label: string }[];
-  tone?: "dark" | "light";
+  tone?: "dark" | "light" | "brand";
 }) {
   if (!stats?.length) return null;
+  const onDark = tone === "brand";
   return (
-    <div
-      className={cn(
-        "grid grid-cols-2 sm:grid-cols-4",
-        tone === "light" ? "text-ink-900" : "text-ink-900"
-      )}
-    >
+    <div className={cn("grid grid-cols-2 sm:grid-cols-4", onDark ? "text-white" : "text-ink-900")}>
       {stats.map((s, i) => (
         <Reveal
           key={`${s.label}-${i}`}
           delay={i * 90}
           className={cn(
-            "px-4 py-8 text-center sm:px-6",
+            "relative px-4 py-8 text-center sm:px-6",
             i > 0 && "sm:border-l",
-            "sm:border-line"
+            onDark ? "sm:border-white/12" : "sm:border-line"
           )}
         >
-          <p className="font-serif text-[2.5rem] font-medium leading-none tracking-[-0.02em] text-ink-900 sm:text-[3.1rem]">
+          {onDark && (
+            <span
+              aria-hidden
+              className="mx-auto mb-5 block h-1 w-10 rounded-full bg-gradient-to-r from-gold-400 to-ember-400"
+            />
+          )}
+          <p
+            className={cn(
+              "font-serif text-[2.5rem] font-medium leading-none tracking-[-0.02em] sm:text-[3.1rem]",
+              onDark ? "text-white" : "text-ink-900"
+            )}
+          >
             {s.value}
           </p>
-          <p className="mt-3 text-[10.5px] font-semibold uppercase tracking-[0.28em] text-gold-700">
+          <p
+            className={cn(
+              "mt-3 text-[10.5px] font-semibold uppercase tracking-[0.28em]",
+              onDark ? "text-gold-200" : "text-gold-700"
+            )}
+          >
             {s.label}
           </p>
         </Reveal>
@@ -216,7 +228,8 @@ export function Marquee({ items, className }: { items: string[]; className?: str
   if (!items?.length) return null;
   const doubled = [...items, ...items];
   return (
-    <div className={cn("relative overflow-hidden border-y border-line bg-white py-6", className)}>
+    <div className={cn("relative overflow-hidden border-y border-brand-600/10 bg-white py-6", className)}>
+      <span aria-hidden className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand-600/25 to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-white to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-white to-transparent" />
       <ul className="flex w-max animate-marquee items-center gap-14 whitespace-nowrap">
@@ -243,18 +256,27 @@ export function Accordion({
 }) {
   if (!items?.length) return null;
   return (
-    <div className={cn("divide-y", tone === "light" ? "divide-line" : "divide-line")}>
+    <div className="space-y-3">
       {items.map((item, i) => (
-        <details key={item.q + i} className="group py-1">
-          <summary
-            className={cn(
-              "flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-left text-ink-900 transition-colors hover:text-gold-700"
-            )}
-          >
-            <span className="font-serif text-[1.25rem] leading-snug sm:text-[1.4rem]">{item.q}</span>
-            <ChevronDown className="h-5 w-5 shrink-0 text-gold-600 transition-transform duration-300 group-open:rotate-180" />
+        <details
+          key={item.q + i}
+          className="group rounded-xl border border-line bg-white shadow-card transition-all duration-300 open:border-brand-600/30 open:shadow-lift [&[open]]:bg-gradient-to-b [&[open]]:from-brand-50/60 [&[open]]:to-white"
+        >
+          <summary className="flex cursor-pointer list-none items-center gap-5 p-5 text-left sm:p-6 [&::-webkit-details-marker]:hidden">
+            <span
+              aria-hidden
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-paper-200 font-serif text-[0.95rem] text-ink-600 transition-all duration-300 group-open:bg-brand-gradient group-open:text-white group-open:shadow-brand-sm"
+            >
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <span className="flex-1 font-serif text-[1.15rem] leading-snug text-ink-900 transition-colors group-open:text-brand-800 sm:text-[1.3rem]">
+              {item.q}
+            </span>
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line transition-all duration-300 group-open:rotate-180 group-open:border-brand-600/40 group-open:bg-brand-600 group-open:text-white">
+              <ChevronDown className="h-4 w-4" />
+            </span>
           </summary>
-          <p className="max-w-3xl pb-7 pr-10 text-[14.5px] leading-[1.9] text-ink-500 group-open:animate-fade">
+          <p className="max-w-3xl px-5 pb-6 pl-[4.5rem] pr-8 text-[14px] leading-[1.9] text-ink-500 group-open:animate-fade sm:pl-[4.75rem]">
             {item.a}
           </p>
         </details>
@@ -266,11 +288,63 @@ export function Accordion({
 export function Gallery({
   items,
   columns = 3,
+  variant = "grid",
 }: {
   items: { image: string; caption?: string }[];
   columns?: 2 | 3 | 4;
+  variant?: "grid" | "editorial";
 }) {
   if (!items?.length) return null;
+
+  /* Premium asymmetric editorial layout — one large feature + smaller frames. */
+  if (variant === "editorial") {
+    const [first, ...rest] = items;
+    return (
+      <div className="grid gap-5 lg:grid-cols-[1.25fr_0.9fr] lg:grid-rows-2">
+        <Reveal className="lg:row-span-2">
+          <figure className="group relative h-full min-h-[320px] overflow-hidden rounded-2xl border border-line bg-white shadow-luxe transition-shadow duration-500 hover:shadow-lift lg:min-h-[540px]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={first.image}
+              alt={first.caption ?? ""}
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.05]"
+            />
+            <span className="absolute inset-0 bg-gradient-to-t from-obsidian-950/85 via-obsidian-950/20 to-transparent" />
+            <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-600 via-gold-500 to-ember-500" />
+            {first.caption && (
+              <figcaption className="absolute bottom-0 left-0 right-0 p-7">
+                <span className="pill-brand mb-4 !border-white/30 !bg-white/10 !text-white backdrop-blur-sm">
+                  Featured moment
+                </span>
+                <p className="font-serif text-[1.6rem] leading-tight text-ivory-50">{first.caption}</p>
+              </figcaption>
+            )}
+          </figure>
+        </Reveal>
+        {rest.slice(0, 4).map((item, i) => (
+          <Reveal key={item.image + i} delay={100 + i * 90}>
+            <figure className="group relative overflow-hidden rounded-2xl border border-line bg-white shadow-card transition-all duration-500 hover:-translate-y-1 hover:shadow-lift">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={item.image}
+                alt={item.caption ?? ""}
+                loading="lazy"
+                className="aspect-[16/9] w-full object-cover transition-transform duration-1000 group-hover:scale-[1.07] lg:aspect-auto lg:h-[258px]"
+              />
+              <span className="absolute inset-0 bg-gradient-to-t from-obsidian-950/80 via-transparent to-transparent" />
+              {item.caption && (
+                <figcaption className="absolute bottom-0 left-0 right-0 p-5 font-serif text-[1.1rem] leading-snug text-ivory-100">
+                  {item.caption}
+                </figcaption>
+              )}
+            </figure>
+          </Reveal>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(
@@ -282,7 +356,7 @@ export function Gallery({
     >
       {items.map((item, i) => (
         <Reveal key={item.image + i} delay={i * 80}>
-          <figure className="group relative overflow-hidden rounded-sm border border-line bg-white shadow-card transition-shadow duration-500 hover:shadow-lift">
+          <figure className="group relative overflow-hidden rounded-xl border border-line bg-white shadow-card transition-all duration-500 hover:-translate-y-1 hover:shadow-lift">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={item.image}
@@ -307,14 +381,25 @@ export function QuoteBlock({
   quote,
   name,
   role,
+  accent = "brand",
 }: {
   quote: string;
   name: string;
   role?: string;
+  accent?: "brand" | "ember" | "gold";
 }) {
   return (
-    <Reveal className="relative rounded-sm border border-line bg-white p-9 shadow-card sm:p-12">
-      <span aria-hidden className="calligraphic absolute -top-2 left-7 text-[5rem] leading-none text-gold-500/40">
+    <Reveal className="relative overflow-hidden rounded-2xl border border-line bg-white p-9 shadow-card transition-shadow duration-500 hover:shadow-lift sm:p-12">
+      <span
+        aria-hidden
+        className={cn(
+          "absolute inset-x-0 top-0 h-1",
+          accent === "brand" && "bg-gradient-to-r from-brand-700 via-brand-500 to-brand-300",
+          accent === "ember" && "bg-gradient-to-r from-ember-600 via-ember-500 to-gold-400",
+          accent === "gold" && "bg-gradient-to-r from-gold-700 via-gold-500 to-gold-300"
+        )}
+      />
+      <span aria-hidden className="calligraphic absolute -top-2 left-7 text-[5rem] leading-none text-brand-600/15">
         &ldquo;
       </span>
       <blockquote className="relative font-serif text-[1.4rem] italic leading-[1.6] text-ink-800 sm:text-[1.65rem]">
@@ -404,7 +489,7 @@ export function Section({
 }: {
   children: React.ReactNode;
   className?: string;
-  tone?: "dark" | "light" | "obsidian";
+  tone?: "dark" | "light" | "obsidian" | "brand" | "lavender" | "peach" | "sky" | "white";
   id?: string;
 }) {
   return (
@@ -414,6 +499,11 @@ export function Section({
         "relative py-20 sm:py-24 lg:py-28",
         tone === "light" && "bg-paper-gradient text-ink-900",
         tone === "obsidian" && "bg-paper-200 text-ink-900",
+        tone === "brand" && "bg-brand-deep text-white",
+        tone === "lavender" && "bg-tint-lavender text-ink-900",
+        tone === "peach" && "bg-tint-peach text-ink-900",
+        tone === "sky" && "bg-tint-sky text-ink-900",
+        tone === "white" && "bg-white text-ink-900",
         className
       )}
     >
@@ -427,11 +517,13 @@ export function TextLink({
   children,
   className,
   external,
+  tone = "gold",
 }: {
   href: string;
   children: React.ReactNode;
   className?: string;
   external?: boolean;
+  tone?: "gold" | "brand";
 }) {
   const Tag = external ? "a" : Link;
   return (
@@ -439,7 +531,8 @@ export function TextLink({
       href={href}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       className={cn(
-        "link-underline inline-flex items-center gap-2 font-sans text-[11.5px] font-semibold uppercase tracking-[0.2em] text-gold-700 transition-colors hover:text-gold-600",
+        "link-underline inline-flex items-center gap-2 font-sans text-[11.5px] font-semibold uppercase tracking-[0.2em] transition-colors",
+        tone === "brand" ? "text-brand-700 hover:text-brand-600" : "text-gold-700 hover:text-gold-600",
         className
       )}
     >

@@ -28,16 +28,42 @@ export function SiteFooter({
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative isolate overflow-hidden border-t border-gold-500/20 bg-obsidian-950">
-      <Backdrop src="/images/texture-marble.jpg" overlay="soft" className="opacity-[0.35]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-obsidian-950/70 via-obsidian-950/90 to-obsidian-950" />
+    <footer className="relative isolate overflow-hidden bg-obsidian-950">
+      <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-[3px] bg-gradient-to-r from-brand-700 via-gold-500 to-ember-500" />
+      <Backdrop src="/images/texture-marble.jpg" overlay="soft" className="opacity-[0.3]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-brand-950/60 via-obsidian-950/90 to-obsidian-950" />
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-24 right-[10%] h-72 w-72 rounded-full bg-brand-600/20 blur-3xl" />
+        <div className="absolute -bottom-28 left-[6%] h-72 w-72 rounded-full bg-ember-500/[0.08] blur-3xl" />
+      </div>
 
-      <div className="container relative py-16 sm:py-20">
+      {/* Footer CTA strip */}
+      <div className="container relative pt-14">
+        <div className="flex flex-col items-center justify-between gap-6 rounded-2xl border border-white/10 bg-white/[0.04] px-8 py-7 backdrop-blur-sm sm:px-10 lg:flex-row">
+          <div className="text-center lg:text-left">
+            <p className="font-serif text-[1.5rem] leading-tight text-ivory-50 sm:text-[1.7rem]">
+              Seats for the next edition are open
+            </p>
+            <p className="mt-2 text-[13px] text-ivory-400/70">
+              Capped rooms, curated introductions and two days that pay for themselves.
+            </p>
+          </div>
+          <Link
+            href="/events"
+            className="group inline-flex h-[50px] shrink-0 items-center gap-2.5 rounded-full bg-brand-gradient px-8 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-white shadow-brand transition-all hover:-translate-y-0.5 hover:shadow-brand"
+          >
+            Get your ticket
+            <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
+          </Link>
+        </div>
+      </div>
+
+      <div className="container relative py-14 sm:py-16">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_0.8fr_0.9fr_1.1fr]">
           {/* Identity */}
           <div>
-            <Link href="/" className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center border border-gold-500/50 font-serif text-[1.4rem] text-gold-300">
+            <Link href="/" className="group flex items-center gap-3">
+              <span className="flex h-11 w-11 items-center justify-center bg-brand-gradient font-serif text-[1.4rem] text-white shadow-brand-sm transition-transform duration-300 group-hover:-translate-y-0.5">
                 {settings.siteName.charAt(0).toUpperCase()}
               </span>
               <span className="flex flex-col leading-none">
@@ -59,7 +85,7 @@ export function SiteFooter({
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={s.label}
-                    className="flex h-10 w-10 items-center justify-center border border-white/10 text-ivory-400 transition-all hover:border-gold-500/60 hover:text-gold-300"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-ivory-400 transition-all hover:-translate-y-0.5 hover:border-brand-400/60 hover:bg-brand-600/20 hover:text-white"
                   >
                     <Icon className="h-[16px] w-[16px]" />
                   </a>
@@ -78,8 +104,9 @@ export function SiteFooter({
                 <li key={l.href + l.label}>
                   <Link
                     href={l.href}
-                    className="text-[13.5px] text-ivory-400/80 transition-colors hover:text-gold-200"
+                    className="group/link inline-flex items-center gap-2 text-[13.5px] text-ivory-400/80 transition-colors hover:text-gold-200"
                   >
+                    <span aria-hidden className="h-px w-0 bg-gradient-to-r from-brand-400 to-ember-400 transition-all duration-300 group-hover/link:w-4" />
                     {l.label}
                   </Link>
                 </li>
