@@ -57,8 +57,11 @@ export async function POST(req: Request) {
     return ok({
       ok: true,
       delivered,
-      // Local development convenience: surface the link when no mailer is set up.
-      ...(token && !delivered && identityBackend() === "local" ? { resetToken: token } : {}),
+      // Local development convenience ONLY: surface the link when no mailer
+      // is set up and we are not in production. Never returned in prod.
+      ...(token && !delivered && identityBackend() === "local" && process.env.NODE_ENV !== "production"
+        ? { resetToken: token }
+        : {}),
     });
   } catch (err) {
     return handleApiError(err);

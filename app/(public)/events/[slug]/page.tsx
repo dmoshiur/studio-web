@@ -8,6 +8,7 @@ import { formatDate } from "@/lib/utils";
 import { Countdown } from "@/components/public/countdown";
 import { Badge, Diamond } from "@/components/ui/badge";
 import { Backdrop, GoldRule, Script } from "@/components/public/ui-kit";
+import { ReserveForm } from "@/components/public/reserve-form";
 
 export const dynamic = "force-dynamic";
 
@@ -226,6 +227,12 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
                 Transfers are free up to 72 hours before doors. Every pass includes the session recordings.
               </p>
             </div>
+
+            {new Date(event.startAt).getTime() > Date.now() && (
+              <div className="mt-6">
+                <ReserveForm eventSlug={event.slug} eventTitle={event.title} />
+              </div>
+            )}
           </aside>
         </div>
       </section>

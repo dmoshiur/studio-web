@@ -1,6 +1,6 @@
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminDb } from "@/lib/firebase/admin";
-import { requireOwner } from "@/lib/server/auth";
+import { requireHackerAdmin } from "@/lib/server/auth";
 import { baseEmailTemplate, getEffectiveSmtpConfig, sendMail } from "@/lib/email/mailer";
 import { smtpTestSchema } from "@/lib/validation/schemas";
 import { apiError, handleApiError, ok, parseBody, rateLimitKey } from "@/lib/server/api-helpers";
@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
-    const user = await requireOwner();
+    const user = await requireHackerAdmin();
     const rl = await rateLimit(rateLimitKey("smtp-test", req, user.uid), RATE_PRESETS.smtpTest.limit, RATE_PRESETS.smtpTest.windowMs);
     if (!rl.allowed) return apiError("Too many test emails. Try again later.", 429, "rate_limited");
     const { to } = await parseBody(req, smtpTestSchema);

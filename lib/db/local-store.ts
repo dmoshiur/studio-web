@@ -200,24 +200,38 @@ function isSentinel(v: unknown): v is FieldSentinel {
   return typeof v === "object" && v !== null && (v as FieldSentinel)[SENTINEL] === true;
 }
 
-/** Detect sentinels created by firebase-admin's FieldValue class. */
+/** Detect sentinels created by firebase-admin's FieldValue class.
+ *  Handles both old (`_methodName`/`_operand`) and current
+ *  (ServerTimestampTransform/NumericIncrementTransform/…) internals. */
 function fromFirebaseFieldValue(v: unknown): FieldSentinel | null {
   if (!(v instanceof FsFieldValue)) return null;
-  const internal = v as unknown as { _methodName?: string; _operand?: unknown; _elements?: unknown[] };
-  switch (internal._methodName) {
-    case "serverTimestamp":
-      return sentinel("serverTimestamp");
-    case "increment":
-      return sentinel("increment", Number(internal._operand ?? 0));
-    case "arrayUnion":
-      return sentinel("arrayUnion", internal._elements ?? []);
-    case "arrayRemove":
-      return sentinel("arrayRemove", internal._elements ?? []);
-    case "delete":
-      return sentinel("delete");
-    default:
-      return null;
+  const internal = v as unknown as {
+    _methodName?: string;
+    _operand?: unknown;
+    _elements?: unknown[];
+    operand?: unknown;
+    elements?: unknown[];
+  };
+  const name =
+    internal._methodName ?? Object.getPrototypeOf(v)?.constructor?.name ?? "";
+  const operand = internal._operand ?? internal.operand;
+  const elements = internal._elements ?? internal.elements;
+  if (name === "serverTimestamp" || name === "ServerTimestampTransform") {
+    return sentinel("serverTimestamp");
   }
+  if (name === "increment" || name === "NumericIncrementTransform") {
+    return sentinel("increment", Number(operand ?? 0));
+  }
+  if (name === "arrayUnion" || name === "ArrayUnionTransform") {
+    return sentinel("arrayUnion", elements ?? []);
+  }
+  if (name === "arrayRemove" || name === "ArrayRemoveTransform") {
+    return sentinel("arrayRemove", elements ?? []);
+  }
+  if (name === "delete" || name === "DeleteTransform") {
+    return sentinel("delete");
+  }
+  return null;
 }
 
 export const LocalFieldValue = {

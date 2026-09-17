@@ -1,20 +1,30 @@
 # Owner Guide — `/hackeradmin`
 
-The owner console is a **separate, owner-only control center** for infrastructure, security and
-global settings. Knowing the URL grants nothing: every page is gated server-side to `role: owner`,
-and every `/api/owner/*` route independently verifies the session + claim. Admins are rejected.
+The operations console is a **separate, highly protected control center** for infrastructure,
+security and global settings. It is NOT opened by a password login — it is gated by a
+**rotating passcode**:
 
-## First-time bootstrap
+- Every hour a cryptographically random passcode is generated and emailed **exclusively** to the
+  security recipient (`mdmoshiurrahmanmohi1@gmail.com`, hard-coded in `lib/server/passcode.ts`).
+- Only a salted scrypt **hash** is stored (in the shared database, so restarts and multiple
+  instances agree). The passcode never appears in logs, URLs or API responses.
+- Entry attempts are rate-limited per IP and globally locked after 5 failures (15 minutes).
+- A successful entry issues a signed httpOnly session cookie (`__ha_session`, 2h, sliding) that
+  is revoked whenever a manual rotation or custom passphrase is set.
+- If email delivery fails, rotation is **blocked** and the previous passcode stays active —
+  an undelivered code never becomes the active one. Without SMTP configured the console
+  cannot be entered (by design).
 
-1. Register an account with your owner email (must be listed in `OWNER_EMAILS`).
-2. Visit `/setup`, sign in, paste `SETUP_TOKEN` (server env var).
-3. You are promoted to `owner` (custom claim + `users`/`admins` docs) and redirected here.
-4. The setup API **permanently disables itself** once an owner exists.
-5. Rotate `SETUP_TOKEN` in Vercel afterwards.
-6. Escape hatch: `npx tsx scripts/set-owner.ts you@example.com` (needs Admin env vars).
+**Passcode & Access** (`/hackeradmin/passcode`) lets you: rotate immediately, pause automatic
+rotation by setting a custom passphrase, or resume hourly rotation. All of these require
+re-entering the current passcode and are audit-logged.
 
-To add more owners: **Users & Roles** → change a user's role to `owner` (requires typed CONFIRM).
-To remove yourself: promote someone else first (last-owner protection).
+## Roles & the studio
+
+Regular user accounts (`/login`) still power the content studio (`/admin`, role `admin`+).
+The master administrator from `ADMIN_EMAIL`/`ADMIN_PASSWORD` is seeded into the database on
+first boot (hashed, idempotent) and keeps the `superadmin` role for studio access. To add more
+admins use **Users & Roles** in this console (or the studio's Accounts page for owners).
 
 ## Overview (`/hackeradmin`)
 

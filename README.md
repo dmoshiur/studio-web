@@ -27,8 +27,14 @@ Firebase instead by supplying credentials — the same code paths serve both bac
   unsubscribe; SEO-ready (metadata, OG/Twitter, sitemap, robots, JSON-LD, **RSS at `/feed.xml`**).
 - **Studio (`/admin`)** — dashboard, posts, events, speakers, categories, pages, media library, messages,
   subscribers, navigation & social links, accounts, profile. Role-gated to admin/owner/superadmin.
-- **Owner console (`/hackeradmin`)** — system health, backend/Firebase status (secrets masked), site settings,
-  SMTP (+ test send), users & roles, audit logs, maintenance mode and the emergency lock. Owner/superadmin only.
+- **Operations console (`/hackeradmin`)** — protected by a **rotating hourly passcode** emailed exclusively to the
+  security recipient (never logged, never exposed; brute-force locked). Inside: live system status, runtime controls,
+  a real live log terminal, passcode management, backend status (secrets masked), site settings, SMTP (+ test send),
+  users & roles, audit logs, maintenance mode and the emergency lock.
+- **User accounts & profiles** — self-registration, session persistence, real server-side logout, `/profile` dashboard
+  with avatar upload (validated), password change and seat reservations.
+- **Seat reservations** — database-backed requests from event pages, manageable in the studio and visible on the
+  user's dashboard.
 - **Master administrator from `.env`** — `ADMIN_EMAIL` / `ADMIN_PASSWORD` create an always-available
   `superadmin` with whole-platform access (content, users, roles, infrastructure). No database setup required.
 - **Complete auth flows** — sign in, self-registration (`ALLOW_REGISTRATION`), password reset (link delivered

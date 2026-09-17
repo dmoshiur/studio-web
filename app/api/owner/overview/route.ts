@@ -1,7 +1,7 @@
 import { getAdminAuth, getAdminDb, getAdminStorage, getDataBackend, isAdminConfigured } from "@/lib/firebase/admin";
 import { listIdentityUsers } from "@/lib/server/identity";
 import { isEnvAdminConfigured } from "@/lib/server/auth";
-import { requireOwner } from "@/lib/server/auth";
+import { requireHackerAdmin } from "@/lib/server/auth";
 import { getDashboardCounts } from "@/lib/firestore/content";
 import { getMaintenanceState, getPublicSettings } from "@/lib/firestore/settings";
 import { isSmtpConfigured } from "@/lib/email/mailer";
@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 /** Owner overview: safe statuses only — never secrets. */
 export async function GET() {
   try {
-    await requireOwner();
+    await requireHackerAdmin();
     const [counts, maintenance, settings] = await Promise.all([
       getDashboardCounts().catch(() => null),
       getMaintenanceState(),

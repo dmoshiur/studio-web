@@ -3,11 +3,10 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { Menu, X, ArrowUpRight, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { NavLink } from "@/types";
 import { useSession } from "@/hooks/use-session";
-import { studioHrefFor } from "@/types";
 import { Diamond } from "@/components/ui/badge";
 
 /**
@@ -46,8 +45,6 @@ export function SiteHeader({
       document.body.style.overflow = "";
     };
   }, [open]);
-
-  const studioHref = user ? studioHrefFor(user.role) : "/login";
 
   return (
     <>
@@ -120,13 +117,24 @@ export function SiteHeader({
           </nav>
 
           {/* Actions */}
-          <div className="hidden items-center gap-3 lg:flex">
-            <Link
-              href={studioHref}
-              className="font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-ivory-300/75 transition-colors hover:text-gold-300"
-            >
-              {user ? "Studio" : "Sign in"}
-            </Link>
+          <div className="hidden items-center gap-5 lg:flex">
+            {user ? (
+              <Link
+                href="/profile"
+                aria-label="My account"
+                className="inline-flex items-center gap-2 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-ivory-300/75 transition-colors hover:text-gold-300"
+              >
+                <UserRound className="h-4 w-4" />
+                {user.displayName?.split(" ")[0] ?? "Account"}
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-ivory-300/75 transition-colors hover:text-gold-300"
+              >
+                Sign in
+              </Link>
+            )}
             <Link
               href="/events"
               className="group inline-flex h-11 items-center gap-2 border border-gold-500/50 px-6 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-200 transition-all hover:border-gold-400 hover:bg-gold-500 hover:text-obsidian-950"
@@ -172,10 +180,10 @@ export function SiteHeader({
           </nav>
           <div className="mt-auto flex flex-col gap-3 pt-10">
             <Link
-              href={studioHref}
+              href={user ? "/profile" : "/login"}
               className="flex h-12 items-center justify-center border border-white/20 font-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-ivory-200"
             >
-              {user ? "Open studio" : "Sign in"}
+              {user ? "My account" : "Sign in"}
             </Link>
             <Link
               href="/events"

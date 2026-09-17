@@ -7,6 +7,7 @@ import {
   resolveIdentitySession,
   getIdentityUser,
 } from "@/lib/server/identity";
+import { getHaSession } from "@/lib/server/ha-session";
 import type { Role, SessionUser } from "@/types";
 import { isAdminRole, isOwnerRole } from "@/types";
 
@@ -77,6 +78,64 @@ export function adminSessionUser(email: string): SessionUser {
     emailVerified: true,
     role: "superadmin",
   };
+}
+
+/**
+ * =====================================================================
+ * Admin seeding from environment (requirement: auto-seed ADMIN_EMAIL)
+ * =====================================================================
+ * On server startup the configured admin email is checked against the
+ * database. If the account does NOT exist it is created with a securely
+ * hashed password (scrypt) and the `superadmin` role. If it already
+ * exists nothing is touched — no duplicates, no password resets on
+ * restart. The environment password is used only as the *initial*
+ * credential; afterwards the account lives in the database like any
+ * other. The plaintext password is never persisted and never logged.
+ */
+export async function seedAdminFromEnv(): Promise<"created" | "exists" | "skipped"> {
+  try {
+    const emails = getAdminEmails();
+    const password = getAdminPassword();
+    if (emails.length === 0 || !password) return "skipped";
+
+    const { getAdminDb } = await import("@/lib/firebase/admin");
+    const db = getAdminDb();
+    if (!db) return "skipped";
+
+    let result: "created" | "exists" = "exists";
+    for (const email of emails) {
+      // Does this email already have an account (either backend)?
+      let exists = false;
+      if (identityBackend() === "local") {
+        const { getCredentialByEmail } = await import("@/lib/server/local-credentials");
+        exists = getCredentialByEmail(email) !== null;
+      } else {
+        const auth = getAdminAuth();
+        if (auth) {
+          exists = await auth
+            .getUserByEmail(email)
+            .then(() => true)
+            .catch(() => false);
+        }
+      }
+      if (exists) continue;
+
+      const { createIdentityUser } = await import("@/lib/server/identity");
+      await createIdentityUser({
+        email,
+        password,
+        displayName: getAdminDisplayName(),
+        role: "superadmin",
+      });
+      result = "created";
+      // NOTE: the password itself is intentionally never logged.
+      console.info(`[bootstrap] admin account for ${email} created from environment (password stored hashed)`);
+    }
+    return result;
+  } catch (err) {
+    console.error("[bootstrap] admin seeding failed:", err instanceof Error ? err.message : err);
+    return "skipped";
+  }
 }
 
 /** Owner allowlist (setup bootstrap) — includes the env admin address. */
@@ -209,6 +268,29 @@ export async function requireOwner(): Promise<SessionUser> {
     throw new AuthError("Owner access required", 403, "forbidden");
   }
   return user;
+}
+
+/**
+ * Authorization for the protected /hackeradmin operations panel and its
+ * /api/owner/* backend. Requires the dedicated hackeradmin session that
+ * is only issued after the rotating passcode is verified server-side.
+ * A regular user/admin session — even a superadmin one — is NOT enough:
+ * the panel is a separately protected control surface. The role is taken
+ * from the server-validated session state, never from the client.
+ */
+export async function requireHackerAdmin(): Promise<SessionUser> {
+  const ha = await getHaSession();
+  if (!ha) {
+    throw new AuthError("Operations passcode verification required", 401, "hackeradmin_required");
+  }
+  return {
+    uid: "hackeradmin-session",
+    email: null,
+    displayName: "Operations Console",
+    photoURL: null,
+    emailVerified: true,
+    role: "superadmin",
+  };
 }
 
 export class AuthError extends Error {

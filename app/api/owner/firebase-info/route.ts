@@ -1,6 +1,6 @@
 import { getAdminAuth, getAdminDb, getAdminStorage, getDataBackend } from "@/lib/firebase/admin";
 import { listIdentityUsers } from "@/lib/server/identity";
-import { requireOwner } from "@/lib/server/auth";
+import { requireHackerAdmin } from "@/lib/server/auth";
 import { maskSecret } from "@/lib/utils";
 import { handleApiError, ok } from "@/lib/server/api-helpers";
 
@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 /** Owner-only Firebase connection info. Secrets are masked server-side. */
 export async function GET() {
   try {
-    await requireOwner();
+    await requireHackerAdmin();
 
     const dbOk = await getAdminDb()?.collection("siteSettings").doc("public").get().then(() => "operational").catch(() => "error") ?? "error";
     const authOk = await listIdentityUsers(1).then(() => "operational").catch(() => "error");

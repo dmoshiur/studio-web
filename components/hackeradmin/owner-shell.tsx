@@ -6,15 +6,17 @@ import { usePathname } from "next/navigation";
 import {
   Gauge, Flame, Globe, Power, Users, ScrollText, Menu, X,
   ExternalLink, LogOut, ShieldCheck, LayoutDashboard, Mail, Database,
+  KeyRound, TerminalSquare, Activity,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { SessionUser } from "@/types";
-import { useSession } from "@/hooks/use-session";
 import { Diamond } from "@/components/ui/badge";
 
 const NAV = [
   { label: "Overview", href: "/hackeradmin", icon: Gauge, exact: true },
   { label: "Site Status", href: "/hackeradmin/status", icon: Power },
+  { label: "Runtime & Controls", href: "/hackeradmin/runtime", icon: Activity },
+  { label: "Live Logs", href: "/hackeradmin/logs", icon: TerminalSquare },
+  { label: "Passcode & Access", href: "/hackeradmin/passcode", icon: KeyRound },
   { label: "Backend & Firebase", href: "/hackeradmin/firebase", icon: Flame },
   { label: "Site Settings", href: "/hackeradmin/settings", icon: Globe },
   { label: "Email / SMTP", href: "/hackeradmin/smtp", icon: Mail },
@@ -22,13 +24,27 @@ const NAV = [
   { label: "Audit Logs", href: "/hackeradmin/audit-logs", icon: ScrollText },
 ];
 
-/** Owner console shell — the most privileged surface, dressed accordingly. */
-export function OwnerShell({ user, children }: { user: SessionUser; children: React.ReactNode }) {
+/**
+ * Operations console shell — the most privileged surface, dressed
+ * accordingly. Identity comes from the passcode-verified session, never
+ * from client-supplied data.
+ */
+export function OwnerShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
-  const { logout } = useSession();
+  const [signingOut, setSigningOut] = React.useState(false);
 
   React.useEffect(() => setOpen(false), [pathname]);
+
+  async function signOut() {
+    if (signingOut) return;
+    setSigningOut(true);
+    try {
+      await fetch("/api/owner/passcode", { method: "DELETE" });
+    } finally {
+      window.location.href = "/";
+    }
+  }
 
   const sidebar = (
     <div className="studio-sidebar flex h-full flex-col">
@@ -37,9 +53,9 @@ export function OwnerShell({ user, children }: { user: SessionUser; children: Re
           <ShieldCheck className="h-5 w-5" />
         </span>
         <div>
-          <p className="font-serif text-[1.1rem] leading-none text-ivory-50">Owner Console</p>
+          <p className="font-serif text-[1.1rem] leading-none text-ivory-50">Operations Console</p>
           <p className="mt-1.5 font-sans text-[9px] font-semibold uppercase tracking-[0.24em] text-gold-400/90">
-            Restricted access
+            Passcode protected
           </p>
         </div>
       </Link>
@@ -50,7 +66,7 @@ export function OwnerShell({ user, children }: { user: SessionUser; children: Re
         </p>
       </div>
 
-      <nav aria-label="Owner" className="mt-6 flex-1 overflow-y-auto px-3 pb-4">
+      <nav aria-label="Operations" className="mt-6 flex-1 overflow-y-auto px-3 pb-4">
         {NAV.map((item) => {
           const active = item.exact ? pathname === item.href : pathname.startsWith(item.href);
           return (
@@ -69,18 +85,19 @@ export function OwnerShell({ user, children }: { user: SessionUser; children: Re
 
       <div className="border-t border-white/[0.07] p-4">
         <div className="flex items-center gap-3 rounded-sm bg-white/[0.03] p-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-gold-500/40 font-serif text-[1rem] text-gold-300">
-            {(user.displayName ?? user.email ?? "?").charAt(0).toUpperCase()}
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-gold-500/40 text-gold-300">
+            <KeyRound className="h-4 w-4" />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[13px] font-semibold text-ivory-100">{user.displayName ?? "Owner"}</p>
-            <p className="font-sans text-[9.5px] uppercase tracking-[0.2em] text-gold-400/90">{user.role}</p>
+            <p className="truncate text-[13px] font-semibold text-ivory-100">Operations Session</p>
+            <p className="font-sans text-[9.5px] uppercase tracking-[0.2em] text-gold-400/90">Passcode verified</p>
           </div>
           <button
-            onClick={() => void logout()}
-            aria-label="Sign out"
-            title="Sign out"
-            className="rounded-sm p-2 text-ivory-400 transition-colors hover:bg-white/[0.06] hover:text-danger"
+            onClick={() => void signOut()}
+            aria-label="Leave the panel"
+            title="Leave the panel"
+            disabled={signingOut}
+            className="rounded-sm p-2 text-ivory-400 transition-colors hover:bg-white/[0.06] hover:text-danger disabled:opacity-60"
           >
             <LogOut className="h-4 w-4" />
           </button>
@@ -150,7 +167,7 @@ export function OwnerShell({ user, children }: { user: SessionUser; children: Re
                 <span className="absolute h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
                 <span className="relative h-2.5 w-2.5 rounded-full bg-emerald-400" />
               </span>
-              <p className="font-sans text-[10.5px] uppercase tracking-[0.22em] text-ivory-300">Systems nominal</p>
+              <p className="font-sans text-[10.5px] uppercase tracking-[0.22em] text-ivory-300">Session secured</p>
             </div>
 
             {crumbs.length > 0 && (
