@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Newspaper, CalendarDays, Mic2, Tags, FileText, Image as ImageIcon,
   Inbox, Mail, Navigation as NavIcon, User, Menu, X, ExternalLink, LogOut, ShieldCheck, Users,
+  CalendarCheck2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SessionUser } from "@/types";
@@ -25,6 +26,7 @@ const NAV = [
   { section: "Engagement" },
   { label: "Media", href: "/admin/media", icon: ImageIcon },
   { label: "Messages", href: "/admin/messages", icon: Inbox },
+  { label: "Reservations", href: "/admin/reservations", icon: CalendarCheck2 },
   { label: "Subscribers", href: "/admin/subscribers", icon: Mail },
   { label: "Accounts", href: "/admin/users", icon: Users },
   { section: "Site" },

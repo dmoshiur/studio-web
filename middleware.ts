@@ -29,7 +29,9 @@ const PUBLIC_ALWAYS = [
  * Real authorization is enforced server-side (API routes + layouts).
  *  1. Maintenance mode → handled by the public layout (it reads
  *     the cached maintenance state server-side). No internal fetch here.
- *  2. /admin & /hackeradmin without a session cookie → /login.
+ *  2. /admin without a session cookie → /login.
+ *  3. /hackeradmin is gated by the rotating-passcode session and renders
+ *     its own secure entry screen — no redirect to /login here.
  */
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -45,10 +47,9 @@ export async function middleware(req: NextRequest) {
 
   const isAlwaysPublic = PUBLIC_ALWAYS.some((p) => pathname === p || pathname.startsWith(p + "/") || pathname.startsWith(p));
   const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");
-  const isOwnerRoute = pathname === "/hackeradmin" || pathname.startsWith("/hackeradmin/");
 
   // --- Coarse auth gate (real checks happen server-side) ---
-  if (isAdminRoute || isOwnerRoute) {
+  if (isAdminRoute) {
     const session = req.cookies.get(SESSION_COOKIE)?.value;
     if (!session) {
       const url = req.nextUrl.clone();

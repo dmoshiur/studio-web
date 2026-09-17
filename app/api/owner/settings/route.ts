@@ -1,4 +1,4 @@
-import { requireOwner } from "@/lib/server/auth";
+import { requireHackerAdmin } from "@/lib/server/auth";
 import { getPublicSettings, savePublicSettings } from "@/lib/firestore/settings";
 import { publicSettingsSchema } from "@/lib/validation/schemas";
 import { handleApiError, ok, parseBody } from "@/lib/server/api-helpers";
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    await requireOwner();
+    await requireHackerAdmin();
     return ok(await getPublicSettings());
   } catch (err) {
     return handleApiError(err);
@@ -18,7 +18,7 @@ export async function GET() {
 
 export async function PUT(req: Request) {
   try {
-    const user = await requireOwner();
+    const user = await requireHackerAdmin();
     const body = await parseBody(req, publicSettingsSchema);
     const saved = await savePublicSettings(
       {

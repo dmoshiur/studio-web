@@ -178,6 +178,15 @@ export async function createIdentityUser(input: {
       });
       if (role !== "user") await auth.setCustomUserClaims(created.uid, { role });
       await mirrorUserDoc(created.uid, { email, displayName: input.displayName ?? null, role, createdAt: new Date() });
+      if (role !== "user") {
+        const db = getAdminDb();
+        if (db) {
+          await db
+            .collection("admins")
+            .doc(created.uid)
+            .set({ uid: created.uid, email, role, updatedAt: new Date() }, { merge: true });
+        }
+      }
       return {
         uid: created.uid,
         email,
@@ -208,6 +217,14 @@ export async function createIdentityUser(input: {
     createdAt: new Date(),
     passwordLogin: true,
   });
+  // Keep the admins collection in sync (powers last-owner protections).
+  const db = getAdminDb();
+  if (db && (role === "admin" || role === "owner" || role === "superadmin")) {
+    await db
+      .collection("admins")
+      .doc(uid)
+      .set({ uid, email, role, updatedAt: new Date() }, { merge: true });
+  }
   return {
     uid,
     email,

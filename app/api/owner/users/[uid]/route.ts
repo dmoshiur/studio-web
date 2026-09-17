@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { requireOwner } from "@/lib/server/auth";
+import { requireHackerAdmin } from "@/lib/server/auth";
 import { apiError, handleApiError, ok, parseBody } from "@/lib/server/api-helpers";
 import { auditLog } from "@/lib/server/audit";
 import {
@@ -23,7 +23,7 @@ const patchSchema = z.object({
 /** Disable / enable / edit a user — owner only. */
 export async function PATCH(req: Request, { params }: { params: { uid: string } }) {
   try {
-    const actor = await requireOwner();
+    const actor = await requireHackerAdmin();
     const body = await parseBody(req, patchSchema);
 
     const target = await getIdentityUser(params.uid);
@@ -60,7 +60,7 @@ export async function PATCH(req: Request, { params }: { params: { uid: string } 
 /** Permanently delete an account — owner only, never yourself, never the last owner. */
 export async function DELETE(_req: Request, { params }: { params: { uid: string } }) {
   try {
-    const actor = await requireOwner();
+    const actor = await requireHackerAdmin();
     if (params.uid === actor.uid) {
       return apiError("You cannot delete your own account.", 409, "self_delete");
     }

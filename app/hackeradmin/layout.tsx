@@ -1,24 +1,40 @@
-import { redirect } from "next/navigation";
-import { getSessionUser } from "@/lib/server/auth";
-import { isOwnerRole } from "@/types";
+import { hasHaSession } from "@/lib/server/ha-session";
+import { getPasscodeState, maybeAutoRotate } from "@/lib/server/passcode";
+import { PasscodeGate } from "@/components/hackeradmin/passcode-gate";
 import { OwnerShell } from "@/components/hackeradmin/owner-shell";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export const metadata = {
-  title: { default: "Owner Console", template: "%s · Owner Console" },
+  title: { default: "Operations Console", template: "%s · Operations Console" },
   robots: { index: false, follow: false },
 };
 
 /**
- * Server-side gate: only owner / superadmin roles may render /hackeradmin.
- * Admins, users and anonymous visitors are all rejected here,
- * and every /api/owner/* route re-verifies independently.
+ * Server-side gate for the protected operations panel.
+ *
+ * Access requires the dedicated hackeradmin session, which is issued ONLY
+ * after the rotating hourly passcode is verified server-side. Ordinary
+ * user/admin sessions do not get in. When the session is missing or has
+ * been revoked by a rotation, the passcode entry screen is rendered
+ * instead of the panel — nothing else leaks.
  */
 export default async function HackerAdminLayout({ children }: { children: React.ReactNode }) {
-  const { user } = await getSessionUser();
-  if (!user) redirect("/login?next=/hackeradmin");
-  if (!isOwnerRole(user.role)) redirect("/forbidden");
-  return <OwnerShell user={user}>{children}</OwnerShell>;
+  // Keep the passcode lifecycle fresh on every panel render.
+  await maybeAutoRotate();
+
+  const authorized = await hasHaSession();
+  if (!authorized) {
+    const state = await getPasscodeState().catch(() => null);
+    return (
+      <PasscodeGate
+        provisioned={state?.valid ?? false}
+        smtpConfigured={state?.smtpConfigured ?? false}
+        lockedUntil={state?.lockedUntil ?? null}
+      />
+    );
+  }
+
+  return <OwnerShell>{children}</OwnerShell>;
 }

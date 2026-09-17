@@ -11,6 +11,7 @@ import {
 import { handleApiError, requestIp } from "@/lib/server/api-helpers";
 import { rateLimit, rateLimitHeaders, RATE_PRESETS } from "@/lib/server/rate-limit";
 import { auditLog } from "@/lib/server/audit";
+import { bumpCounter, opsInfo, opsWarn } from "@/lib/server/ops-log";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -64,6 +65,8 @@ export async function POST(req: Request) {
           const user = adminSessionUser(normalized);
           const { token, maxAgeSeconds } = await createIdentitySession(user);
           await auditLog({ actorId: user.uid, actorEmail: normalized, actorRole: user.role, action: "auth.login", result: "success", metadata: { mode: "env-admin" }, ip });
+          bumpCounter("authSuccess");
+          opsInfo("auth", `Master administrator signed in (${normalized})`);
           const res = NextResponse.json({ ok: true, role: user.role, redirect: "/hackeradmin", user });
           res.cookies.set(SESSION_COOKIE, `env-admin:${token}`, sessionCookieOptions(maxAgeSeconds));
           return res;
@@ -81,6 +84,7 @@ export async function POST(req: Request) {
           const user = await authenticateWithPassword(normalized, password);
           const { token, maxAgeSeconds } = await createIdentitySession(user);
           await auditLog({ actorId: user.uid, actorEmail: normalized, actorRole: user.role, action: "auth.login", result: "success", metadata: { mode: "password" }, ip });
+          bumpCounter("authSuccess");
           const res = NextResponse.json({
             ok: true,
             role: user.role,
@@ -92,6 +96,8 @@ export async function POST(req: Request) {
         } catch (err) {
           if (err instanceof IdentityError) {
             await auditLog({ actorEmail: normalized, action: "auth.login", result: "failure", metadata: { mode: "password", code: err.code }, ip });
+            bumpCounter("authFailures");
+            opsWarn("auth", `Failed sign-in attempt for ${normalized}`);
             return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
           }
           throw err;
@@ -133,6 +139,7 @@ export async function POST(req: Request) {
   } catch (err) {
     if (err instanceof IdentityError) {
       await auditLog({ action: "auth.login", result: "failure", ip: requestIp(req), metadata: { code: err.code } });
+      bumpCounter("authFailures");
       return NextResponse.json({ error: err.message, code: err.code }, { status: err.status });
     }
     await auditLog({ action: "auth.login", result: "failure", ip: requestIp(req) });
@@ -140,8 +147,26 @@ export async function POST(req: Request) {
   }
 }
 
-/** Clear the session cookie. */
+/**
+ * Log out. This is a real server-side invalidation, not just a cookie
+ * deletion: for database-backed accounts the session epoch is bumped so
+ * every token issued before this moment stops verifying. The cookie is
+ * then cleared on the client.
+ */
 export async function DELETE() {
+  try {
+    const { getSessionUser } = await import("@/lib/server/auth");
+    const { user } = await getSessionUser();
+    if (user && identityBackend() === "local" && !user.uid.startsWith("env-admin:")) {
+      const { bumpSessionEpoch } = await import("@/lib/server/local-credentials");
+      bumpSessionEpoch(user.uid);
+    }
+    if (user) {
+      await auditLog({ actor: user, action: "auth.logout", result: "success" });
+    }
+  } catch {
+    /* logout must always succeed — the cookie gets cleared regardless */
+  }
   const res = NextResponse.json({ ok: true });
   res.cookies.set(SESSION_COOKIE, "", {
     httpOnly: true,

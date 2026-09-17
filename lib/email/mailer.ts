@@ -160,14 +160,14 @@ export async function sendMail(opts: SendMailOptions): Promise<{ messageId: stri
 }
 
 export function baseEmailTemplate(params: { title: string; bodyHtml: string; footer?: string }): string {
-  return `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#f4f5f7;font-family:Arial,sans-serif;">
+  return `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#eceae4;font-family:Georgia,'Times New Roman',serif;">
   <div style="max-width:600px;margin:0 auto;padding:24px;">
-    <div style="background:linear-gradient(120deg,#ee8425,#f9488b);border-radius:12px 12px 0 0;padding:24px 28px;">
-      <h1 style="color:#fff;margin:0;font-size:22px;">${params.title}</h1>
+    <div style="background:#08080a;border-top:3px solid #c9a227;border-radius:10px 10px 0 0;padding:26px 30px;">
+      <h1 style="color:#f5f1e6;margin:0;font-size:22px;font-weight:600;letter-spacing:0.5px;">${params.title}</h1>
     </div>
-    <div style="background:#ffffff;border-radius:0 0 12px 12px;padding:28px;color:#2a2b36;font-size:15px;line-height:1.6;">
+    <div style="background:#ffffff;border-bottom:3px solid #c9a227;border-radius:0 0 10px 10px;padding:30px;color:#2a2b36;font-size:15px;line-height:1.65;">
       ${params.bodyHtml}
-      <hr style="border:none;border-top:1px solid #e7e7e8;margin:24px 0;" />
+      <hr style="border:none;border-top:1px solid #e7e2d2;margin:24px 0;" />
       <p style="color:#6a6b7c;font-size:12px;margin:0;">${params.footer ?? "ManUp Platform — automated notification. Please do not reply unless a reply-to address was provided."}</p>
     </div>
   </div></body></html>`;

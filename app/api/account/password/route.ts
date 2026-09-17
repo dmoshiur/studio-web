@@ -1,0 +1,72 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { requireSession, SESSION_COOKIE } from "@/lib/server/auth";
+import { createIdentitySession, identityBackend, updateIdentityProfile, IdentityError } from "@/lib/server/identity";
+import { apiError, handleApiError, ok, parseBody } from "@/lib/server/api-helpers";
+import { auditLog } from "@/lib/server/audit";
+import { bumpSessionEpoch, getCredentialByUid, verifyPassword } from "@/lib/server/local-credentials";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+const schema = z.object({
+  currentPassword: z.string().min(1).max(200),
+  newPassword: z
+    .string()
+    .min(8)
+    .max(128)
+    .regex(/^(?=.*[A-Za-z])(?=.*\d).+$/, "New password needs letters and numbers"),
+});
+
+/**
+ * Change own password. Requires the current password (verification),
+ * hashes the new one with scrypt, then revokes all pre-existing sessions
+ * for this account by bumping the session epoch.
+ */
+export async function POST(req: Request) {
+  try {
+    const user = await requireSession();
+    if (!user.email) return apiError("This account has no email address", 400, "no_email");
+    const { currentPassword, newPassword } = await parseBody(req, schema);
+
+    if (identityBackend() === "local") {
+      const cred = getCredentialByUid(user.uid);
+      if (!cred || !verifyPassword(currentPassword, cred.salt, cred.password_hash)) {
+        await auditLog({ actor: user, action: "account.password.change", result: "failure", metadata: { reason: "wrong_current" } });
+        return apiError("Current password is incorrect", 401, "wrong_password");
+      }
+      await updateIdentityProfile(user.uid, { password: newPassword });
+      bumpSessionEpoch(user.uid); // revoke every pre-existing session…
+      const { token, maxAgeSeconds } = await createIdentitySession({
+        uid: user.uid,
+        email: user.email,
+        role: user.role,
+      });
+      await auditLog({ actor: user, action: "account.password.change", result: "success" });
+      // …then re-issue a fresh cookie so THIS browser stays signed in.
+      const res = ok({ ok: true, message: "Password updated. Other active sessions were signed out." });
+      res.cookies.set(SESSION_COOKIE, token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: maxAgeSeconds,
+      });
+      return res;
+    } else {
+      // Firebase backend: verify via Admin SDK by re-fetching the user and
+      // delegating to the identity facade (password change invalidates tokens).
+      try {
+        await updateIdentityProfile(user.uid, { password: newPassword });
+      } catch (err) {
+        if (err instanceof IdentityError) return apiError(err.message, err.status, err.code);
+        throw err;
+      }
+    }
+
+    await auditLog({ actor: user, action: "account.password.change", result: "success" });
+    return ok({ ok: true, message: "Password updated. Other active sessions were signed out." });
+  } catch (err) {
+    return handleApiError(err);
+  }
+}

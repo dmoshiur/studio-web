@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Newspaper, CalendarDays, Mic2, Image as ImageIcon, Inbox, Mail, ArrowRight } from "lucide-react";
+import { Newspaper, CalendarDays, Mic2, Image as ImageIcon, Inbox, Mail, ArrowRight, CalendarCheck2 } from "lucide-react";
 import { PageHeader } from "@/components/admin/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,7 @@ interface Overview {
   counts: {
     posts: number; events: number; speakers: number; media: number;
     unreadMessages: number; subscribers: number;
+    reservations?: number; pendingReservations?: number;
   };
   recentMessages: ContactMessage[];
 }
@@ -58,6 +59,7 @@ export default function AdminDashboard() {
     { label: "Media files", value: data.counts.media, icon: ImageIcon, href: "/admin/media", tint: "bg-sky-400/10 text-sky-300" },
     { label: "Unread messages", value: data.counts.unreadMessages, icon: Inbox, href: "/admin/messages", tint: "bg-red-400/10 text-red-300" },
     { label: "Subscribers", value: data.counts.subscribers, icon: Mail, href: "/admin/subscribers", tint: "bg-emerald-400/10 text-emerald-300" },
+    { label: `Seat reservations${data.counts.pendingReservations ? ` (${data.counts.pendingReservations} pending)` : ""}`, value: data.counts.reservations ?? 0, icon: CalendarCheck2, href: "/admin/reservations", tint: "bg-gold-500/10 text-gold-300" },
   ];
 
   return (
@@ -80,6 +82,25 @@ export default function AdminDashboard() {
           </Link>
         ))}
       </div>
+
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>Site, homepage &amp; branding</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-[13px] leading-relaxed text-ivory-400">
+            Site settings, homepage content and branding (logo, name, SEO, social links) are
+            protected infrastructure controls. They live in the operations console and require the
+            rotating operations passcode.
+          </p>
+          <Link
+            href="/hackeradmin/settings"
+            className="mt-4 inline-flex h-10 items-center gap-2 border border-gold-500/40 px-5 font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-gold-200 transition-colors hover:bg-gold-500/10"
+          >
+            Open site settings <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </CardContent>
+      </Card>
 
       <Card className="mt-6">
         <CardHeader>

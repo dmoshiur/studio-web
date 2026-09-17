@@ -82,6 +82,7 @@ export function ConfirmDialog({
   destructive,
   requireTyping,
   loading,
+  children,
 }: {
   open: boolean;
   onClose: () => void;
@@ -94,6 +95,8 @@ export function ConfirmDialog({
   destructive?: boolean;
   requireTyping?: string;
   loading?: boolean;
+  /** Extra confirmation UI (e.g. a re-authentication field). */
+  children?: React.ReactNode;
 }) {
   const [typed, setTyped] = React.useState("");
   React.useEffect(() => {
@@ -102,6 +105,7 @@ export function ConfirmDialog({
   const canConfirm = !requireTyping || typed.trim() === requireTyping;
   return (
     <Dialog open={open} onClose={onClose} title={title} description={message ?? description}>
+      {children && <div className="mb-4">{children}</div>}
       {requireTyping && (
         <div className="mb-4">
           <p className="mb-2 text-[13px] text-ivory-300">

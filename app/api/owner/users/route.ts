@@ -1,5 +1,5 @@
 import { getAdminDb } from "@/lib/firebase/admin";
-import { requireOwner } from "@/lib/server/auth";
+import { requireHackerAdmin } from "@/lib/server/auth";
 import { setRoleSchema } from "@/lib/validation/schemas";
 import { apiError, handleApiError, ok, parseBody } from "@/lib/server/api-helpers";
 import { auditLog } from "@/lib/server/audit";
@@ -19,7 +19,7 @@ export const dynamic = "force-dynamic";
 /** List accounts — owner only. */
 export async function GET(req: Request) {
   try {
-    await requireOwner();
+    await requireHackerAdmin();
     const url = new URL(req.url);
     const limit = Math.min(Math.max(Number(url.searchParams.get("limit") ?? 50), 1), 200);
     const result = await listIdentityUsers(limit, url.searchParams.get("pageToken") ?? undefined);
@@ -39,7 +39,7 @@ const inviteSchema = z.object({
 /** Provision a new admin/owner account — owner only. */
 export async function POST(req: Request) {
   try {
-    const actor = await requireOwner();
+    const actor = await requireHackerAdmin();
     const body = await parseBody(req, inviteSchema);
     const user = await createIdentityUser({
       email: body.email,
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
 /** Set a user's role (owner only). Works on both backends. */
 export async function PATCH(req: Request) {
   try {
-    const actor = await requireOwner();
+    const actor = await requireHackerAdmin();
     const { uid, role } = await parseBody(req, setRoleSchema);
     const db = getAdminDb();
     if (!db) return apiError("Backend not configured", 503, "not_configured");

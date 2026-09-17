@@ -29,11 +29,26 @@ export async function GET(req: Request) {
   }
 }
 
-/** Create an account directly (useful when self-registration is disabled). */
+/**
+ * Create an account from the studio. Privilege rules (server-enforced):
+ *  - admins may create regular users
+ *  - owners/superadmins may additionally create admins
+ *  - owner/superadmin accounts can NEVER be created from this endpoint
+ *    (that stays exclusive to the protected operations console)
+ */
 export async function POST(req: Request) {
   try {
     const actor = await requireAdmin();
     const body = await parseBody(req, createUserSchema);
+
+    const isPrivileged = actor.role === "owner" || actor.role === "superadmin";
+    if (body.role === "owner") {
+      return apiError("Owner accounts cannot be created here", 403, "forbidden_role");
+    }
+    if (body.role === "admin" && !isPrivileged) {
+      return apiError("Only owners can create admin accounts", 403, "forbidden_role");
+    }
+
     const user = await createIdentityUser({
       email: body.email,
       password: body.password,

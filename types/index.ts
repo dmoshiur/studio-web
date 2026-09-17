@@ -14,14 +14,6 @@ export function isOwnerRole(role: Role): boolean {
   return role === "owner" || role === "superadmin";
 }
 
-/** Where a signed-in user should land by default. */
-export function studioHrefFor(role: Role): string {
-  if (role === "superadmin") return "/hackeradmin";
-  if (role === "owner") return "/hackeradmin";
-  if (role === "admin") return "/admin";
-  return "/";
-}
-
 export type PublishStatus = "draft" | "published" | "archived";
 
 export interface SessionUser {
@@ -157,6 +149,24 @@ export interface ContactMessage {
   message: string;
   read: boolean;
   createdAt: string;
+}
+
+export type ReservationStatus = "requested" | "confirmed" | "cancelled";
+
+export interface Reservation {
+  id: string;
+  eventId: string;
+  eventSlug: string;
+  eventTitle: string;
+  eventStartAt: string;
+  userId: string;
+  name: string;
+  email: string;
+  seats: number;
+  note?: string;
+  status: ReservationStatus;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Subscriber {

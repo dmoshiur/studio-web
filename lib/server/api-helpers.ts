@@ -2,6 +2,7 @@ import "server-only";
 import { NextResponse } from "next/server";
 import { ZodError, type ZodSchema } from "zod";
 import { AuthError } from "@/lib/server/auth";
+import { bumpCounter, opsError } from "@/lib/server/ops-log";
 import { getClientIp } from "@/lib/utils";
 
 export function ok<T>(data: T, init?: ResponseInit & { headers?: Record<string, string> }) {
@@ -23,7 +24,11 @@ export function handleApiError(err: unknown) {
   if (err instanceof ZodError) {
     return apiError("Validation failed", 422, "validation_error", err.flatten());
   }
+  // Log the real error server-side (for the ops terminal) but return a
+  // generic message — stack traces never reach the browser.
   console.error("[api] Unhandled error:", err);
+  bumpCounter("apiErrors");
+  opsError("api", `Unhandled API error: ${err instanceof Error ? err.message : String(err)}`);
   return apiError("Internal server error", 500, "internal_error");
 }
 
