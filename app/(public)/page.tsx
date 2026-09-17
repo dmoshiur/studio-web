@@ -20,7 +20,6 @@ import { OwnerSpotlight } from "@/components/public/owner-spotlight";
 import {
   Accordion,
   Backdrop,
-  Eyebrow,
   Gallery,
   Marquee,
   QuoteBlock,
@@ -111,176 +110,193 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* ================= HERO — asymmetric editorial composition ================= */}
-      <section className="relative isolate overflow-hidden bg-white pb-20 pt-36 sm:pt-44 lg:pb-24">
-        {/* Soft decorative wash */}
+      {/* ================= HERO — full-bleed cinematic stage photography ================= */}
+      <section className="relative isolate overflow-hidden bg-brand-950">
+        {/* Large background image — the stage fills the entire first viewport */}
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-32 right-[-8%] h-[420px] w-[420px] rounded-full bg-brand-500/[0.08] blur-3xl" />
-          <div className="absolute bottom-[-20%] left-[-6%] h-[380px] w-[380px] rounded-full bg-ember-400/[0.08] blur-3xl" />
-          <div className="absolute left-[6%] top-32 hidden h-28 w-28 dot-grid opacity-60 lg:block" />
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-paper-100 to-transparent" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={heroImage}
+            alt=""
+            role="presentation"
+            loading="eager"
+            fetchPriority="high"
+            className="h-full w-full object-cover"
+          />
+          {/* Readability layers — a violet gradient settles behind the copy on the
+              left while the spotlighted hall stays bright and visible on the right. */}
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-950/95 via-brand-950/60 to-brand-950/15" />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-950/90 via-transparent to-obsidian-950/30" />
+        </div>
+
+        {/* Decorative depth — dot lattice, colour glows and an inset editorial frame */}
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          <div className="absolute -left-24 top-16 h-72 w-72 rounded-full bg-brand-500/25 blur-3xl" />
+          <div className="absolute -bottom-16 right-[6%] h-64 w-64 rounded-full bg-ember-400/20 blur-3xl" />
+          <div className="absolute right-[10%] top-[20%] hidden h-28 w-28 dot-grid-gold opacity-40 lg:block" />
         </div>
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-x-6 inset-y-6 hidden border border-ink-900/[0.05] lg:block"
+          className="pointer-events-none absolute inset-x-6 inset-y-6 hidden border border-white/[0.14] lg:block"
         />
 
-        <div className="container relative">
-          <div className="grid items-center gap-14 lg:grid-cols-[1.02fr_0.98fr] lg:gap-16">
-            {/* Copy */}
-            <div className="max-w-2xl">
-              <Reveal className="animate-fade-up">
-                {h.heroBadge && (
-                  <div className="flex flex-wrap items-center gap-4">
-                    <Eyebrow align="left">{h.heroBadge}</Eyebrow>
-                    {h.eventVenue && (
-                      <span className="hidden items-center gap-2 rounded-full border border-ember-500/25 bg-ember-50 px-3.5 py-1.5 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-ember-700 sm:flex">
-                        <MapPin className="h-3.5 w-3.5" />
-                        {h.eventVenue}
-                      </span>
-                    )}
-                  </div>
-                )}
+        {/* Floating date chip over the photography (desktop) */}
+        {h.eventDateISO && (
+          <Reveal
+            delay={280}
+            className="absolute top-32 z-10 hidden animate-floaty lg:block lg:right-10 xl:right-[max(2.5rem,calc((100vw_-_80rem)/2_+_2.5rem))]"
+          >
+            <div className="flex items-center gap-3 rounded-2xl border border-line bg-white/95 px-4 py-3 shadow-lift backdrop-blur">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-gradient text-white shadow-brand-sm">
+                <CalendarDays className="h-[18px] w-[18px]" />
+              </span>
+              <span>
+                <span className="block font-sans text-[9.5px] font-semibold uppercase tracking-[0.22em] text-ember-600">
+                  Save the date
+                </span>
+                <span className="block font-serif text-[1.05rem] leading-tight text-ink-900">
+                  {formatDate(h.eventDateISO, { month: "short", day: "numeric" })}
+                </span>
+              </span>
+            </div>
+          </Reveal>
+        )}
 
-                <h1 className="display-xl mt-8 font-semibold text-ink-900">{h.heroTitle}</h1>
-
-                <span
-                  aria-hidden
-                  className="mt-8 block h-[3px] w-44 rounded-full bg-gradient-to-r from-brand-700 via-gold-500 to-ember-500"
-                />
-
-                <p className="lead mt-7 max-w-xl">{h.heroSubtitle}</p>
-
-                {/* Trust row — driven by real summit stats */}
-                {stats.length > 0 && (
-                  <dl className="mt-7 flex flex-wrap items-center gap-x-7 gap-y-3">
-                    {stats.slice(0, 3).map((s) => (
-                      <div key={s.label} className="flex items-baseline gap-2">
-                        <dt className="sr-only">{s.label}</dt>
-                        <dd className="font-serif text-[1.5rem] font-semibold text-brand-800">{s.value}</dd>
-                        <dd className="font-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-400">
-                          {s.label}
-                        </dd>
-                      </div>
-                    ))}
-                  </dl>
-                )}
-
-                <div className="mt-9 flex flex-wrap items-center gap-4">
-                  <Link href={h.heroCtaPrimary.href} className="btn-editorial group rounded-full shadow-brand-sm">
-                    {h.heroCtaPrimary.label}
-                    <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                  </Link>
-                  {h.heroCtaSecondary && (
-                    <Link href={h.heroCtaSecondary.href} className="btn-quiet rounded-full">
-                      {h.heroCtaSecondary.label}
-                    </Link>
+        <div className="container relative flex min-h-[92svh] flex-col justify-center pb-24 pt-32 sm:pt-36">
+          <div className="max-w-2xl">
+            <Reveal className="animate-fade-up">
+              {h.heroBadge && (
+                <div className="flex flex-wrap items-center gap-4">
+                  <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-luxe text-gold-300">
+                    <span aria-hidden className="h-px w-8 bg-gradient-to-r from-transparent to-gold-400/80" />
+                    {h.heroBadge}
+                  </p>
+                  {h.eventVenue && (
+                    <span className="hidden items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-gold-100 backdrop-blur-sm sm:flex">
+                      <MapPin className="h-3.5 w-3.5" />
+                      {h.eventVenue}
+                    </span>
                   )}
                 </div>
-              </Reveal>
-
-              {h.showCountdown && h.eventDateISO && (
-                <Reveal
-                  className="mt-10 max-w-xl rounded-2xl border border-brand-600/10 bg-white/80 p-6 shadow-card backdrop-blur"
-                  delay={160}
-                >
-                  <div className="flex flex-wrap items-end gap-x-10 gap-y-6">
-                    <div>
-                      <p className="eyebrow mb-4">Doors open in</p>
-                      <Countdown targetISO={h.eventDateISO} />
-                    </div>
-                    <div className="pb-1">
-                      <p className="font-sans text-[10.5px] uppercase tracking-[0.24em] text-ink-400">
-                        {formatDate(h.eventDateISO, { weekday: "long", month: "long", day: "numeric" })}
-                      </p>
-                      {h.eventVenue && (
-                        <p className="mt-2 font-serif text-[1.2rem] text-ink-700">{h.eventVenue}</p>
-                      )}
-                    </div>
-                  </div>
-                </Reveal>
               )}
-            </div>
 
-            {/* Visual */}
-            <Reveal delay={180} className="relative mx-auto w-full max-w-[520px] lg:mx-0 lg:max-w-none">
-              <div aria-hidden className="pointer-events-none absolute inset-0">
-                <div className="absolute -right-10 -top-10 h-64 w-64 rounded-full bg-brand-500/20 blur-3xl" />
-                <div className="absolute -bottom-14 -left-8 h-56 w-56 rounded-full bg-ember-400/25 blur-3xl" />
-                <div className="absolute -left-8 -top-8 hidden h-24 w-24 dot-grid sm:block" />
-                <div className="absolute -bottom-8 -right-6 hidden h-32 w-32 rounded-full border border-gold-500/40 sm:block" />
-                <div className="absolute -right-4 top-1/3 hidden h-16 w-16 rounded-full border border-brand-600/20 lg:block" />
-              </div>
+              <h1 className="display-xl mt-8 font-semibold text-white [text-shadow:0_2px_32px_rgba(8,8,10,0.45)]">
+                {h.heroTitle}
+              </h1>
 
-              {/* Offset gradient frame */}
-              <div
+              <span
                 aria-hidden
-                className="absolute inset-0 rotate-2 rounded-[2.2rem] bg-gradient-to-br from-brand-600/15 via-gold-500/10 to-ember-500/15"
+                className="mt-8 block h-[3px] w-44 rounded-full bg-gradient-to-r from-brand-400 via-gold-400 to-ember-400"
               />
 
-              <figure className="relative overflow-hidden rounded-[1.75rem] border border-white bg-white shadow-luxe">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={heroImage}
-                  alt="Speaker on the ManUp main stage"
-                  loading="eager"
-                  fetchPriority="high"
-                  className="aspect-[4/5] w-full object-cover sm:aspect-[5/5]"
-                />
-                <span className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent" />
-                <span
-                  aria-hidden
-                  className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand-600 via-gold-500 to-ember-500"
-                />
-                <figcaption className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-4 p-6">
-                  <div>
-                    <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.26em] text-gold-200">
-                      Main stage
-                    </p>
-                    <p className="mt-1.5 font-serif text-[1.35rem] leading-tight text-white">
-                      Two days, one unforgettable room
-                    </p>
-                  </div>
-                  <span className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm sm:flex">
-                    <Ticket className="h-5 w-5 text-white" />
-                  </span>
-                </figcaption>
-              </figure>
+              <p className="mt-7 max-w-xl text-[15px] leading-[1.85] text-white/80 sm:text-[16.5px]">
+                {h.heroSubtitle}
+              </p>
 
-              {/* Floating date card */}
-              {h.eventDateISO && (
-                <div className="absolute -right-2 top-6 flex items-center gap-3 rounded-2xl border border-line bg-white/95 px-4 py-3 shadow-lift backdrop-blur sm:-right-5">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-gradient text-white shadow-brand-sm">
-                    <CalendarDays className="h-[18px] w-[18px]" />
-                  </span>
-                  <span>
-                    <span className="block font-sans text-[9.5px] font-semibold uppercase tracking-[0.22em] text-ember-600">
-                      Save the date
-                    </span>
-                    <span className="block font-serif text-[1.05rem] leading-tight text-ink-900">
-                      {formatDate(h.eventDateISO, { month: "short", day: "numeric" })}
-                    </span>
-                  </span>
-                </div>
+              {/* Trust row — driven by real summit stats */}
+              {stats.length > 0 && (
+                <dl className="mt-7 flex flex-wrap items-center gap-x-7 gap-y-3">
+                  {stats.slice(0, 3).map((s) => (
+                    <div key={s.label} className="flex items-baseline gap-2">
+                      <dt className="sr-only">{s.label}</dt>
+                      <dd className="font-serif text-[1.5rem] font-semibold text-gold-200">{s.value}</dd>
+                      <dd className="font-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-white/55">
+                        {s.label}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
               )}
 
-              {/* Floating live badge */}
-              <div className="absolute -left-2 bottom-10 flex items-center gap-2.5 rounded-full border border-line bg-white/95 py-2 pl-3 pr-4 shadow-lift backdrop-blur sm:-left-5">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ember-500 opacity-60" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-ember-500" />
-                </span>
-                <span className="font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-ink-700">
-                  {stats[0] ? `${stats[0].value} ${stats[0].label.toLowerCase()}` : "Seats filling fast"}
+              <div className="mt-9 flex flex-wrap items-center gap-4">
+                <Link href={h.heroCtaPrimary.href} className="btn-editorial group rounded-full shadow-brand">
+                  {h.heroCtaPrimary.label}
+                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </Link>
+                {h.heroCtaSecondary && (
+                  <Link
+                    href={h.heroCtaSecondary.href}
+                    className="btn-quiet !border-white/60 !bg-white/95 shadow-lift hover:!border-white hover:!bg-white rounded-full"
+                  >
+                    {h.heroCtaSecondary.label}
+                  </Link>
+                )}
+              </div>
+
+              {/* Compact badges — the save-the-date chip also appears as a floating card on lg+ */}
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                {h.eventDateISO && (
+                  <span className="inline-flex items-center gap-2.5 rounded-full border border-line bg-white/95 py-1.5 pl-2 pr-4 shadow-lift backdrop-blur lg:hidden">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-gradient text-white shadow-brand-sm">
+                      <CalendarDays className="h-4 w-4" />
+                    </span>
+                    <span>
+                      <span className="block font-sans text-[8.5px] font-semibold uppercase tracking-[0.22em] text-ember-600">
+                        Save the date
+                      </span>
+                      <span className="block font-serif text-[0.95rem] leading-tight text-ink-900">
+                        {formatDate(h.eventDateISO, { month: "short", day: "numeric" })}
+                      </span>
+                    </span>
+                  </span>
+                )}
+                <span className="inline-flex items-center gap-2.5 rounded-full border border-line bg-white/95 py-2 pl-3 pr-4 shadow-lift backdrop-blur">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ember-500 opacity-60" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-ember-500" />
+                  </span>
+                  <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-ink-700">
+                    {stats[0] ? `${stats[0].value} ${stats[0].label.toLowerCase()}` : "Seats filling fast"}
+                  </span>
                 </span>
               </div>
             </Reveal>
+
+            {h.showCountdown && h.eventDateISO && (
+              <Reveal
+                className="mt-10 max-w-xl rounded-2xl border border-white/40 bg-white/95 p-6 shadow-luxe backdrop-blur"
+                delay={160}
+              >
+                <div className="flex flex-wrap items-end gap-x-10 gap-y-6">
+                  <div>
+                    <p className="eyebrow mb-4">Doors open in</p>
+                    <Countdown targetISO={h.eventDateISO} />
+                  </div>
+                  <div className="pb-1">
+                    <p className="font-sans text-[10.5px] uppercase tracking-[0.24em] text-ink-400">
+                      {formatDate(h.eventDateISO, { weekday: "long", month: "long", day: "numeric" })}
+                    </p>
+                    {h.eventVenue && (
+                      <p className="mt-2 font-serif text-[1.2rem] text-ink-700">{h.eventVenue}</p>
+                    )}
+                  </div>
+                </div>
+              </Reveal>
+            )}
+          </div>
+        </div>
+
+        {/* Floating stage badge — bottom right over the hall (xl only, where the
+            copy column never reaches) */}
+        <div className="absolute bottom-24 right-10 z-10 hidden xl:block xl:right-[max(2.5rem,calc((100vw_-_80rem)/2_+_2.5rem))]">
+          <div className="flex items-center gap-3.5 rounded-2xl border border-white/25 bg-brand-950/45 px-5 py-4 shadow-luxe backdrop-blur-md">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/15">
+              <Ticket className="h-5 w-5 text-gold-200" />
+            </span>
+            <span>
+              <span className="block font-sans text-[10px] font-semibold uppercase tracking-[0.26em] text-gold-200">
+                Main stage
+              </span>
+              <span className="mt-1 block font-serif text-[1.15rem] leading-tight text-white">
+                Two days, one unforgettable room
+              </span>
+            </span>
           </div>
         </div>
 
         <div aria-hidden className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-3 lg:flex">
-          <span className="font-sans text-[9.5px] uppercase tracking-luxe text-ink-400">Scroll</span>
-          <span className="h-12 w-px bg-gradient-to-b from-brand-600/70 via-gold-500/60 to-transparent" />
+          <span className="font-sans text-[9.5px] uppercase tracking-luxe text-white/60">Scroll</span>
+          <span className="h-12 w-px bg-gradient-to-b from-gold-300/80 via-gold-300/40 to-transparent" />
         </div>
       </section>
 
@@ -296,8 +312,8 @@ export default async function HomePage() {
         ]}
       />
 
-      {/* ================= ABOUT — light lavender tint ================= */}
-      <Section tone="lavender">
+      {/* ================= ABOUT — clean white, large supporting image ================= */}
+      <Section tone="white">
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -left-24 top-16 h-72 w-72 rounded-full bg-brand-400/10 blur-3xl" />
           <div className="absolute -right-20 bottom-10 h-64 w-64 rounded-full bg-ember-400/10 blur-3xl" />
@@ -362,9 +378,12 @@ export default async function HomePage() {
         </div>
       </Section>
 
-      {/* ================= STATS — dark brand contrast band ================= */}
+      {/* ================= STATS — dark brand contrast band over the hall ================= */}
       {stats.length > 0 && (
         <section className="relative isolate overflow-hidden bg-brand-deep">
+          {/* Chandelier-lit ballroom ghosting through the brand gradient */}
+          <Backdrop src="/images/page-header.jpg" overlay="none" className="opacity-[0.16] saturate-[0.85]" />
+          <div aria-hidden className="pointer-events-none absolute inset-0 bg-brand-deep/70" />
           <div aria-hidden className="pointer-events-none absolute inset-0">
             <div className="absolute -top-24 left-1/4 h-72 w-72 rounded-full bg-brand-400/25 blur-3xl" />
             <div className="absolute -bottom-28 right-1/5 h-72 w-72 rounded-full bg-ember-500/20 blur-3xl" />
@@ -390,9 +409,9 @@ export default async function HomePage() {
       {/* ================= OWNER SPOTLIGHT ================= */}
       <OwnerSpotlight owner={h.owner} placement="home" />
 
-      {/* ================= EXPERIENCE — white cards, accent tops ================= */}
+      {/* ================= EXPERIENCE — soft lavender tint, white cards ================= */}
       {experience?.items?.length ? (
-        <Section tone="white" className="texture-grain">
+        <Section tone="lavender" className="texture-grain">
           <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
             <div className="absolute -right-28 top-20 h-80 w-80 rounded-full bg-brand-500/[0.06] blur-3xl" />
             <div className="absolute -left-24 bottom-16 h-72 w-72 rounded-full bg-ember-400/[0.07] blur-3xl" />
@@ -764,8 +783,11 @@ export default async function HomePage() {
         </Section>
       )}
 
-      {/* ================= CTA — dark brand conversion band ================= */}
+      {/* ================= CTA — dark brand conversion band over silk ================= */}
       <section className="relative isolate overflow-hidden bg-brand-deep">
+        {/* Black-gold silk texture settling beneath the brand gradient */}
+        <Backdrop src="/images/cta-silk.jpg" overlay="none" className="opacity-[0.26]" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-brand-deep/75" />
         <div aria-hidden className="pointer-events-none absolute inset-0">
           <div className="absolute -top-32 left-[12%] h-96 w-96 rounded-full bg-brand-400/25 blur-3xl" />
           <div className="absolute -bottom-36 right-[8%] h-96 w-96 rounded-full bg-ember-500/25 blur-3xl" />

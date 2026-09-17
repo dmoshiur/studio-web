@@ -10,8 +10,9 @@ import { useSession } from "@/hooks/use-session";
 import { Diamond } from "@/components/ui/badge";
 
 /**
- * Header — a quiet paper-white bar that gains a hairline border and a
- * soft blur once the page scrolls. Desktop navigation is centred with a
+ * Header — a solid white bar with a hairline border and a soft brand-tinted
+ * shadow at all times, so it always reads as a layer raised above the
+ * cinematic hero imagery beneath it. Desktop navigation is centred with a
  * left wordmark and right action, mirroring the editorial layout of the
  * rest of the site.
  */
@@ -64,8 +65,8 @@ export function SiteHeader({
           "fixed inset-x-0 z-50 transition-all duration-500",
           announcement ? "top-0 md:top-[34px]" : "top-0",
           scrolled
-            ? "border-b border-brand-600/10 bg-white/85 shadow-[0_8px_30px_-12px_rgba(76,29,149,0.18)] backdrop-blur-xl"
-            : "border-b border-ink-900/[0.06] bg-white/70 backdrop-blur-md"
+            ? "border-b border-brand-600/15 bg-white/95 shadow-[0_18px_46px_-18px_rgba(29,11,63,0.32)] backdrop-blur-xl"
+            : "border-b border-ink-900/10 bg-white shadow-[0_14px_40px_-22px_rgba(29,11,63,0.3)]"
         )}
       >
         {/* Brand hairline — violet → gold → ember */}

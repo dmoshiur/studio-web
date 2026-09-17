@@ -67,7 +67,7 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
           "Two days of keynote conversations, hands-on workshops and black-tie networking with the founders, operators and creatives shaping what comes next.",
         heroCtaPrimary: { label: "Reserve Your Seat", href: "/events" },
         heroCtaSecondary: { label: "Meet The Speakers", href: "/speakers" },
-        heroImage: IMG.portrait,
+        heroImage: IMG.stage,
         eventDateISO: daysFromNow(45, 9).toISOString(),
         eventVenue: "Grand Meridian Hall, New York",
         showCountdown: true,
