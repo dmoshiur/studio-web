@@ -17,6 +17,7 @@ interface FirebaseInfo {
   apiKeyMasked: string | null;
   admin: { clientEmailMasked: string | null; keyConfigured: boolean };
   checks: { firestore: string; auth: string; storage: string };
+  media: { provider: "cloudinary" | "firebase" | "local"; cloudName?: string; rootFolder?: string };
 }
 
 export default function OwnerFirebasePage() {
@@ -103,6 +104,46 @@ export default function OwnerFirebasePage() {
               </div>
             </div>
           ))}
+        </CardContent>
+      </Card>
+
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>Media storage</CardTitle>
+          <CardDescription>Where uploads from the studio and the owner section are stored</CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-3">
+          <div className="flex flex-col gap-2 rounded-sm border border-white/[0.08] p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2.5">
+              <HardDrive className="h-4 w-4 text-ivory-500" />
+              <div>
+                <p className="text-[13px] font-semibold text-ivory-400/80">Active backend</p>
+                <div className="mt-1">
+                  <MaskedValue
+                    value={
+                      info.media.provider === "cloudinary"
+                        ? `Cloudinary${info.media.cloudName ? ` · ${info.media.cloudName}` : ""}`
+                        : info.media.provider === "firebase"
+                          ? "Firebase Storage"
+                          : "Embedded disk storage"
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+            <span className={`w-fit rounded-full px-2.5 py-1 text-[12px] font-bold ${info.media.provider === "local" ? "bg-amber-400/10 text-amber-300" : "bg-emerald-400/10 text-emerald-300"}`}>
+              {info.media.provider}
+            </span>
+          </div>
+          <div className="flex flex-col gap-2 rounded-sm border border-white/[0.08] p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[13px] font-semibold text-ivory-400/80">Cloudinary root folder</p>
+              <div className="mt-1"><MaskedValue value={info.media.rootFolder ?? "— not configured —"} /></div>
+            </div>
+            <span className="w-fit rounded-full bg-white/[0.06] px-2.5 py-1 text-[12px] font-bold text-ivory-300">
+              {info.media.provider === "cloudinary" ? "browser-direct uploads on" : "set CLOUDINARY_* to enable"}
+            </span>
+          </div>
         </CardContent>
       </Card>
 

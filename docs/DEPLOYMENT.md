@@ -28,6 +28,21 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=…
 NEXT_PUBLIC_FIREBASE_APP_ID=…
 ```
 
+**Media storage — Cloudinary (recommended):**
+```
+CLOUDINARY_CLOUD_NAME=your-cloud
+CLOUDINARY_API_KEY=…
+CLOUDINARY_API_SECRET=…
+CLOUDINARY_FOLDER=manup
+# optional: CLOUDINARY_URL=cloudinary://key:secret@cloud
+# optional: CLOUDINARY_UPLOAD_PRESET=<signed preset>
+# optional: MAX_IMAGE_MB=10, MAX_VIDEO_MB=100, STORAGE_BACKEND=auto
+```
+With these set, the studio uploads images, video, audio and documents straight to Cloudinary
+(signed, browser-direct) and the site serves them from Cloudinary's CDN — no server disk and no
+serverless body-size limits. Without them the app falls back to Firebase Storage, then to the
+embedded `./data/uploads` directory.
+
 **Server-only (never NEXT_PUBLIC_):**
 ```
 FIREBASE_PROJECT_ID=…
@@ -75,6 +90,10 @@ Generate the setup token: `openssl rand -hex 32`.
 - **Settings/homepage/maintenance**: via `/hackeradmin` — effective in seconds.
 - **Credential rotation**: update Vercel env → redeploy. Rotate `SETUP_TOKEN` after bootstrap.
 - **Firebase rules**: edit `firestore.rules` / `storage.rules` → `firebase deploy --only firestore:rules,storage`.
+- **Cloudinary**: assets live under `$CLOUDINARY_FOLDER` in your account; delete a file in the
+  studio (Media → Delete) and the Cloudinary asset is destroyed too. Per-file ceilings are
+  `MAX_IMAGE_MB` / `MAX_VIDEO_MB`; Cloudinary's own plan limit still applies (100 MB per video on
+  the free plan).
 - **Backups**: schedule Firestore export (GCP Scheduled Export) + Storage versioning for critical buckets.
 - **Monitoring**: Vercel Analytics/Speed Insights (optional), plus `/api/health` in your uptime monitor
   (checks app + Firestore + Auth + Storage + SMTP + maintenance).

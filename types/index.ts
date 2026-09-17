@@ -123,6 +123,8 @@ export interface SeoMeta {
   ogImage?: string;
 }
 
+export type StorageProvider = "cloudinary" | "firebase" | "local";
+
 export interface MediaItem {
   id: string;
   fileName: string;
@@ -138,6 +140,17 @@ export interface MediaItem {
   alt?: string;
   uploadedBy: string;
   createdAt: string;
+  /** Which backend holds the bytes. */
+  provider?: StorageProvider;
+  /** Cloudinary public id (needed for transforms / deletes). */
+  publicId?: string;
+  resourceType?: "image" | "video" | "raw";
+  /** Small square preview for grids and pickers. */
+  thumbnailUrl?: string;
+  /** Poster frame for videos. */
+  posterUrl?: string;
+  format?: string;
+  durationSeconds?: number;
 }
 
 export interface ContactMessage {
@@ -198,6 +211,38 @@ export interface SocialLink {
   updatedAt: string;
 }
 
+/**
+ * The owner spotlight — a portrait, a name and a personal message.
+ * Fully editable from the studio (`/admin/owner`) and the owner console.
+ */
+export interface OwnerProfile {
+  /** Master switch for the whole section. */
+  enabled: boolean;
+  showOnHome: boolean;
+  showOnAbout: boolean;
+  /** Calligraphic accent + eyebrow, e.g. "A word from" / "From The Owner". */
+  script?: string;
+  eyebrow?: string;
+  /** Section heading. */
+  title: string;
+  name: string;
+  role?: string;
+  photoUrl?: string;
+  photoAlt?: string;
+  /** Multi-paragraph bio (blank line between paragraphs). */
+  bio: string;
+  quote?: string;
+  /** Handwritten signature image. */
+  signatureUrl?: string;
+  /** Optional video message (Cloudinary video upload). */
+  videoUrl?: string;
+  email?: string;
+  phone?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  socials?: { label: string; url: string }[];
+}
+
 export interface PublicSiteSettings {
   siteName: string;
   tagline: string;
@@ -234,6 +279,8 @@ export interface PublicSiteSettings {
     aboutBody: string;
     aboutImage?: string;
     aboutStats: { value: string; label: string }[];
+    /** Owner spotlight — portrait, name and personal message. */
+    owner?: OwnerProfile;
     /** Optional editorial blocks rendered on the home page. */
     stats?: { value: string; label: string }[];
     experience?: {

@@ -1,8 +1,11 @@
 import "server-only";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminDb } from "@/lib/firebase/admin";
-import type { MaintenanceState, PublicSiteSettings } from "@/types";
+import type { MaintenanceState, OwnerProfile, PublicSiteSettings } from "@/types";
+import { DEFAULT_OWNER_PROFILE } from "@/lib/owner-defaults";
 import { toISODate } from "@/lib/utils";
+
+export { DEFAULT_OWNER_PROFILE };
 
 export const DEFAULT_PUBLIC_SETTINGS: PublicSiteSettings = {
   siteName: "ManUp",
@@ -42,6 +45,7 @@ export const DEFAULT_PUBLIC_SETTINGS: PublicSiteSettings = {
       { value: "25+", label: "Sessions" },
       { value: "2", label: "Days" },
     ],
+    owner: DEFAULT_OWNER_PROFILE,
   },
   updatedAt: new Date(0).toISOString(),
 };
@@ -62,6 +66,23 @@ function mergeDefaults<T extends Record<string, unknown>>(defaults: T, data: Rec
     if (v !== undefined) out[k] = v;
   }
   return out as T;
+}
+
+/**
+ * Firestore rejects `undefined` values (arrays included), and optional
+ * fields routinely arrive blank from the forms — strip them recursively.
+ */
+function stripUndefined<T>(value: T): T {
+  if (Array.isArray(value)) return value.map((item) => stripUndefined(item)) as unknown as T;
+  if (value && typeof value === "object" && !(value instanceof Date)) {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      if (v === undefined) continue;
+      out[k] = stripUndefined(v);
+    }
+    return out as T;
+  }
+  return value;
 }
 
 /* ------------------------------------------------------------------ */
@@ -112,12 +133,22 @@ export async function getPublicSettings(): Promise<PublicSiteSettings> {
       DEFAULT_PUBLIC_SETTINGS as unknown as Record<string, unknown>,
       data
     ) as unknown as PublicSiteSettings;
+    const homepage = (data.homepage as Record<string, unknown> | undefined) ?? {};
     const result: PublicSiteSettings = {
       ...merged,
       seo: { ...DEFAULT_PUBLIC_SETTINGS.seo, ...(data.seo as object | undefined) },
       social: (data.social as Record<string, string>) ?? {},
       appearance: { ...DEFAULT_PUBLIC_SETTINGS.appearance, ...(data.appearance as object | undefined) },
-      homepage: { ...DEFAULT_PUBLIC_SETTINGS.homepage, ...(data.homepage as object | undefined) },
+      homepage: {
+        ...DEFAULT_PUBLIC_SETTINGS.homepage,
+        ...homepage,
+        // The owner spotlight is merged field-by-field so a partial or older
+        // document never blanks the section out.
+        owner: {
+          ...DEFAULT_OWNER_PROFILE,
+          ...((homepage.owner as Partial<OwnerProfile> | undefined) ?? {}),
+        },
+      },
       updatedAt: toISODate(data.updatedAt) ?? new Date(0).toISOString(),
     };
     setCache("publicSettings", result, SETTINGS_CACHE_TTL_MS);
@@ -128,17 +159,52 @@ export async function getPublicSettings(): Promise<PublicSiteSettings> {
   }
 }
 
+/**
+ * Save just the owner spotlight (read-modify-write) — used by the studio,
+ * so an admin editing the owner section can never clobber the rest of the
+ * site settings.
+ */
+export async function saveOwnerProfile(owner: OwnerProfile, updatedBy: string): Promise<PublicSiteSettings> {
+  const db = getAdminDb();
+  if (!db) throw new Error("The data store is not configured");
+  const current = await getPublicSettings();
+  const payload: Omit<PublicSiteSettings, "updatedAt"> = {
+    siteName: current.siteName,
+    tagline: current.tagline,
+    logoUrl: current.logoUrl,
+    faviconUrl: current.faviconUrl,
+    contactEmail: current.contactEmail,
+    phone: current.phone,
+    address: current.address,
+    timezone: current.timezone,
+    seo: current.seo,
+    social: current.social,
+    appearance: current.appearance,
+    homepage: { ...current.homepage, owner },
+  };
+  await db
+    .collection("siteSettings")
+    .doc("public")
+    .set(stripUndefined({ ...payload, updatedAt: FieldValue.serverTimestamp(), updatedBy }), { merge: true });
+  invalidateSettingsCache();
+  return getPublicSettings();
+}
+
 export async function savePublicSettings(
   data: Omit<PublicSiteSettings, "updatedAt">,
   updatedBy: string
 ): Promise<PublicSiteSettings> {
   const db = getAdminDb();
   if (!db) throw new Error("Firestore is not configured");
-  const payload = {
+  // A client that does not manage the owner spotlight (older form, script)
+  // must never wipe it: keep the stored profile when it is not submitted.
+  const previous = await getPublicSettings();
+  const payload = stripUndefined({
     ...data,
+    homepage: { ...data.homepage, owner: data.homepage.owner ?? previous.homepage.owner },
     updatedAt: FieldValue.serverTimestamp(),
     updatedBy,
-  };
+  });
   await db.collection("siteSettings").doc("public").set(payload, { merge: true });
   invalidateSettingsCache();
   return getPublicSettings();

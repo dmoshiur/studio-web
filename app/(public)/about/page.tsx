@@ -4,6 +4,7 @@ import { ArrowUpRight, Target, Heart, Zap } from "lucide-react";
 import { getPublicSettings } from "@/lib/firestore/settings";
 import { getPageBySlug } from "@/lib/firestore/content";
 import { Reveal } from "@/components/public/reveal";
+import { OwnerSpotlight } from "@/components/public/owner-spotlight";
 import {
   Backdrop,
   Eyebrow,
@@ -108,6 +109,9 @@ export default async function AboutPage() {
           <StatStrip stats={stats} tone="light" />
         </div>
       </Section>
+
+      {/* The owner — portrait, name and a personal message */}
+      <OwnerSpotlight owner={settings.homepage.owner} placement="about" />
 
       {/* Values */}
       <Section className="relative isolate overflow-hidden bg-obsidian-950">

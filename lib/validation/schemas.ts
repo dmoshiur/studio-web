@@ -146,6 +146,54 @@ export const socialLinkSchema = z.object({
 });
 
 // ---------------- Settings (owner) ----------------
+/**
+ * Owner spotlight (portrait + name + texts) — editable from the studio and
+ * the owner console, rendered on the homepage and the about page.
+ */
+export const ownerProfileSchema = z.object({
+  enabled: z.boolean().default(true),
+  showOnHome: z.boolean().default(true),
+  showOnAbout: z.boolean().default(true),
+  script: z.string().max(120).optional().or(z.literal("")),
+  eyebrow: z.string().max(120).optional().or(z.literal("")),
+  title: z.string().min(2, "Add a section heading").max(200).default("The person behind the stage"),
+  name: z.string().min(1, "Add the owner's name").max(120),
+  role: z.string().max(160).optional().or(z.literal("")),
+  photoUrl: z.string().max(2048).optional().or(z.literal("")),
+  photoAlt: z.string().max(200).optional().or(z.literal("")),
+  bio: z.string().max(6000).default(""),
+  quote: z.string().max(600).optional().or(z.literal("")),
+  signatureUrl: z.string().max(2048).optional().or(z.literal("")),
+  videoUrl: z.string().max(2048).optional().or(z.literal("")),
+  email: z.string().max(254).optional().or(z.literal("")),
+  phone: z.string().max(30).optional().or(z.literal("")),
+  ctaLabel: z.string().max(40).optional().or(z.literal("")),
+  ctaHref: z.string().max(2048).optional().or(z.literal("")),
+  socials: z
+    .array(z.object({ label: z.string().min(1).max(40), url: z.string().min(1).max(2048) }))
+    .max(6)
+    .default([]),
+});
+
+export const ownerProfileBodySchema = z.object({ owner: ownerProfileSchema });
+
+/** Direct-to-Cloudinary upload: request a signature for one file. */
+export const mediaSignSchema = z.object({
+  folder: z.string().min(1).max(120),
+  fileName: z.string().min(1).max(200),
+  mimeType: z.string().min(3).max(120),
+});
+
+/** Record a browser-direct Cloudinary upload in the media library. */
+export const mediaRecordSchema = z.object({
+  publicId: z.string().min(3).max(512),
+  resourceType: z.enum(["image", "video", "raw"]),
+  folder: z.string().min(1).max(120),
+  originalName: z.string().max(200).default("upload"),
+  mimeType: z.string().max(120).optional().or(z.literal("")),
+  alt: z.string().max(200).optional().or(z.literal("")),
+});
+
 export const publicSettingsSchema = z.object({
   siteName: z.string().min(2).max(80),
   tagline: z.string().max(160),
@@ -182,6 +230,7 @@ export const publicSettingsSchema = z.object({
     aboutBody: z.string().max(5000),
     aboutImage: z.string().max(2048).optional().or(z.literal("")),
     aboutStats: z.array(z.object({ value: z.string().max(20), label: z.string().max(60) })).max(6).default([]),
+    owner: ownerProfileSchema.optional(),
   }),
 });
 

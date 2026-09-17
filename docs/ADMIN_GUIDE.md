@@ -43,11 +43,33 @@ built-in content for `/about` and `/privacy`. Rich HTML is sanitized on save.
 
 ## Media (`/admin/media`)
 
-- Upload images (≤8 MB: jpeg/png/webp/gif/svg/avif) or documents (≤20 MB, `media/documents` only).
-- Files are validated (MIME + size + folder allowlist) and stored in Firebase Storage via the
-  server API. Public folders get public URLs; documents stay private.
-- Grid/list views, search, folder filter, detail view with copy-URL, rename metadata (alt text),
-  delete (removes Storage object + record, with confirmation).
+- Upload **images** (jpeg/png/webp/avif/gif/svg), **video** (mp4/webm/mov/ogv/mkv/avi),
+  **audio** (mp3/m4a/wav/ogg/aac/flac) and **documents** (pdf/txt/csv, ≤25 MB — kept private).
+  Sizes are capped per kind (image 10 MB, video/audio 100 MB by default, `MAX_VIDEO_MB` overrides).
+- Storage is **Cloudinary** when `CLOUDINARY_*` is configured (otherwise Firebase Storage, or the
+  embedded disk). Uploads to Cloudinary are signed server-side and sent **straight from the
+  browser**, so large videos are not limited by serverless request-body limits; formats, size and
+  destination folder are enforced by the signature and re-verified server-side when the asset is
+  recorded.
+- Folders: Images, Videos & audio, Public assets, Events, Speakers, Journal, Owner section,
+  Avatars, Documents.
+- Grid/list views, search, folder filter, video posters, detail view with inline video/audio
+  preview and copy-URL, delete (removes the Cloudinary/Storage object + record, with confirmation).
+
+## Owner Section (`/admin/owner`)
+
+The owner spotlight — portrait, name and personal message — shown on the homepage and the
+about page. Everything is editable here; nothing needs a code change:
+
+- **Visibility**: master switch, plus separate toggles for the homepage and the about page.
+- **Portrait**: owner photo (media-library picker or URL), alt text, optional handwritten
+  signature image. With no photo, an engraved gold monogram with the owner's initials is shown.
+- **Name & texts**: name, role/title, script accent, eyebrow, section heading, the message
+  (blank line = new paragraph), an optional pull quote and an optional **video message**
+  (uploaded to Cloudinary, plays inline on the site).
+- **Contact & links**: email, phone, button label + link, and up to six social links.
+- The section is stored in `siteSettings/public → homepage.owner`; a **Discard** button reverts
+  unsaved edits and *View on site* opens the live section.
 
 ## Messages (`/admin/messages`)
 
@@ -70,6 +92,7 @@ View role/verification status; change password via secure email link.
 ## Tips
 
 - Use **draft** status to stage content, then publish when ready.
+- The owner section doubles as a founder's note — update it whenever the message changes.
 - Featured posts/events/speakers surface on the homepage and listing tops.
 - Upload images **before** writing posts so you can pick covers from the library.
 - Large uploads on slow networks: the uploader processes files sequentially with status text.

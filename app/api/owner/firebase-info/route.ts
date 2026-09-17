@@ -1,4 +1,5 @@
 import { getAdminAuth, getAdminDb, getAdminStorage, getDataBackend } from "@/lib/firebase/admin";
+import { describeStorage } from "@/lib/storage/media";
 import { listIdentityUsers } from "@/lib/server/identity";
 import { requireHackerAdmin } from "@/lib/server/auth";
 import { maskSecret } from "@/lib/utils";
@@ -36,6 +37,8 @@ export async function GET() {
         keyConfigured: Boolean(process.env.FIREBASE_PRIVATE_KEY ?? process.env.FIREBASE_SERVICE_ACCOUNT_BASE64),
       },
       checks: { firestore: dbOk, auth: authOk, storage: storageOk },
+      // Where uploaded media actually lives (Cloudinary / Firebase / embedded).
+      media: describeStorage(),
     });
   } catch (err) {
     return handleApiError(err);

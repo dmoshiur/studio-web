@@ -6,6 +6,7 @@ import { Reveal } from "@/components/public/reveal";
 import { Countdown } from "@/components/public/countdown";
 import { EventCard, PostCard, SpeakerCard } from "@/components/public/cards";
 import { NewsletterForm } from "@/components/public/newsletter-form";
+import { OwnerSpotlight } from "@/components/public/owner-spotlight";
 import {
   Accordion,
   Backdrop,
@@ -212,6 +213,9 @@ export default async function HomePage() {
           <StatStrip stats={stats} tone="light" />
         </div>
       </Section>
+
+      {/* ================= OWNER SPOTLIGHT ================= */}
+      <OwnerSpotlight owner={h.owner} placement="home" />
 
       {/* ================= EXPERIENCE ================= */}
       {experience?.items?.length ? (

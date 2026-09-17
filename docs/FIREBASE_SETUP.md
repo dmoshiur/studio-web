@@ -38,7 +38,14 @@
    Or paste `storage.rules` in **Storage → Rules**.
 3. Note the bucket name (`<project-id>.appspot.com`) for `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`.
 4. (Optional, recommended) Add a **CORS** config if you later upload directly from the browser.
-   Current architecture uploads via the server API, so CORS is not required.
+   Uploads via the server API need no CORS; browser-direct uploads to Cloudinary never touch this
+   bucket.
+
+> **Using Cloudinary instead?** Firebase Storage is optional. Set `CLOUDINARY_CLOUD_NAME`,
+> `CLOUDINARY_API_KEY` and `CLOUDINARY_API_SECRET` (see `.env.example`) and every upload — images,
+> video, audio, documents — goes to Cloudinary from the browser, leaving this bucket unused. The
+> app picks Cloudinary automatically when those variables are present (`STORAGE_BACKEND=cloudinary`
+> forces it). Firestore/Auth are unaffected: Cloudinary only replaces the file store.
 
 ## 5. Web app config (public)
 
