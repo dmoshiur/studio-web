@@ -83,18 +83,18 @@ export default function SetupPage() {
       subtitle="One-time bootstrap for the site owner. This screen disables itself after the first owner exists."
       image="/images/texture-marble.jpg"
       footer={
-        <Link href="/login" className="font-semibold text-gold-300 underline underline-offset-4">
+        <Link href="/login" className="font-semibold text-gold-700 underline underline-offset-4">
           Back to sign in
         </Link>
       }
     >
       {status === null ? (
-        <p className="text-[13.5px] text-ivory-400/80">Checking setup availability…</p>
+        <p className="text-[13.5px] text-ink-500">Checking setup availability…</p>
       ) : !status.available ? (
-        <div className="rounded-sm border border-white/[0.09] bg-white/[0.03] p-6 text-center">
+        <div className="rounded-sm border border-line bg-white shadow-card p-6 text-center">
           <ShieldCheck className="mx-auto h-9 w-9 text-emerald-400" />
-          <p className="mt-4 font-serif text-[1.35rem] text-ivory-50">Setup is disabled</p>
-          <p className="mt-2 text-[13px] leading-relaxed text-ivory-400/80">
+          <p className="mt-4 font-serif text-[1.35rem] text-ink-900">Setup is disabled</p>
+          <p className="mt-2 text-[13px] leading-relaxed text-ink-500">
             {status.reason ?? "This site already has an owner."}
           </p>
         </div>
@@ -109,8 +109,9 @@ export default function SetupPage() {
           </div>
 
           <div>
-            <Label htmlFor="setup-email">Owner email</Label>
+            <Label tone="light" htmlFor="setup-email">Owner email</Label>
             <Input
+            tone="light"
               id="setup-email"
               type="email"
               autoComplete="email"
@@ -120,8 +121,9 @@ export default function SetupPage() {
             />
           </div>
           <div>
-            <Label htmlFor="setup-password">Password</Label>
+            <Label tone="light" htmlFor="setup-password">Password</Label>
             <Input
+            tone="light"
               id="setup-password"
               type="password"
               autoComplete="current-password"
@@ -131,8 +133,9 @@ export default function SetupPage() {
             />
           </div>
           <div>
-            <Label htmlFor="setup-token">Setup token</Label>
+            <Label tone="light" htmlFor="setup-token">Setup token</Label>
             <Input
+            tone="light"
               id="setup-token"
               type="password"
               autoComplete="off"
@@ -146,7 +149,7 @@ export default function SetupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex h-[52px] items-center justify-center gap-3 bg-gold-gradient px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06] disabled:opacity-60"
+            className="btn-editorial w-full disabled:opacity-60"
           >
             {loading ? "Provisioning…" : "Claim ownership"}
             <ArrowUpRight className="h-4 w-4" />

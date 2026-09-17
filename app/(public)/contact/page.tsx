@@ -30,7 +30,7 @@ export default async function ContactPage() {
       <Section tone="light">
         <div className="grid gap-14 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
           {/* Form */}
-          <Reveal className="border border-ink-900/10 bg-white p-8 shadow-luxe sm:p-11">
+          <Reveal className="border border-line bg-white p-8 shadow-luxe sm:p-11">
             <Eyebrow align="left">Send a message</Eyebrow>
             <h2 className="display-md mt-5 text-ink-900">Tell us what you need</h2>
             <p className="lead-dark mt-4">
@@ -43,44 +43,44 @@ export default async function ContactPage() {
 
           {/* Details */}
           <Reveal delay={120} className="lg:sticky lg:top-28 lg:self-start">
-            <div className="relative overflow-hidden border border-gold-500/20 bg-obsidian-950 p-9 text-ivory-100">
-              <span aria-hidden className="pointer-events-none absolute inset-3 border border-gold-500/20" />
+            <div className="relative overflow-hidden border border-gold-600/25 bg-white p-9 text-ink-800">
+              <span aria-hidden className="pointer-events-none absolute inset-3 border border-gold-600/25" />
               <Script className="text-[2.2rem] leading-none">reach us</Script>
               <ul className="mt-8 space-y-7 text-[14px]">
                 {settings.address && (
                   <li className="flex gap-4">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-gold-500/40 text-gold-300">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-gold-600/40 text-gold-700">
                       <MapPin className="h-4 w-4" />
                     </span>
-                    <span className="pt-2 leading-relaxed text-ivory-300/80">{settings.address}</span>
+                    <span className="pt-2 leading-relaxed text-ink-500">{settings.address}</span>
                   </li>
                 )}
                 {settings.phone && (
                   <li className="flex gap-4">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-gold-500/40 text-gold-300">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-gold-600/40 text-gold-700">
                       <Phone className="h-4 w-4" />
                     </span>
-                    <a href={`tel:${settings.phone}`} className="pt-2 text-ivory-300/80 transition-colors hover:text-gold-200">
+                    <a href={`tel:${settings.phone}`} className="pt-2 text-ink-500 transition-colors hover:text-gold-700">
                       {settings.phone}
                     </a>
                   </li>
                 )}
                 <li className="flex gap-4">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-gold-500/40 text-gold-300">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-gold-600/40 text-gold-700">
                     <Mail className="h-4 w-4" />
                   </span>
                   <a
                     href={`mailto:${settings.contactEmail}`}
-                    className="break-all pt-2 text-ivory-300/80 transition-colors hover:text-gold-200"
+                    className="break-all pt-2 text-ink-500 transition-colors hover:text-gold-700"
                   >
                     {settings.contactEmail}
                   </a>
                 </li>
                 <li className="flex gap-4">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-gold-500/40 text-gold-300">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-gold-600/40 text-gold-700">
                     <Clock className="h-4 w-4" />
                   </span>
-                  <span className="pt-2 leading-relaxed text-ivory-300/80">
+                  <span className="pt-2 leading-relaxed text-ink-500">
                     Studio hours — Monday to Friday, 09:00–18:00
                     {settings.timezone ? ` (${settings.timezone})` : ""}
                   </span>
@@ -90,14 +90,14 @@ export default async function ContactPage() {
               <span className="mt-9 block h-px w-full bg-gradient-to-r from-transparent via-gold-500/50 to-transparent" />
 
               <div className="mt-8">
-                <p className="font-sans text-[10.5px] uppercase tracking-[0.26em] text-gold-300">Press &amp; Partnerships</p>
-                <p className="mt-3 text-[13.5px] leading-relaxed text-ivory-400/80">
+                <p className="font-sans text-[10.5px] uppercase tracking-[0.26em] text-gold-700">Press &amp; Partnerships</p>
+                <p className="mt-3 text-[13.5px] leading-relaxed text-ink-500">
                   Add “Press” or “Partnership” to your subject line and your note routes straight to the founders.
                 </p>
               </div>
             </div>
 
-            <div className="mt-6 flex items-center gap-4 border border-ink-900/10 bg-white p-6">
+            <div className="mt-6 flex items-center gap-4 border border-line bg-white p-6 shadow-card">
               <Diamond />
               <p className="text-[12.5px] leading-relaxed text-ink-500">
                 We never share your details, and we do not run advertising trackers on this site.
@@ -107,7 +107,7 @@ export default async function ContactPage() {
         </div>
       </Section>
 
-      <Section className="bg-obsidian-soft">
+      <Section className="bg-paper-200">
         <SectionHeading
           script="Before you write"
           eyebrow="Quick answers"
@@ -129,9 +129,9 @@ export default async function ContactPage() {
             },
           ].map((item, i) => (
             <Reveal key={item.q} delay={i * 100}>
-              <article className="h-full rounded-sm border border-white/[0.08] bg-white/[0.025] p-8">
-                <h3 className="font-serif text-[1.3rem] text-ivory-50">{item.q}</h3>
-                <p className="mt-3 text-[13.5px] leading-[1.9] text-ivory-400/80">{item.a}</p>
+              <article className="h-full rounded-sm border border-line bg-white p-8 shadow-card">
+                <h3 className="font-serif text-[1.3rem] text-ink-900">{item.q}</h3>
+                <p className="mt-3 text-[13.5px] leading-[1.9] text-ink-500">{item.a}</p>
               </article>
             </Reveal>
           ))}

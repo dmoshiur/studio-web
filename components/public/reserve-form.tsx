@@ -47,21 +47,21 @@ export function ReserveForm({ eventSlug, eventTitle }: { eventSlug: string; even
 
   if (loading) {
     return (
-      <div className="h-[210px] animate-pulse border border-white/[0.07] bg-white/[0.02]" aria-hidden />
+      <div className="h-[210px] animate-pulse border border-line bg-white" aria-hidden />
     );
   }
 
   if (!user) {
     return (
-      <div className="border border-white/[0.08] bg-white/[0.02] p-7">
-        <p className="font-serif text-[1.25rem] text-ivory-50">Reserve your seat</p>
-        <p className="mt-2 text-[13px] leading-relaxed text-ivory-400">
+      <div className="border border-line bg-white p-7 shadow-card">
+        <p className="font-serif text-[1.25rem] text-ink-900">Reserve your seat</p>
+        <p className="mt-2 text-[13px] leading-relaxed text-ink-500">
           Sign in (or create a free account) to hold seats for {eventTitle}. Your reservation stays
           on your account.
         </p>
         <Link
           href={`/login?next=${encodeURIComponent(pathname)}`}
-          className="mt-5 inline-flex h-[52px] w-full items-center justify-center gap-3 bg-gold-gradient px-6 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06]"
+          className="btn-editorial mt-5 w-full"
         >
           <TicketCheck className="h-4 w-4" /> Sign in to reserve
         </Link>
@@ -71,12 +71,12 @@ export function ReserveForm({ eventSlug, eventTitle }: { eventSlug: string; even
 
   if (done) {
     return (
-      <div className="border border-emerald-400/30 bg-emerald-400/[0.06] p-7 text-center">
-        <CheckCircle2 className="mx-auto h-8 w-8 text-emerald-300" />
-        <p className="mt-3 font-serif text-[1.3rem] text-ivory-50">Reservation received</p>
-        <p className="mt-2 text-[13px] leading-relaxed text-ivory-400">
+      <div className="border border-emerald-600/25 bg-emerald-600/[0.06] p-7 text-center shadow-card">
+        <CheckCircle2 className="mx-auto h-8 w-8 text-emerald-600" />
+        <p className="mt-3 font-serif text-[1.3rem] text-ink-900">Reservation received</p>
+        <p className="mt-2 text-[13px] leading-relaxed text-ink-500">
           We have your request for {seats} seat{seats > 1 ? "s" : ""}. You will see its status in{" "}
-          <Link href="/profile" className="text-gold-300 underline underline-offset-4">
+          <Link href="/profile" className="text-gold-700 underline underline-offset-4">
             your account
           </Link>{" "}
           as soon as it is confirmed.
@@ -86,20 +86,20 @@ export function ReserveForm({ eventSlug, eventTitle }: { eventSlug: string; even
   }
 
   return (
-    <form onSubmit={onSubmit} className="border border-white/[0.08] bg-white/[0.02] p-7">
-      <p className="font-serif text-[1.25rem] text-ivory-50">Reserve your seat</p>
-      <p className="mt-2 text-[13px] text-ivory-400">
-        Booking as <span className="text-ivory-100">{user.email}</span>
+    <form onSubmit={onSubmit} className="border border-line bg-white p-7 shadow-card">
+      <p className="font-serif text-[1.25rem] text-ink-900">Reserve your seat</p>
+      <p className="mt-2 text-[13px] text-ink-500">
+        Booking as <span className="text-ink-800">{user.email}</span>
       </p>
       <div className="mt-5 grid gap-4">
         <div>
-          <Label htmlFor="seats">Seats</Label>
+          <Label htmlFor="seats" tone="light">Seats</Label>
           <select
             id="seats"
             value={seats}
             onChange={(e) => setSeats(Number(e.target.value))}
             disabled={submitting}
-            className="h-11 w-full border border-white/15 bg-obsidian-900 px-3 text-[13.5px] text-ivory-100 outline-none focus:border-gold-400/70"
+            className="h-11 w-full border border-line bg-white px-3 text-[13.5px] text-ink-900 outline-none focus:border-gold-600/70"
           >
             {[1, 2, 3, 4, 5, 6].map((n) => (
               <option key={n} value={n}>
@@ -109,7 +109,7 @@ export function ReserveForm({ eventSlug, eventTitle }: { eventSlug: string; even
           </select>
         </div>
         <div>
-          <Label htmlFor="note">Note for the organizers (optional)</Label>
+          <Label htmlFor="note" tone="light">Note for the organizers (optional)</Label>
           <textarea
             id="note"
             rows={2}
@@ -118,7 +118,7 @@ export function ReserveForm({ eventSlug, eventTitle }: { eventSlug: string; even
             onChange={(e) => setNote(e.target.value)}
             disabled={submitting}
             placeholder="Accessibility needs, seating preferences…"
-            className="w-full resize-none border border-white/15 bg-white/[0.04] px-3 py-2.5 text-[13.5px] text-ivory-100 outline-none placeholder:text-ivory-600 focus:border-gold-400/70"
+            className="w-full resize-none border border-line-strong bg-white px-3 py-2.5 text-[13.5px] text-ink-800 outline-none placeholder:text-ink-400 focus:border-gold-600/70"
           />
         </div>
         {error && (
@@ -129,7 +129,7 @@ export function ReserveForm({ eventSlug, eventTitle }: { eventSlug: string; even
         <button
           type="submit"
           disabled={submitting}
-          className="inline-flex h-[52px] w-full items-center justify-center gap-3 bg-gold-gradient px-6 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06] disabled:opacity-60"
+          className="btn-editorial w-full disabled:opacity-60"
         >
           {submitting ? (
             <>

@@ -37,7 +37,7 @@ export default async function PrivacyPage() {
         breadcrumb={[{ label: "Home", href: "/" }, { label: "Privacy" }]}
       />
       <Section tone="light">
-        <div className="mx-auto max-w-3xl border border-ink-900/10 bg-white p-8 shadow-luxe sm:p-12">
+        <div className="mx-auto max-w-3xl border border-line bg-white p-8 shadow-luxe sm:p-12">
           <div
             className="prose-manup [&_h2]:text-ink-900 [&_li]:text-ink-500 [&_p]:text-ink-500"
             dangerouslySetInnerHTML={{ __html: html }}

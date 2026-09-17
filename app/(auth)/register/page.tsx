@@ -93,7 +93,7 @@ export default function RegisterPage() {
       footer={
         <>
           Already have an account?{" "}
-          <Link href="/login" className="font-semibold text-gold-300 underline underline-offset-4">
+          <Link href="/login" className="font-semibold text-gold-700 underline underline-offset-4">
             Sign in
           </Link>
         </>
@@ -101,8 +101,9 @@ export default function RegisterPage() {
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
         <div>
-          <Label htmlFor="displayName">Full name</Label>
+          <Label tone="light" htmlFor="displayName">Full name</Label>
           <Input
+            tone="light"
             id="displayName"
             autoComplete="name"
             placeholder="Jane Doe"
@@ -113,8 +114,9 @@ export default function RegisterPage() {
           <FieldError message={errors.displayName?.message} />
         </div>
         <div>
-          <Label htmlFor="email">Email</Label>
+          <Label tone="light" htmlFor="email">Email</Label>
           <Input
+            tone="light"
             id="email"
             type="email"
             autoComplete="email"
@@ -126,8 +128,9 @@ export default function RegisterPage() {
           <FieldError message={errors.email?.message} />
         </div>
         <div>
-          <Label htmlFor="password">Password</Label>
+          <Label tone="light" htmlFor="password">Password</Label>
           <Input
+            tone="light"
             id="password"
             type="password"
             autoComplete="new-password"
@@ -142,7 +145,7 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="group mt-1 inline-flex h-[52px] items-center justify-center gap-3 bg-gold-gradient px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06] disabled:opacity-60"
+          className="btn-editorial group mt-1 w-full disabled:opacity-60"
         >
           {submitting ? (
             <>
@@ -158,14 +161,14 @@ export default function RegisterPage() {
         </button>
 
         {slowNetwork && (
-          <p className="text-center text-[12.5px] text-ivory-400/80 animate-pulse">
+          <p className="text-center text-[12.5px] text-ink-500 animate-pulse">
             Still working… please wait.
           </p>
         )}
 
-        <p className="text-center text-[12px] leading-relaxed text-ivory-500">
+        <p className="text-center text-[12px] leading-relaxed text-ink-400">
           By continuing you agree to our{" "}
-          <Link href="/privacy" className="text-gold-300 underline underline-offset-4">
+          <Link href="/privacy" className="text-gold-700 underline underline-offset-4">
             privacy policy
           </Link>
           .

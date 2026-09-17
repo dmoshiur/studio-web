@@ -36,7 +36,7 @@ export default async function BlogPage({ searchParams }: { searchParams: { categ
         breadcrumb={[{ label: "Home", href: "/" }, { label: "Journal" }]}
       />
 
-      <Section className="bg-obsidian-950">
+      <Section className="bg-white">
         {categories.length > 0 && (
           <div className="mb-14 flex flex-wrap items-center gap-3">
             <CategoryPill label="Everything" href="/blog" active={!category} />
@@ -53,6 +53,7 @@ export default async function BlogPage({ searchParams }: { searchParams: { categ
 
         {data.items.length === 0 ? (
           <EmptyState
+            tone="light"
             icon={<Newspaper className="h-7 w-7" />}
             title="No stories in this section yet"
             message="New writing is published every few weeks. Subscribe below and you will never miss one."
@@ -64,7 +65,7 @@ export default async function BlogPage({ searchParams }: { searchParams: { categ
               <Reveal className="mb-16">
                 <Link
                   href={`/blog/${lead.slug}`}
-                  className="group grid gap-10 border border-white/[0.08] bg-white/[0.02] p-7 transition-colors hover:border-gold-500/40 lg:grid-cols-[1.15fr_1fr] lg:p-9"
+                  className="group grid gap-10 border border-line bg-white p-7 shadow-card transition-all duration-500 hover:-translate-y-0.5 hover:border-gold-600/40 hover:shadow-lift lg:grid-cols-[1.15fr_1fr] lg:p-9"
                 >
                   <div className="relative overflow-hidden">
                     {lead.coverImage ? (
@@ -75,17 +76,17 @@ export default async function BlogPage({ searchParams }: { searchParams: { categ
                         className="aspect-[16/11] w-full object-cover transition-transform duration-1000 group-hover:scale-[1.05]"
                       />
                     ) : (
-                      <div className="flex aspect-[16/11] w-full items-center justify-center bg-obsidian-soft">
+                      <div className="flex aspect-[16/11] w-full items-center justify-center bg-paper-200">
                         <span className="font-serif text-[5rem] text-gold-500/50">{lead.title.charAt(0)}</span>
                       </div>
                     )}
-                    <span aria-hidden className="absolute inset-3 border border-white/20" />
+                    <span aria-hidden className="absolute inset-3 border border-white/40" />
                   </div>
                   <div className="flex flex-col justify-center">
                     <p className="eyebrow">Latest essay</p>
-                    <h2 className="display-md mt-5 text-ivory-50">{lead.title}</h2>
+                    <h2 className="display-md mt-5 text-ink-900">{lead.title}</h2>
                     <p className="lead mt-5 line-clamp-4">{lead.excerpt}</p>
-                    <span className="mt-8 inline-flex items-center gap-3 font-sans text-[10.5px] font-semibold uppercase tracking-[0.22em] text-gold-300">
+                    <span className="mt-8 inline-flex items-center gap-3 font-sans text-[10.5px] font-semibold uppercase tracking-[0.22em] text-gold-700">
                       {lead.authorName}
                       <span className="h-px w-8 bg-gold-500/60" />
                       {lead.readingMinutes} min read
@@ -126,8 +127,8 @@ function CategoryPill({ label, href, active }: { label: string; href: string; ac
       className={cn(
         "border px-5 py-2.5 font-sans text-[10.5px] font-semibold uppercase tracking-[0.22em] transition-colors",
         active
-          ? "border-gold-500/60 bg-gold-500/[0.12] text-gold-200"
-          : "border-white/12 text-ivory-400 hover:border-gold-500/40 hover:text-gold-200"
+          ? "border-gold-600/50 bg-gold-500/[0.08] text-gold-700"
+          : "border-line bg-white text-ink-500 hover:border-gold-600/40 hover:text-gold-700"
       )}
     >
       {label}

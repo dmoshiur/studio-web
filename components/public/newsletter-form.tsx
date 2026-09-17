@@ -40,7 +40,15 @@ export function NewsletterForm({ variant = "light", source = "website" }: { vari
   }
 
   return (
-    <form onSubmit={onSubmit} className={cn("flex w-full gap-0 border p-1 transition-colors", dark ? "border-white/20 bg-white/[0.04] backdrop-blur-sm focus-within:border-gold-500/60" : "border-ink-900/10 bg-white focus-within:border-gold-500")}>
+    <form
+      onSubmit={onSubmit}
+      className={cn(
+        "flex w-full gap-0 border bg-white p-1 transition-colors",
+        dark
+          ? "border-line shadow-card focus-within:border-gold-600/60"
+          : "border-line focus-within:border-gold-600"
+      )}
+    >
       <label htmlFor={`newsletter-${source}`} className="sr-only">
         Email address
       </label>
@@ -52,17 +60,12 @@ export function NewsletterForm({ variant = "light", source = "website" }: { vari
         onChange={(e) => setEmail(e.target.value)}
         placeholder="Your email address"
         disabled={loading}
-        className={cn(
-          "h-11 min-w-0 flex-1 bg-transparent px-4 text-[13.5px] outline-none transition-colors",
-          dark
-            ? "text-ivory-100 placeholder:text-ivory-500/60"
-            : "text-ink-900 placeholder:text-ink-300"
-        )}
+        className="h-11 min-w-0 flex-1 bg-transparent px-4 text-[13.5px] text-ink-900 outline-none transition-colors placeholder:text-ink-300"
       />
       <button
         type="submit"
         disabled={loading}
-        className="inline-flex h-11 shrink-0 items-center gap-2 bg-gold-gradient px-5 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-obsidian-950 transition-all hover:brightness-[1.06] disabled:opacity-60"
+        className="inline-flex h-11 shrink-0 items-center gap-2 bg-ink-900 px-5 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-white transition-all hover:bg-gold-700 disabled:opacity-60"
       >
         <span className="hidden sm:inline">{loading ? "Joining" : "Join"}</span>
         <ArrowRight className="h-3.5 w-3.5 sm:hidden" />

@@ -24,10 +24,10 @@ interface Profile {
   lastSignInAt: string | null;
 }
 
-const RESERVATION_BADGE: Record<Reservation["status"], { label: string; variant: "gold" | "success" | "danger" }> = {
-  requested: { label: "Requested", variant: "gold" },
-  confirmed: { label: "Confirmed", variant: "success" },
-  cancelled: { label: "Cancelled", variant: "danger" },
+const RESERVATION_BADGE: Record<Reservation["status"], { label: string; variant: "goldSoft" | "successSoft" | "dangerSoft" }> = {
+  requested: { label: "Requested", variant: "goldSoft" },
+  confirmed: { label: "Confirmed", variant: "successSoft" },
+  cancelled: { label: "Cancelled", variant: "dangerSoft" },
 };
 
 export function ProfileDashboard({ canAdmin }: { canAdmin: boolean }) {
@@ -171,7 +171,7 @@ export function ProfileDashboard({ canAdmin }: { canAdmin: boolean }) {
           <p className="text-[14px] text-red-200">{loadError}</p>
           <button
             onClick={() => void load()}
-            className="mt-5 inline-flex h-11 items-center border border-gold-500/50 px-6 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-200 hover:bg-gold-500 hover:text-obsidian-950"
+            className="mt-5 inline-flex h-11 items-center border border-ink-900 bg-ink-900 px-6 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-white transition-colors hover:bg-gold-700 hover:border-gold-700 disabled:opacity-50"
           >
             Try again
           </button>
@@ -184,10 +184,10 @@ export function ProfileDashboard({ canAdmin }: { canAdmin: boolean }) {
     return (
       <Shell>
         <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
-          <div className="h-[320px] animate-pulse border border-white/[0.07] bg-white/[0.03]" />
+          <div className="h-[320px] animate-pulse border border-line bg-white" />
           <div className="grid gap-6">
-            <div className="h-[220px] animate-pulse border border-white/[0.07] bg-white/[0.03]" />
-            <div className="h-[260px] animate-pulse border border-white/[0.07] bg-white/[0.03]" />
+            <div className="h-[220px] animate-pulse border border-line bg-white" />
+            <div className="h-[260px] animate-pulse border border-line bg-white" />
           </div>
         </div>
       </Shell>
@@ -206,7 +206,7 @@ export function ProfileDashboard({ canAdmin }: { canAdmin: boolean }) {
     <Shell>
       <div className="grid items-start gap-6 lg:grid-cols-[340px_1fr]">
         {/* Identity card */}
-        <section className="border border-gold-500/[0.16] bg-obsidian-900/70 p-7">
+        <section className="border border-gold-600/25 bg-white p-7 shadow-card">
           <div className="flex flex-col items-center text-center">
             <div className="relative">
               {profile.photoURL ? (
@@ -222,18 +222,18 @@ export function ProfileDashboard({ canAdmin }: { canAdmin: boolean }) {
                 </span>
               )}
               {uploading && (
-                <span className="absolute inset-0 flex items-center justify-center bg-obsidian-950/70">
+                <span className="absolute inset-0 flex items-center justify-center bg-obsidian-950/60">
                   <Loader2 className="h-6 w-6 animate-spin text-gold-300" />
                 </span>
               )}
             </div>
 
-            <h1 className="mt-5 font-serif text-[1.6rem] text-ivory-50">{profile.displayName ?? "Unnamed"}</h1>
-            <p className="mt-1 text-[13px] text-ivory-400">{profile.email}</p>
+            <h1 className="mt-5 font-serif text-[1.6rem] text-ink-900">{profile.displayName ?? "Unnamed"}</h1>
+            <p className="mt-1 text-[13px] text-ink-500">{profile.email}</p>
             <div className="mt-3 flex flex-wrap justify-center gap-2">
               <Badge variant={canAdmin ? "gold" : "default"}>{profile.role}</Badge>
               {profile.emailVerified && (
-                <Badge variant="success">
+                <Badge variant="successSoft">
                   <BadgeCheck className="h-3 w-3" /> Verified
                 </Badge>
               )}
@@ -244,7 +244,7 @@ export function ProfileDashboard({ canAdmin }: { canAdmin: boolean }) {
               <button
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
-                className="inline-flex h-11 items-center justify-center gap-2 border border-gold-500/50 font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-gold-200 transition-colors hover:bg-gold-500 hover:text-obsidian-950 disabled:opacity-60"
+                className="inline-flex h-11 items-center justify-center gap-2 border border-gold-600/50 bg-white font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-gold-700 transition-colors hover:bg-gold-500/[0.08] disabled:opacity-60"
               >
                 <Camera className="h-4 w-4" /> {profile.photoURL ? "Change picture" : "Upload picture"}
               </button>
@@ -252,21 +252,21 @@ export function ProfileDashboard({ canAdmin }: { canAdmin: boolean }) {
                 <button
                   onClick={() => void removeAvatar()}
                   disabled={uploading}
-                  className="inline-flex h-11 items-center justify-center gap-2 border border-white/15 font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-ivory-300 transition-colors hover:border-red-400/50 hover:text-red-300 disabled:opacity-60"
+                  className="inline-flex h-11 items-center justify-center gap-2 border border-line bg-white font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-ink-600 transition-colors hover:border-red-500/50 hover:text-red-600 disabled:opacity-60"
                 >
                   <Trash2 className="h-4 w-4" /> Remove picture
                 </button>
               )}
             </div>
 
-            <dl className="mt-7 w-full space-y-2.5 border-t border-white/[0.08] pt-5 text-left text-[12.5px]">
+            <dl className="mt-7 w-full space-y-2.5 border-t border-line pt-5 text-left text-[12.5px]">
               <div className="flex justify-between gap-3">
-                <dt className="text-ivory-500">Member since</dt>
-                <dd className="text-ivory-200">{profile.createdAt ? new Date(profile.createdAt).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "—"}</dd>
+                <dt className="text-ink-400">Member since</dt>
+                <dd className="text-ink-700">{profile.createdAt ? new Date(profile.createdAt).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "—"}</dd>
               </div>
               <div className="flex justify-between gap-3">
-                <dt className="text-ivory-500">Last sign-in</dt>
-                <dd className="text-ivory-200">{profile.lastSignInAt ? new Date(profile.lastSignInAt).toLocaleString() : "—"}</dd>
+                <dt className="text-ink-400">Last sign-in</dt>
+                <dd className="text-ink-700">{profile.lastSignInAt ? new Date(profile.lastSignInAt).toLocaleString() : "—"}</dd>
               </div>
             </dl>
 
@@ -274,14 +274,14 @@ export function ProfileDashboard({ canAdmin }: { canAdmin: boolean }) {
               {canAdmin && (
                 <Link
                   href="/admin"
-                  className="inline-flex h-11 items-center justify-center gap-2 border border-gold-500/40 bg-gold-500/[0.08] font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-gold-200 hover:bg-gold-500 hover:text-obsidian-950"
+                  className="inline-flex h-11 items-center justify-center gap-2 border border-gold-600/40 bg-gold-500/[0.08] font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-gold-700 hover:bg-gold-500/[0.14]"
                 >
                   <ShieldCheck className="h-4 w-4" /> Open content studio
                 </Link>
               )}
               <button
                 onClick={() => void logout()}
-                className="inline-flex h-11 items-center justify-center gap-2 border border-white/15 font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-ivory-300 transition-colors hover:border-red-400/50 hover:text-red-300"
+                className="inline-flex h-11 items-center justify-center gap-2 border border-line bg-white font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-ink-600 transition-colors hover:border-red-500/50 hover:text-red-600"
               >
                 <LogOut className="h-4 w-4" /> Sign out
               </button>
@@ -291,17 +291,17 @@ export function ProfileDashboard({ canAdmin }: { canAdmin: boolean }) {
 
         <div className="grid content-start gap-6">
           {/* Edit profile */}
-          <section className="border border-white/[0.08] bg-white/[0.02] p-7">
+          <section className="border border-line bg-white p-7 shadow-card">
             <SectionTitle>Profile details</SectionTitle>
             <form onSubmit={(e) => void saveName(e)} className="mt-5 grid gap-4 sm:max-w-lg">
               <div>
-                <Label htmlFor="name">Full name</Label>
-                <Input id="name" value={name} onChange={(e) => setName(e.target.value)} disabled={savingName} />
+                <Label tone="light" htmlFor="name">Full name</Label>
+                <Input tone="light" id="name" value={name} onChange={(e) => setName(e.target.value)} disabled={savingName} />
               </div>
               <div>
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" value={profile.email ?? ""} disabled readOnly aria-readonly />
-                <p className="mt-1.5 text-[11.5px] text-ivory-500">
+                <Label tone="light" htmlFor="email">Email</Label>
+                <Input tone="light" id="email" value={profile.email ?? ""} disabled readOnly aria-readonly />
+                <p className="mt-1.5 text-[11.5px] text-ink-400">
                   The email address is your sign-in identity and cannot be edited here.
                 </p>
               </div>
@@ -309,7 +309,7 @@ export function ProfileDashboard({ canAdmin }: { canAdmin: boolean }) {
                 <button
                   type="submit"
                   disabled={savingName || name.trim() === (profile.displayName ?? "")}
-                  className="inline-flex h-11 items-center gap-2 bg-gold-gradient px-7 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-obsidian-950 transition-all hover:brightness-[1.06] disabled:opacity-50"
+                  className="inline-flex h-11 items-center gap-2 bg-ink-900 px-7 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-white transition-colors hover:bg-gold-700 disabled:opacity-50"
                 >
                   {savingName && <Loader2 className="h-4 w-4 animate-spin" />} Save changes
                 </button>
@@ -318,27 +318,27 @@ export function ProfileDashboard({ canAdmin }: { canAdmin: boolean }) {
           </section>
 
           {/* Reservations */}
-          <section className="border border-white/[0.08] bg-white/[0.02] p-7">
+          <section className="border border-line bg-white p-7 shadow-card">
             <div className="flex items-center justify-between gap-4">
               <SectionTitle>My reservations</SectionTitle>
-              <Link href="/events" className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold-300 hover:text-gold-200">
+              <Link href="/events" className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold-700 hover:text-gold-600">
                 Browse events <ArrowUpRight className="h-3.5 w-3.5" />
               </Link>
             </div>
             {reservations === null ? (
-              <p className="mt-5 text-[13px] text-ivory-500">Loading reservations…</p>
+              <p className="mt-5 text-[13px] text-ink-400">Loading reservations…</p>
             ) : reservations.length === 0 ? (
-              <p className="mt-5 text-[13px] leading-relaxed text-ivory-500">
+              <p className="mt-5 text-[13px] leading-relaxed text-ink-400">
                 You have no seat reservations yet. Choose an event and reserve your seat — confirmed
                 reservations appear here.
               </p>
             ) : (
-              <ul className="mt-5 divide-y divide-white/[0.07]">
+              <ul className="mt-5 divide-y divide-line">
                 {reservations.map((r) => (
                   <li key={r.id} className="grid gap-2 py-4 sm:grid-cols-[1fr_auto] sm:items-center">
                     <div>
-                      <p className="font-serif text-[1.05rem] text-ivory-100">{r.eventTitle}</p>
-                      <p className="mt-1 flex items-center gap-2 text-[12px] text-ivory-500">
+                      <p className="font-serif text-[1.05rem] text-ink-800">{r.eventTitle}</p>
+                      <p className="mt-1 flex items-center gap-2 text-[12px] text-ink-400">
                         <CalendarDays className="h-3.5 w-3.5" />
                         {r.eventStartAt ? new Date(r.eventStartAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) : "Date TBC"}
                         {" · "}
@@ -353,21 +353,21 @@ export function ProfileDashboard({ canAdmin }: { canAdmin: boolean }) {
           </section>
 
           {/* Password */}
-          <section className="border border-white/[0.08] bg-white/[0.02] p-7">
+          <section className="border border-line bg-white p-7 shadow-card">
             <SectionTitle>Change password</SectionTitle>
             <form onSubmit={(e) => void changePassword(e)} className="mt-5 grid gap-4 sm:max-w-lg">
               <div>
-                <Label htmlFor="cpw">Current password</Label>
-                <Input id="cpw" type="password" autoComplete="current-password" value={currentPw} onChange={(e) => setCurrentPw(e.target.value)} disabled={savingPw} />
+                <Label tone="light" htmlFor="cpw">Current password</Label>
+                <Input tone="light" id="cpw" type="password" autoComplete="current-password" value={currentPw} onChange={(e) => setCurrentPw(e.target.value)} disabled={savingPw} />
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <Label htmlFor="npw1">New password</Label>
-                  <Input id="npw1" type="password" autoComplete="new-password" value={newPw} onChange={(e) => setNewPw(e.target.value)} disabled={savingPw} />
+                  <Label tone="light" htmlFor="npw1">New password</Label>
+                  <Input tone="light" id="npw1" type="password" autoComplete="new-password" value={newPw} onChange={(e) => setNewPw(e.target.value)} disabled={savingPw} />
                 </div>
                 <div>
-                  <Label htmlFor="npw2">Repeat new password</Label>
-                  <Input id="npw2" type="password" autoComplete="new-password" value={newPw2} onChange={(e) => setNewPw2(e.target.value)} disabled={savingPw} />
+                  <Label tone="light" htmlFor="npw2">Repeat new password</Label>
+                  <Input tone="light" id="npw2" type="password" autoComplete="new-password" value={newPw2} onChange={(e) => setNewPw2(e.target.value)} disabled={savingPw} />
                 </div>
               </div>
               <FieldError message={pwError ?? undefined} />
@@ -375,7 +375,7 @@ export function ProfileDashboard({ canAdmin }: { canAdmin: boolean }) {
                 <button
                   type="submit"
                   disabled={savingPw || !currentPw || !newPw}
-                  className="inline-flex h-11 items-center gap-2 border border-gold-500/50 px-7 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-200 transition-colors hover:bg-gold-500 hover:text-obsidian-950 disabled:opacity-50"
+                  className="inline-flex h-11 items-center gap-2 border border-ink-900 bg-ink-900 px-7 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-white transition-colors hover:bg-gold-700 hover:border-gold-700 disabled:opacity-50"
                 >
                   {savingPw && <Loader2 className="h-4 w-4 animate-spin" />} Update password
                 </button>
@@ -390,11 +390,11 @@ export function ProfileDashboard({ canAdmin }: { canAdmin: boolean }) {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-obsidian-950 pb-24 pt-[120px]">
+    <div className="bg-paper-100 pb-24 pt-[120px]">
       <div className="container">
-        <p className="mb-3 font-sans text-[9.5px] font-semibold uppercase tracking-[0.3em] text-gold-400">My Account</p>
-        <h1 className="font-serif text-[2.1rem] text-ivory-50">Your profile</h1>
-        <p className="mt-2 max-w-xl text-[13.5px] text-ivory-400">
+        <p className="mb-3 font-sans text-[9.5px] font-semibold uppercase tracking-[0.3em] text-gold-700">My Account</p>
+        <h1 className="font-serif text-[2.1rem] text-ink-900">Your profile</h1>
+        <p className="mt-2 max-w-xl text-[13.5px] text-ink-500">
           Manage your identity, picture, password and seat reservations.
         </p>
         <div className="mt-10">{children}</div>
@@ -405,6 +405,6 @@ function Shell({ children }: { children: React.ReactNode }) {
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className={cn("font-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-gold-300")}>{children}</h2>
+    <h2 className={cn("font-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-gold-700")}>{children}</h2>
   );
 }

@@ -7,7 +7,7 @@ function pad(n: number) {
   return String(Math.max(0, n)).padStart(2, "0");
 }
 
-/** Champagne-gold countdown with engraved numeral plates. */
+/** Engraved numeral plates on paper — near-black digits, gold hairline. */
 export function Countdown({
   targetISO,
   dark = true,
@@ -43,18 +43,18 @@ export function Countdown({
         <div
           key={u.label}
           className={cn(
-            "relative min-w-[68px] border px-3 py-3.5 text-center sm:min-w-[86px] sm:px-4",
-            dark ? "border-gold-500/25 bg-white/[0.03] backdrop-blur-sm" : "border-ink-900/10 bg-white shadow-luxe"
+            "relative min-w-[68px] border bg-white px-3 py-3.5 text-center shadow-card sm:min-w-[86px] sm:px-4",
+            dark ? "border-line" : "border-line"
           )}
         >
           <span
             aria-hidden
-            className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-500/70 to-transparent"
+            className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-600/70 to-transparent"
           />
           <div
             className={cn(
               "font-serif text-[1.7rem] tabular-nums leading-none sm:text-[2.1rem]",
-              dark ? "text-gold-200" : "text-ink-900"
+              dark ? "text-ink-900" : "text-ink-900"
             )}
           >
             {now === null ? "--" : u.value}
@@ -62,7 +62,7 @@ export function Countdown({
           <div
             className={cn(
               "mt-2 font-sans text-[9px] font-semibold uppercase tracking-[0.26em]",
-              dark ? "text-ivory-500" : "text-ink-400"
+              dark ? "text-ink-400" : "text-ink-400"
             )}
           >
             {u.label}

@@ -29,9 +29,10 @@ export default async function SpeakersPage() {
         breadcrumb={[{ label: "Home", href: "/" }, { label: "Speakers" }]}
       />
 
-      <Section className="relative isolate overflow-hidden bg-obsidian-950">
+      <Section className="relative isolate overflow-hidden bg-white">
         {speakers.length === 0 ? (
           <EmptyState
+            tone="light"
             icon={<Mic2 className="h-7 w-7" />}
             title="The lineup is being confirmed"
             message="Join the invitation list and you will meet the first names before they are announced publicly."
@@ -59,7 +60,7 @@ export default async function SpeakersPage() {
               <>
                 <div className="mt-20 flex items-center gap-6">
                   <span className="h-px flex-1 bg-gradient-to-r from-transparent via-gold-500/40 to-gold-500/40" />
-                  <span className="font-sans text-[10.5px] uppercase tracking-luxe text-gold-400">Also on stage</span>
+                  <span className="font-sans text-[10.5px] uppercase tracking-luxe text-gold-700">Also on stage</span>
                   <span className="h-px flex-1 bg-gradient-to-l from-transparent via-gold-500/40 to-gold-500/40" />
                 </div>
                 <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

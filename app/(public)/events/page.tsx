@@ -45,9 +45,9 @@ export default async function EventsPage() {
               <Countdown targetISO={next.startAt} />
             </div>
             <div className="pb-1">
-              <p className="font-sans text-[10.5px] uppercase tracking-[0.24em] text-ivory-500">Up next</p>
-              <p className="mt-2 max-w-sm font-serif text-[1.35rem] text-ivory-100">{next.title}</p>
-              <p className="mt-1 text-[12.5px] text-ivory-400/80">
+              <p className="font-sans text-[10.5px] uppercase tracking-[0.24em] text-ink-400">Up next</p>
+              <p className="mt-2 max-w-sm font-serif text-[1.35rem] text-ink-800">{next.title}</p>
+              <p className="mt-1 text-[12.5px] text-ink-500">
                 {formatDate(next.startAt, { weekday: "long", month: "long", day: "numeric" })}
                 {next.venue ? ` · ${next.venue}` : ""}
               </p>
@@ -56,9 +56,10 @@ export default async function EventsPage() {
         )}
       </PageHero>
 
-      <Section className="bg-obsidian-950">
+      <Section className="bg-white">
         {data.items.length === 0 ? (
           <EmptyState
+            tone="light"
             icon={<CalendarDays className="h-7 w-7" />}
             title="The next edition is being programmed"
             message="Join the invitation list and you will hear about it before the tickets go public."
@@ -88,25 +89,25 @@ export default async function EventsPage() {
       </Section>
 
       {past.length > 0 && (
-        <Section className="bg-obsidian-soft">
+        <Section className="bg-paper-200">
           <SectionHeading
             script="Archive"
             eyebrow="Past editions"
             title="Previously on stage"
             description="Recordings from these editions are available to pass holders."
           />
-          <div className="mt-14 divide-y divide-white/[0.08] border-y border-white/[0.08]">
+          <div className="mt-14 divide-y divide-line border-y border-line">
             {past.map((e, i) => (
               <Reveal key={e.id} delay={i * 60}>
                 <article className="grid items-center gap-4 py-7 sm:grid-cols-[130px_1fr_auto]">
-                  <p className="font-sans text-[11px] uppercase tracking-[0.24em] text-gold-400">
+                  <p className="font-sans text-[11px] uppercase tracking-[0.24em] text-gold-700">
                     {formatDate(e.startAt, { month: "long", year: "numeric" })}
                   </p>
                   <div>
-                    <h3 className="font-serif text-[1.35rem] text-ivory-100">{e.title}</h3>
-                    {e.venue && <p className="mt-1 text-[12.5px] text-ivory-500">{e.venue}</p>}
+                    <h3 className="font-serif text-[1.35rem] text-ink-800">{e.title}</h3>
+                    {e.venue && <p className="mt-1 text-[12.5px] text-ink-400">{e.venue}</p>}
                   </div>
-                  <Badge variant="default">Archived</Badge>
+                  <Badge variant="neutral">Archived</Badge>
                 </article>
               </Reveal>
             ))}

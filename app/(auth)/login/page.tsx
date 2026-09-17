@@ -16,7 +16,7 @@ export default function LoginPage() {
     <React.Suspense
       fallback={
         <AuthLayout title="Sign in" script="one moment">
-          <p className="text-[13.5px] text-ivory-400">Loading…</p>
+          <p className="text-[13.5px] text-ink-500">Loading…</p>
         </AuthLayout>
       }
     >
@@ -105,7 +105,7 @@ function LoginForm() {
       footer={
         <>
           New here?{" "}
-          <Link href="/register" className="font-semibold text-gold-300 underline underline-offset-4">
+          <Link href="/register" className="font-semibold text-gold-700 underline underline-offset-4">
             Create an account
           </Link>
         </>
@@ -113,8 +113,9 @@ function LoginForm() {
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
         <div>
-          <Label htmlFor="email">Email</Label>
+          <Label tone="light" htmlFor="email">Email</Label>
           <Input
+            tone="light"
             id="email"
             type="email"
             autoComplete="email"
@@ -128,14 +129,15 @@ function LoginForm() {
 
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <label htmlFor="password" className="font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-ivory-400/80">
+            <label htmlFor="password" className="font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-500">
               Password
             </label>
-            <Link href="/forgot-password" className="text-[12px] text-gold-300 transition-colors hover:text-gold-200">
+            <Link href="/forgot-password" className="text-[12px] text-gold-700 transition-colors hover:text-gold-700">
               Forgot password?
             </Link>
           </div>
           <Input
+            tone="light"
             id="password"
             type="password"
             autoComplete="current-password"
@@ -150,7 +152,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="group mt-1 inline-flex h-[52px] items-center justify-center gap-3 bg-gold-gradient px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-obsidian-950 transition-all hover:brightness-[1.06] disabled:opacity-60"
+          className="btn-editorial group mt-1 w-full disabled:opacity-60"
         >
           {submitting ? (
             <>
@@ -166,15 +168,15 @@ function LoginForm() {
         </button>
 
         {slowNetwork && (
-          <p className="text-center text-[12.5px] text-ivory-400/80 animate-pulse">
+          <p className="text-center text-[12.5px] text-ink-500 animate-pulse">
             Still working… please wait.
           </p>
         )}
       </form>
 
-      <div className="mt-7 flex items-start gap-3 border-t border-white/[0.08] pt-6">
-        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-gold-400" />
-        <p className="text-[12px] leading-relaxed text-ivory-500">
+      <div className="mt-7 flex items-start gap-3 border-t border-line pt-6">
+        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-gold-600" />
+        <p className="text-[12px] leading-relaxed text-ink-400">
           Sessions are signed and stored in an httpOnly cookie. Staff accounts with elevated roles are audited on every
           privileged action.
         </p>

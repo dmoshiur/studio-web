@@ -33,7 +33,7 @@ export function EventsClient({ initialCursor }: { initialCursor: string | null }
           ))}
         </div>
       )}
-      <LoadMore hasMore={cursor !== null} loading={loading} onLoad={loadMore} />
+      <LoadMore tone="light" hasMore={cursor !== null} loading={loading} onLoad={loadMore} />
     </>
   );
 }
