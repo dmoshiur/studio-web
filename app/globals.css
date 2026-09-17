@@ -3,26 +3,25 @@
 @tailwind utilities;
 
 /* =====================================================================
-   ManUp — Maison Lumière design system
-   Warm paper whites, near-black ink and a restrained champagne-gold
-   accent. Tokens here are the single source of truth for the UI.
-   The obsidian scale survives only in the footer, on imagery and in
-   the internal studio surfaces.
+   ManUp — restrained editorial design system
+   Warm whites, near-black ink and one champagne accent. The public
+   experience is intentionally quiet: photography and typography do the
+   visual work, while colour is reserved for precise moments of emphasis.
    ===================================================================== */
 
 :root {
-  /* Brand — violet primary, ember secondary, gold luxe accent */
-  --brand: #6d28d9;
-  --brand-deep: #4c1d95;
-  --brand-ink: #1d0b3f;
-  --ember: #f97316;
-  --ember-deep: #ea580c;
-  --royal: #2563eb;
-  --gold: #c9a227;
-  --gold-light: #e6c65c;
-  --gold-pale: #f3e6b8;
-  --gold-deep: #8f7320;
-  --crimson: #8c2f39;
+  /* One public accent — champagne / antique gold. */
+  --brand: #b99352;
+  --brand-deep: #8c672d;
+  --brand-ink: #4c3618;
+  --ember: #b99352;
+  --ember-deep: #8c672d;
+  --royal: #6f6f6a;
+  --gold: #b99352;
+  --gold-light: #ddc99e;
+  --gold-pale: #f6efe1;
+  --gold-deep: #8c672d;
+  --crimson: #40403c;
 
   /* Light surfaces */
   --paper: #fafaf8;
@@ -38,19 +37,20 @@
   --muted: #6b6b6b;
   --muted-soft: #8b8b86;
 
-  /* Dark surfaces (footer, imagery, studio) */
-  --obsidian: #08080a;
-  --obsidian-soft: #0e0e12;
-  --obsidian-raised: #14141a;
+  /* Dark surfaces */
+  --obsidian: #0f0f0f;
+  --obsidian-soft: #171717;
+  --obsidian-raised: #242424;
   --ivory: #f8f5ef;
 
+  /* Backwards-compatible aliases used by the studio and legacy components. */
   --brand-legacy: var(--gold);
   --ember-legacy: var(--gold-light);
 
   --shadow-card: 0 1px 2px rgba(17, 17, 17, 0.04), 0 10px 28px -14px rgba(17, 17, 17, 0.1);
   --shadow-lift: 0 2px 4px rgba(17, 17, 17, 0.05), 0 26px 52px -22px rgba(17, 17, 17, 0.18);
   --shadow-luxe: 0 1px 2px rgba(17, 17, 17, 0.05), 0 24px 60px -28px rgba(17, 17, 17, 0.22);
-  --shadow-gold: 0 18px 50px -20px rgba(201, 162, 39, 0.45);
+  --shadow-gold: 0 18px 50px -20px rgba(185, 147, 82, 0.34);
 }
 
 html {
@@ -65,7 +65,7 @@ body {
 }
 
 ::selection {
-  background: rgba(201, 162, 39, 0.24);
+  background: rgba(185, 147, 82, 0.24);
   color: #111111;
 }
 
@@ -161,23 +161,23 @@ body {
   }
   .link-underline:hover::after { @apply w-full; }
 
-  /* Editorial buttons — brand violet primary, premium ------------------ */
+  /* Editorial buttons — one restrained accent ------------------ */
   .btn-editorial {
-    @apply inline-flex h-[52px] items-center justify-center gap-3 rounded-full bg-brand-gradient px-8
-      font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-white shadow-brand-sm
-      transition-all duration-300 hover:-translate-y-0.5 hover:shadow-brand;
+    @apply inline-flex h-[52px] items-center justify-center gap-3 rounded-full bg-gold-gradient px-8
+      font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-white shadow-gold-sm
+      transition-all duration-300 hover:-translate-y-0.5 hover:shadow-gold;
   }
 
   .btn-ember {
-    @apply inline-flex h-[52px] items-center justify-center gap-3 rounded-full bg-ember-500 px-8
+    @apply inline-flex h-[52px] items-center justify-center gap-3 rounded-full bg-gold-700 px-8
       font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-white
-      transition-all duration-300 hover:-translate-y-0.5 hover:bg-ember-600 hover:shadow-ember;
+      transition-all duration-300 hover:-translate-y-0.5 hover:bg-gold-600 hover:shadow-gold;
   }
 
   .btn-quiet {
     @apply inline-flex h-[52px] items-center justify-center gap-3 rounded-full border border-line bg-white px-8
       font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-ink-900
-      transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-600/50 hover:text-brand-700 hover:shadow-card;
+      transition-all duration-300 hover:-translate-y-0.5 hover:border-gold-600/50 hover:text-gold-700 hover:shadow-card;
   }
 
   .btn-quiet-on-dark {
@@ -188,25 +188,25 @@ body {
 
   /* Small accent pill used above headings and imagery */
   .pill-brand {
-    @apply inline-flex items-center gap-2 rounded-full border border-brand-600/25 bg-brand-50 px-4 py-1.5
-      font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-brand-700;
+    @apply inline-flex items-center gap-2 rounded-full border border-gold-600/25 bg-gold-50 px-4 py-1.5
+      font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-gold-700;
   }
   .pill-ember {
-    @apply inline-flex items-center gap-2 rounded-full border border-ember-500/30 bg-ember-50 px-4 py-1.5
-      font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-ember-700;
+    @apply inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-50 px-4 py-1.5
+      font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-gold-700;
   }
 
   /* Decorative helpers */
   .dot-grid {
-    background-image: radial-gradient(rgba(109, 40, 217, 0.22) 1.2px, transparent 1.2px);
+    background-image: radial-gradient(rgba(185, 147, 82, 0.22) 1.2px, transparent 1.2px);
     background-size: 18px 18px;
   }
   .dot-grid-gold {
-    background-image: radial-gradient(rgba(201, 162, 39, 0.35) 1.2px, transparent 1.2px);
+    background-image: radial-gradient(rgba(185, 147, 82, 0.35) 1.2px, transparent 1.2px);
     background-size: 16px 16px;
   }
   .ring-deco {
-    @apply pointer-events-none absolute rounded-full border border-brand-600/15;
+    @apply pointer-events-none absolute rounded-full border border-gold-600/15;
   }
 }
 
@@ -238,12 +238,9 @@ body {
   mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
 }
 
-/* Dark scrims — kept for the footer and studio surfaces */
+/* Dark scrims — image-led, near-black and free of extra hues. */
 .overlay-obsidian {
-  background:
-    radial-gradient(120% 80% at 15% 0%, rgba(201, 162, 39, 0.14) 0%, transparent 55%),
-    radial-gradient(90% 70% at 100% 100%, rgba(140, 47, 57, 0.16) 0%, transparent 60%),
-    linear-gradient(180deg, rgba(8, 8, 10, 0.94) 0%, rgba(8, 8, 10, 0.86) 45%, rgba(8, 8, 10, 0.97) 100%);
+  background: linear-gradient(180deg, rgba(15, 15, 15, 0.94) 0%, rgba(15, 15, 15, 0.86) 45%, rgba(15, 15, 15, 0.98) 100%);
 }
 
 .overlay-editorial {
@@ -253,7 +250,7 @@ body {
 /* Light scrim — imagery ghosts through warm paper */
 .overlay-paper {
   background:
-    radial-gradient(120% 90% at 85% 0%, rgba(201, 162, 39, 0.07) 0%, transparent 55%),
+    radial-gradient(120% 90% at 85% 0%, rgba(185, 147, 82, 0.07) 0%, transparent 55%),
     linear-gradient(180deg, rgba(250, 250, 248, 0.82) 0%, rgba(250, 250, 248, 0.9) 45%, rgba(250, 250, 248, 0.98) 100%);
 }
 
@@ -267,14 +264,14 @@ body {
 }
 
 .gold-text {
-  background: linear-gradient(100deg, #6f591a 0%, #ad8a1e 34%, #c9a227 52%, #8f7320 78%, #6f591a 100%);
+  background: linear-gradient(100deg, #6e4f21 0%, #a77e3c 34%, #c9ad76 52%, #8c672d 78%, #6e4f21 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .gold-text-soft {
-  background: linear-gradient(100deg, #8f7320 0%, #ad8a1e 45%, #8f7320 100%);
+  background: linear-gradient(100deg, #8c672d 0%, #b99352 45%, #8c672d 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -424,7 +421,7 @@ body {
 /* ------------------------------------------------------------------ */
 .studio-sidebar {
   background:
-    radial-gradient(120% 60% at 0% 0%, rgba(201, 162, 39, 0.1) 0%, transparent 60%),
+    radial-gradient(120% 60% at 0% 0%, rgba(185, 147, 82, 0.1) 0%, transparent 60%),
     linear-gradient(180deg, #0b0b0f 0%, #08080a 100%);
 }
 

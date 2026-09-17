@@ -34,21 +34,14 @@ export function OwnerSpotlight({
 
   return (
     <Section className="relative isolate overflow-hidden bg-paper-200" id="owner">
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -left-24 top-10 hidden h-72 w-72 rounded-full bg-brand-500/[0.07] blur-3xl lg:block"
-      />
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -right-20 bottom-10 hidden h-64 w-64 rounded-full bg-ember-400/[0.08] blur-3xl lg:block"
-      />
+      <span aria-hidden className="pointer-events-none absolute right-[8%] top-14 hidden h-20 w-20 border border-gold-600/15 lg:block" />
 
       <div className="relative grid items-center gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
         {/* Portrait */}
         <Reveal className="relative mx-auto w-full max-w-md lg:mx-0">
-          <div aria-hidden className="absolute -inset-3 rotate-1 rounded-[1.8rem] bg-gradient-to-br from-brand-600/10 via-transparent to-gold-500/10" />
+          <div aria-hidden className="absolute -inset-3 rotate-1 rounded-[1.8rem] bg-gradient-to-br from-gold-600/12 via-transparent to-ink-900/5" />
           <div className="relative overflow-hidden rounded-2xl border border-white bg-white shadow-luxe">
-            <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-1.5 bg-gradient-to-r from-brand-700 via-gold-500 to-ember-500" />
+            <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-1.5 bg-gradient-to-r from-gold-700 via-gold-500 to-gold-300" />
             {hasPhoto ? (
               <>
                 {/* eslint-disable-next-line @next/next/no-img-element */}

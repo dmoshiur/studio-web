@@ -44,21 +44,21 @@ async function safe<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
 
 const EXPERIENCE_ACCENTS = [
   {
-    bar: "from-brand-700 via-brand-500 to-brand-300",
-    chip: "border-brand-600/20 bg-brand-50 text-brand-700",
-    numeral: "text-brand-600",
+    bar: "from-gold-700 via-gold-500 to-gold-300",
+    chip: "border-gold-600/20 bg-gold-50 text-gold-700",
+    numeral: "text-gold-700",
     icon: Mic,
   },
   {
-    bar: "from-royal-700 via-royal-500 to-royal-300",
-    chip: "border-royal-600/20 bg-royal-50 text-royal-700",
-    numeral: "text-royal-600",
+    bar: "from-gold-700 via-gold-500 to-gold-300",
+    chip: "border-gold-600/20 bg-gold-50 text-gold-700",
+    numeral: "text-gold-700",
     icon: GraduationCap,
   },
   {
-    bar: "from-ember-600 via-ember-500 to-gold-400",
-    chip: "border-ember-500/25 bg-ember-50 text-ember-700",
-    numeral: "text-ember-600",
+    bar: "from-gold-700 via-gold-500 to-gold-300",
+    chip: "border-gold-600/20 bg-gold-50 text-gold-700",
+    numeral: "text-gold-700",
     icon: Users,
   },
 ];
@@ -111,7 +111,7 @@ export default async function HomePage() {
   return (
     <>
       {/* ================= HERO — full-bleed cinematic stage photography ================= */}
-      <section className="relative isolate overflow-hidden bg-brand-950">
+      <section className="relative isolate overflow-hidden bg-obsidian-950">
         {/* Large background image — the stage fills the entire first viewport */}
         <div aria-hidden className="pointer-events-none absolute inset-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -123,17 +123,15 @@ export default async function HomePage() {
             fetchPriority="high"
             className="h-full w-full object-cover"
           />
-          {/* Readability layers — a violet gradient settles behind the copy on the
-              left while the spotlighted hall stays bright and visible on the right. */}
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-950/95 via-brand-950/60 to-brand-950/15" />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-950/90 via-transparent to-obsidian-950/30" />
+          {/* A restrained charcoal scrim keeps the copy legible while the stage
+              remains bright and visible across the right half of the frame. */}
+          <div className="absolute inset-0 bg-gradient-to-r from-obsidian-950/92 via-obsidian-950/54 to-obsidian-950/12" />
+          <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950/76 via-transparent to-obsidian-950/20" />
         </div>
 
-        {/* Decorative depth — dot lattice, colour glows and an inset editorial frame */}
+        {/* Decorative depth — one quiet editorial grid, no competing colour fields. */}
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-24 top-16 h-72 w-72 rounded-full bg-brand-500/25 blur-3xl" />
-          <div className="absolute -bottom-16 right-[6%] h-64 w-64 rounded-full bg-ember-400/20 blur-3xl" />
-          <div className="absolute right-[10%] top-[20%] hidden h-28 w-28 dot-grid-gold opacity-40 lg:block" />
+          <div className="absolute right-[10%] top-[20%] hidden h-28 w-28 dot-grid-gold opacity-35 lg:block" />
         </div>
         <span
           aria-hidden
@@ -147,11 +145,11 @@ export default async function HomePage() {
             className="absolute top-32 z-10 hidden animate-floaty lg:block lg:right-10 xl:right-[max(2.5rem,calc((100vw_-_80rem)/2_+_2.5rem))]"
           >
             <div className="flex items-center gap-3 rounded-2xl border border-line bg-white/95 px-4 py-3 shadow-lift backdrop-blur">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-gradient text-white shadow-brand-sm">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gold-700 text-white shadow-gold-sm">
                 <CalendarDays className="h-[18px] w-[18px]" />
               </span>
               <span>
-                <span className="block font-sans text-[9.5px] font-semibold uppercase tracking-[0.22em] text-ember-600">
+                <span className="block font-sans text-[9.5px] font-semibold uppercase tracking-[0.22em] text-gold-700">
                   Save the date
                 </span>
                 <span className="block font-serif text-[1.05rem] leading-tight text-ink-900">
@@ -186,7 +184,7 @@ export default async function HomePage() {
 
               <span
                 aria-hidden
-                className="mt-8 block h-[3px] w-44 rounded-full bg-gradient-to-r from-brand-400 via-gold-400 to-ember-400"
+                className="mt-8 block h-[2px] w-44 bg-gold-500"
               />
 
               <p className="mt-7 max-w-xl text-[15px] leading-[1.85] text-white/80 sm:text-[16.5px]">
@@ -209,7 +207,7 @@ export default async function HomePage() {
               )}
 
               <div className="mt-9 flex flex-wrap items-center gap-4">
-                <Link href={h.heroCtaPrimary.href} className="btn-editorial group rounded-full shadow-brand">
+                <Link href={h.heroCtaPrimary.href} className="btn-editorial group rounded-full shadow-gold">
                   {h.heroCtaPrimary.label}
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </Link>
@@ -227,11 +225,11 @@ export default async function HomePage() {
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 {h.eventDateISO && (
                   <span className="inline-flex items-center gap-2.5 rounded-full border border-line bg-white/95 py-1.5 pl-2 pr-4 shadow-lift backdrop-blur lg:hidden">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-gradient text-white shadow-brand-sm">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gold-700 text-white shadow-gold-sm">
                       <CalendarDays className="h-4 w-4" />
                     </span>
                     <span>
-                      <span className="block font-sans text-[8.5px] font-semibold uppercase tracking-[0.22em] text-ember-600">
+                      <span className="block font-sans text-[8.5px] font-semibold uppercase tracking-[0.22em] text-gold-700">
                         Save the date
                       </span>
                       <span className="block font-serif text-[0.95rem] leading-tight text-ink-900">
@@ -242,8 +240,8 @@ export default async function HomePage() {
                 )}
                 <span className="inline-flex items-center gap-2.5 rounded-full border border-line bg-white/95 py-2 pl-3 pr-4 shadow-lift backdrop-blur">
                   <span className="relative flex h-2.5 w-2.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ember-500 opacity-60" />
-                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-ember-500" />
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold-600 opacity-45" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-gold-600" />
                   </span>
                   <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-ink-700">
                     {stats[0] ? `${stats[0].value} ${stats[0].label.toLowerCase()}` : "Seats filling fast"}
@@ -279,7 +277,7 @@ export default async function HomePage() {
         {/* Floating stage badge — bottom right over the hall (xl only, where the
             copy column never reaches) */}
         <div className="absolute bottom-24 right-10 z-10 hidden xl:block xl:right-[max(2.5rem,calc((100vw_-_80rem)/2_+_2.5rem))]">
-          <div className="flex items-center gap-3.5 rounded-2xl border border-white/25 bg-brand-950/45 px-5 py-4 shadow-luxe backdrop-blur-md">
+          <div className="flex items-center gap-3.5 rounded-2xl border border-white/20 bg-obsidian-950/60 px-5 py-4 shadow-luxe backdrop-blur-md">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/15">
               <Ticket className="h-5 w-5 text-gold-200" />
             </span>
@@ -315,13 +313,11 @@ export default async function HomePage() {
       {/* ================= ABOUT — clean white, large supporting image ================= */}
       <Section tone="white">
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -left-24 top-16 h-72 w-72 rounded-full bg-brand-400/10 blur-3xl" />
-          <div className="absolute -right-20 bottom-10 h-64 w-64 rounded-full bg-ember-400/10 blur-3xl" />
-          <div className="absolute right-[8%] top-14 hidden h-24 w-24 dot-grid opacity-50 lg:block" />
+          <div className="absolute right-[8%] top-14 hidden h-24 w-24 dot-grid opacity-35 lg:block" />
         </div>
         <div className="relative grid items-center gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-20">
           <Reveal className="relative">
-            <div aria-hidden className="absolute -inset-3 -rotate-2 rounded-[1.8rem] bg-gradient-to-br from-brand-600/10 via-transparent to-ember-500/10" />
+            <div aria-hidden className="absolute -inset-3 -rotate-2 rounded-[1.8rem] bg-gradient-to-br from-gold-600/12 via-transparent to-ink-900/5" />
             <div aria-hidden className="absolute -left-6 -top-6 h-20 w-20 rounded-full border border-gold-500/40" />
             <div className="relative overflow-hidden rounded-2xl border border-white bg-white shadow-luxe">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -331,15 +327,15 @@ export default async function HomePage() {
                 loading="lazy"
                 className="aspect-[4/5] w-full object-cover"
               />
-              <span className="absolute inset-0 bg-gradient-to-t from-brand-950/40 via-transparent to-transparent" />
+              <span className="absolute inset-0 bg-gradient-to-t from-obsidian-950/40 via-transparent to-transparent" />
               <span
                 aria-hidden
-                className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand-600 via-gold-500 to-ember-500"
+                className="absolute inset-x-0 top-0 h-1.5 bg-gold-600"
               />
               <span aria-hidden className="absolute inset-4 rounded-xl border border-white/40" />
             </div>
             <div className="absolute -bottom-10 -right-4 hidden w-[58%] overflow-hidden rounded-2xl border border-line bg-white p-7 shadow-luxe sm:block lg:-right-10">
-              <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-ember-500 via-gold-500 to-brand-600" />
+              <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gold-600" />
               <Script className="text-[2.4rem] leading-none">est. 2019</Script>
               <p className="mt-3 text-[13px] leading-relaxed text-ink-500">
                 Seven editions, one standard: no filler on stage, no strangers in the room.
@@ -363,13 +359,13 @@ export default async function HomePage() {
               ))}
             </Reveal>
             <Reveal className="mt-9 flex flex-wrap items-center gap-8">
-              <Link href="/about" className="btn-editorial group rounded-full shadow-brand-sm">
+              <Link href="/about" className="btn-editorial group rounded-full shadow-gold-sm">
                 Our story
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>
               <Link
                 href="/speakers"
-                className="link-underline font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-brand-700"
+                className="link-underline font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-gold-700"
               >
                 Meet the speakers
               </Link>
@@ -378,16 +374,14 @@ export default async function HomePage() {
         </div>
       </Section>
 
-      {/* ================= STATS — dark brand contrast band over the hall ================= */}
+      {/* ================= STATS — charcoal contrast band over the hall ================= */}
       {stats.length > 0 && (
-        <section className="relative isolate overflow-hidden bg-brand-deep">
-          {/* Chandelier-lit ballroom ghosting through the brand gradient */}
-          <Backdrop src="/images/page-header.jpg" overlay="none" className="opacity-[0.16] saturate-[0.85]" />
-          <div aria-hidden className="pointer-events-none absolute inset-0 bg-brand-deep/70" />
+        <section className="relative isolate overflow-hidden bg-obsidian-950">
+          {/* Chandelier-lit ballroom ghosting through charcoal */}
+          <Backdrop src="/images/page-header.jpg" overlay="none" className="opacity-[0.14] grayscale saturate-0" />
+          <div aria-hidden className="pointer-events-none absolute inset-0 bg-obsidian-950/78" />
           <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute -top-24 left-1/4 h-72 w-72 rounded-full bg-brand-400/25 blur-3xl" />
-            <div className="absolute -bottom-28 right-1/5 h-72 w-72 rounded-full bg-ember-500/20 blur-3xl" />
-            <div className="absolute inset-0 bg-[radial-gradient(80%_60%_at_50%_0%,rgba(255,255,255,0.08),transparent)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(80%_60%_at_50%_0%,rgba(255,255,255,0.06),transparent)]" />
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-400/60 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold-400/40 to-transparent" />
           </div>
@@ -409,12 +403,11 @@ export default async function HomePage() {
       {/* ================= OWNER SPOTLIGHT ================= */}
       <OwnerSpotlight owner={h.owner} placement="home" />
 
-      {/* ================= EXPERIENCE — soft lavender tint, white cards ================= */}
+      {/* ================= EXPERIENCE — neutral paper tint, white cards ================= */}
       {experience?.items?.length ? (
         <Section tone="lavender" className="texture-grain">
           <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div className="absolute -right-28 top-20 h-80 w-80 rounded-full bg-brand-500/[0.06] blur-3xl" />
-            <div className="absolute -left-24 bottom-16 h-72 w-72 rounded-full bg-ember-400/[0.07] blur-3xl" />
+            <div className="absolute right-[8%] top-16 hidden h-20 w-20 border border-gold-600/15 lg:block" />
           </div>
           <SectionHeading
             script={experience.eyebrow ?? "The Experience"}
@@ -465,15 +458,14 @@ export default async function HomePage() {
         </Section>
       ) : null}
 
-      {/* ================= FEATURED EVENT — warm peach tint ================= */}
+      {/* ================= FEATURED EVENT — warm paper surface ================= */}
       {featuredEvent && (
         <Section tone="peach">
           <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div className="absolute -left-20 top-10 h-64 w-64 rounded-full bg-gold-400/15 blur-3xl" />
-            <div className="absolute -right-16 bottom-8 h-64 w-64 rounded-full bg-brand-500/10 blur-3xl" />
+            <div className="absolute right-[8%] bottom-8 hidden h-24 w-24 border border-gold-600/15 lg:block" />
           </div>
           <Reveal className="relative overflow-hidden rounded-2xl border border-gold-600/25 bg-white shadow-luxe">
-            <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-1.5 bg-gradient-to-r from-brand-700 via-gold-500 to-ember-500" />
+            <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-1.5 bg-gradient-to-r from-gold-700 via-gold-500 to-gold-300" />
             <Backdrop
               src={featuredEvent.coverImage ?? "/images/hero-stage.jpg"}
               overlay="none"
@@ -491,15 +483,15 @@ export default async function HomePage() {
 
                 <div className="mt-8 flex flex-wrap gap-x-8 gap-y-4 text-[13px] text-ink-500">
                   <span className="flex items-center gap-3">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-600/20 bg-brand-50">
-                      <CalendarDays className="h-4 w-4 text-brand-700" />
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full border border-gold-600/20 bg-gold-50">
+                      <CalendarDays className="h-4 w-4 text-gold-700" />
                     </span>
                     {formatDate(featuredEvent.startAt, { weekday: "long", month: "long", day: "numeric" })}
                   </span>
                   {featuredEvent.venue && (
                     <span className="flex items-center gap-3">
-                      <span className="flex h-9 w-9 items-center justify-center rounded-full border border-ember-500/25 bg-ember-50">
-                        <MapPin className="h-4 w-4 text-ember-600" />
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full border border-gold-500/25 bg-gold-50">
+                        <MapPin className="h-4 w-4 text-gold-700" />
                       </span>
                       {featuredEvent.venue}
                     </span>
@@ -507,14 +499,14 @@ export default async function HomePage() {
                 </div>
 
                 <div className="mt-10 flex flex-wrap items-center gap-5">
-                  <Link href={`/events/${featuredEvent.slug}`} className="btn-editorial rounded-full shadow-brand-sm">
+                  <Link href={`/events/${featuredEvent.slug}`} className="btn-editorial rounded-full shadow-gold-sm">
                     Reserve your seat
                   </Link>
                   {featuredEvent.price && <Badge variant="goldSoft">{featuredEvent.price}</Badge>}
                 </div>
               </div>
 
-              <div className="flex flex-col justify-center rounded-2xl border border-brand-600/10 bg-tint-lavender p-8 lg:p-10">
+              <div className="flex flex-col justify-center rounded-2xl border border-gold-600/10 bg-tint-lavender p-8 lg:p-10">
                 <p className="eyebrow mb-5">Begins in</p>
                 <Countdown targetISO={featuredEvent.startAt} />
                 <p className="mt-7 text-[12.5px] leading-relaxed text-ink-500">
@@ -526,7 +518,7 @@ export default async function HomePage() {
         </Section>
       )}
 
-      {/* ================= SCHEDULE / UPCOMING EVENTS — cool sky tint ================= */}
+      {/* ================= SCHEDULE / UPCOMING EVENTS — very light neutral ================= */}
       {events.items.length > 0 && (
         <Section tone="sky">
           <div className="flex flex-wrap items-end justify-between gap-8">
@@ -544,9 +536,9 @@ export default async function HomePage() {
 
           {/* Timeline connector */}
           <div aria-hidden className="relative mt-14 hidden lg:block">
-            <div className="h-px bg-gradient-to-r from-brand-600/40 via-ember-500/40 to-gold-500/40" />
-            <span className="absolute left-[16.66%] top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-brand-600 shadow-brand-sm" />
-            <span className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-ember-500" />
+            <div className="h-px bg-gold-600/35" />
+            <span className="absolute left-[16.66%] top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-gold-600 shadow-gold-sm" />
+            <span className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-gold-600" />
             <span className="absolute left-[83.33%] top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-gold-500" />
           </div>
 
@@ -564,7 +556,7 @@ export default async function HomePage() {
       {speakers.length > 0 && (
         <Section tone="white" className="relative isolate overflow-hidden">
           <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute left-1/2 top-0 h-64 w-[720px] -translate-x-1/2 rounded-full bg-brand-500/[0.05] blur-3xl" />
+            <div className="absolute left-1/2 top-0 h-px w-48 -translate-x-1/2 bg-gold-600/30" />
           </div>
           <div className="relative">
             <SectionHeading
@@ -583,7 +575,7 @@ export default async function HomePage() {
             <Reveal className="mt-14 text-center">
               <Link
                 href="/speakers"
-                className="inline-flex h-[52px] items-center gap-3 rounded-full border border-brand-600/30 bg-white px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-brand-700 shadow-card transition-all hover:-translate-y-0.5 hover:border-brand-600 hover:shadow-brand-sm"
+                className="inline-flex h-[52px] items-center gap-3 rounded-full border border-gold-600/30 bg-white px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-gold-700 shadow-card transition-all hover:-translate-y-0.5 hover:border-gold-600 hover:shadow-gold-sm"
               >
                 The full roster
                 <ArrowUpRight className="h-4 w-4" />
@@ -596,8 +588,7 @@ export default async function HomePage() {
       {/* ================= GALLERY / MOMENTS — white, editorial ================= */}
       <Section tone="white" className="border-t border-line/70">
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -right-24 top-24 h-72 w-72 rounded-full bg-gold-400/10 blur-3xl" />
-          <div className="absolute left-[4%] top-16 hidden h-24 w-24 dot-grid opacity-50 lg:block" />
+          <div className="absolute left-[4%] top-16 hidden h-24 w-24 dot-grid opacity-35 lg:block" />
         </div>
         <div className="relative">
           <SectionHeading
@@ -616,7 +607,7 @@ export default async function HomePage() {
       {tickets.length > 0 && (
         <Section tone="white" id="tickets" className="border-t border-line/70">
           <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div className="absolute left-1/2 top-10 h-56 w-[640px] -translate-x-1/2 rounded-full bg-brand-500/[0.05] blur-3xl" />
+            <div className="absolute left-1/2 top-10 h-px w-48 -translate-x-1/2 bg-gold-600/30" />
           </div>
           <div className="relative">
             <SectionHeading
@@ -632,19 +623,19 @@ export default async function HomePage() {
                   <article
                     className={
                       tier.featured
-                        ? "relative flex h-full flex-col overflow-hidden rounded-2xl border-2 border-brand-600/60 bg-gradient-to-b from-brand-50/90 via-white to-white p-9 text-ink-900 shadow-brand"
+                        ? "relative flex h-full flex-col overflow-hidden rounded-2xl border-2 border-gold-600/60 bg-gradient-to-b from-gold-50/55 via-white to-white p-9 text-ink-900 shadow-gold"
                         : "relative flex h-full flex-col rounded-2xl border border-line bg-white p-9 shadow-card transition-all duration-500 hover:-translate-y-1 hover:shadow-lift"
                     }
                   >
                     {tier.featured && (
                       <>
-                        <span aria-hidden className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand-700 via-gold-500 to-ember-500" />
-                        <span className="absolute right-6 top-6 hidden h-16 w-16 rounded-full border border-brand-600/15 lg:block" />
+                        <span aria-hidden className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-gold-700 via-gold-500 to-gold-300" />
+                        <span className="absolute right-6 top-6 hidden h-16 w-16 rounded-full border border-gold-600/15 lg:block" />
                       </>
                     )}
                     {tier.featured && (
                       <span className="absolute -top-0 left-9 -translate-y-1/2">
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-gradient px-4 py-1.5 font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-white shadow-brand-sm">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-gold-700 px-4 py-1.5 font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-white shadow-gold-sm">
                           <Sparkles className="h-3 w-3" /> Most chosen
                         </span>
                       </span>
@@ -652,24 +643,24 @@ export default async function HomePage() {
                     <p
                       className={
                         tier.featured
-                          ? "font-sans text-[10.5px] uppercase tracking-[0.26em] text-brand-700"
+                          ? "font-sans text-[10.5px] uppercase tracking-[0.26em] text-gold-700"
                           : "font-sans text-[10.5px] uppercase tracking-[0.26em] text-ink-400"
                       }
                     >
                       {tier.note ?? "Pass"}
                     </p>
                     <h3 className="mt-4 font-serif text-[1.75rem] text-ink-900">{tier.name}</h3>
-                    <p className={`mt-5 font-serif text-[2.6rem] leading-none ${tier.featured ? "text-brand-800" : "text-ink-900"}`}>
+                    <p className={`mt-5 font-serif text-[2.6rem] leading-none ${tier.featured ? "text-gold-800" : "text-ink-900"}`}>
                       {tier.price}
                     </p>
-                    <span className={`mt-7 h-px w-full ${tier.featured ? "bg-gradient-to-r from-brand-600/40 via-gold-500/40 to-transparent" : "bg-line"}`} />
+                    <span className={`mt-7 h-px w-full ${tier.featured ? "bg-gradient-to-r from-gold-600/45 via-gold-500/30 to-transparent" : "bg-line"}`} />
                     <ul className="mt-7 flex-1 space-y-3.5">
                       {tier.perks.map((perk) => (
                         <li key={perk} className="flex gap-3">
                           <Diamond
                             className={
                               tier.featured
-                                ? "mt-2 h-1 w-1 shrink-0 !bg-brand-600"
+                                ? "mt-2 h-1 w-1 shrink-0 !bg-gold-600"
                                 : "mt-2 h-1 w-1 shrink-0 bg-gold-600/70"
                             }
                           />
@@ -683,7 +674,7 @@ export default async function HomePage() {
                       href="/contact"
                       className={
                         tier.featured
-                          ? "btn-editorial mt-9 w-full rounded-full shadow-brand-sm"
+                          ? "btn-editorial mt-9 w-full rounded-full shadow-gold-sm"
                           : "btn-quiet mt-9 w-full rounded-full"
                       }
                     >
@@ -739,12 +730,11 @@ export default async function HomePage() {
         </Section>
       )}
 
-      {/* ================= FAQ — soft peach tint ================= */}
+      {/* ================= FAQ — very light neutral ================= */}
       {faqs.length > 0 && (
         <Section tone="peach">
           <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div className="absolute -left-20 bottom-10 h-64 w-64 rounded-full bg-ember-400/10 blur-3xl" />
-            <div className="absolute -right-16 top-12 h-60 w-60 rounded-full bg-brand-500/[0.07] blur-3xl" />
+            <div className="absolute right-[8%] top-12 hidden h-20 w-20 border border-gold-600/15 lg:block" />
           </div>
           <div className="relative grid gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
             <div>
@@ -758,14 +748,14 @@ export default async function HomePage() {
               />
               <Reveal delay={120} className="mt-10 rounded-2xl border border-line bg-white p-6 shadow-card">
                 <div className="flex items-start gap-4">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-brand-600/20 bg-brand-50">
-                    <Mail className="h-5 w-5 text-brand-700" />
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-gold-600/20 bg-gold-50">
+                    <Mail className="h-5 w-5 text-gold-700" />
                   </span>
                   <div>
                     <p className="font-serif text-[1.2rem] text-ink-900">Prefer email?</p>
                     <a
                       href={`mailto:${settings.contactEmail}`}
-                      className="mt-1 block text-[13.5px] font-medium text-brand-700 underline-offset-4 hover:underline"
+                      className="mt-1 block text-[13.5px] font-medium text-gold-700 underline-offset-4 hover:underline"
                     >
                       {settings.contactEmail}
                     </a>
@@ -783,14 +773,13 @@ export default async function HomePage() {
         </Section>
       )}
 
-      {/* ================= CTA — dark brand conversion band over silk ================= */}
-      <section className="relative isolate overflow-hidden bg-brand-deep">
-        {/* Black-gold silk texture settling beneath the brand gradient */}
+      {/* ================= CTA — charcoal conversion band over silk ================= */}
+      <section className="relative isolate overflow-hidden bg-obsidian-950">
+        {/* Subtle silk texture settling beneath charcoal */}
         <Backdrop src="/images/cta-silk.jpg" overlay="none" className="opacity-[0.26]" />
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-brand-deep/75" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-obsidian-950/78" />
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-32 left-[12%] h-96 w-96 rounded-full bg-brand-400/25 blur-3xl" />
-          <div className="absolute -bottom-36 right-[8%] h-96 w-96 rounded-full bg-ember-500/25 blur-3xl" />
+          <div className="absolute inset-0 bg-[radial-gradient(60%_80%_at_50%_0%,rgba(255,255,255,0.05),transparent)]" />
           <div className="absolute left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.07]" />
           <div className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.06]" />
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-400/60 to-transparent" />
@@ -810,7 +799,7 @@ export default async function HomePage() {
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <Link
                 href="/events"
-                className="group inline-flex h-[54px] items-center gap-3 rounded-full bg-white px-9 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-brand-800 shadow-luxe transition-all duration-300 hover:-translate-y-0.5 hover:shadow-brand"
+                className="group inline-flex h-[54px] items-center gap-3 rounded-full bg-gold-700 px-9 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-white shadow-gold transition-all duration-300 hover:-translate-y-0.5 hover:bg-gold-600 hover:shadow-gold"
               >
                 Get Your Ticket
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -843,8 +832,7 @@ export default async function HomePage() {
         <Backdrop src="/images/cta-silk.jpg" overlay="none" className="opacity-[0.07]" />
         <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/40 to-white/80" />
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-20 top-10 h-56 w-56 rounded-full bg-brand-500/[0.07] blur-3xl" />
-          <div className="absolute -right-16 bottom-8 h-56 w-56 rounded-full bg-ember-400/[0.08] blur-3xl" />
+          <div className="absolute right-[8%] top-10 hidden h-20 w-20 border border-gold-600/15 lg:block" />
         </div>
         <span aria-hidden className="pointer-events-none absolute inset-x-6 inset-y-6 hidden border border-ink-900/[0.07] lg:block" />
         <div className="container relative py-24 text-center sm:py-28">

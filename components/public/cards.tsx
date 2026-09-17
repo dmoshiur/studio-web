@@ -39,10 +39,10 @@ export function PostCard({ post }: { post: Post }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-card transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/30 hover:shadow-lift"
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-card transition-all duration-500 hover:-translate-y-1 hover:border-gold-600/30 hover:shadow-lift"
     >
       <div className="relative overflow-hidden border-b border-line">
-        <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-1 bg-gradient-to-r from-brand-600 via-royal-500 to-ember-500 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-1 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-400 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
         <Cover
           src={post.coverImage}
           alt={post.title}
@@ -82,19 +82,19 @@ export function EventCard({ event }: { event: EventItem }) {
   return (
     <Link
       href={`/events/${event.slug}`}
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-card transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/30 hover:shadow-lift"
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-card transition-all duration-500 hover:-translate-y-1 hover:border-gold-600/30 hover:shadow-lift"
     >
       <div className="relative overflow-hidden border-b border-line">
-        <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-1 bg-gradient-to-r from-brand-600 via-gold-500 to-ember-500" />
+        <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-1 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-400" />
         <Cover
           src={event.coverImage}
           alt={event.title}
           ratio="aspect-[16/10]"
           className="w-full transition-transform duration-1000 group-hover:scale-[1.07]"
         />
-        <div className="absolute left-4 top-4 flex flex-col items-center rounded-xl border border-brand-600/15 bg-white/95 px-3.5 py-2.5 shadow-lift backdrop-blur-sm">
-          <span className="font-serif text-[1.5rem] leading-none text-brand-800">{start.getDate()}</span>
-          <span className="mt-1 font-sans text-[9.5px] font-semibold uppercase tracking-[0.22em] text-ember-600">
+        <div className="absolute left-4 top-4 flex flex-col items-center rounded-xl border border-gold-600/15 bg-white/95 px-3.5 py-2.5 shadow-lift backdrop-blur-sm">
+          <span className="font-serif text-[1.5rem] leading-none text-gold-800">{start.getDate()}</span>
+          <span className="mt-1 font-sans text-[9.5px] font-semibold uppercase tracking-[0.22em] text-gold-700">
             {start.toLocaleString("en-US", { month: "short" })}
           </span>
         </div>
@@ -136,7 +136,7 @@ export function EventCard({ event }: { event: EventItem }) {
 export function SpeakerCard({ speaker }: { speaker: Speaker }) {
   return (
     <Link href={`/speakers/${speaker.slug}`} className="group block">
-      <div className="relative overflow-hidden rounded-2xl border border-line bg-white shadow-card transition-all duration-500 hover:-translate-y-1 hover:border-brand-600/25 hover:shadow-lift">
+      <div className="relative overflow-hidden rounded-2xl border border-line bg-white shadow-card transition-all duration-500 hover:-translate-y-1 hover:border-gold-600/25 hover:shadow-lift">
         <Cover
           src={speaker.photoURL}
           alt={speaker.name}
@@ -144,9 +144,9 @@ export function SpeakerCard({ speaker }: { speaker: Speaker }) {
           ratio={ratioClass("aspect-[4/5]")}
           className="w-full grayscale-[35%] transition-all duration-1000 group-hover:scale-[1.05] group-hover:grayscale-0"
         />
-        <span className="absolute inset-0 bg-gradient-to-t from-brand-950/95 via-obsidian-950/35 to-transparent opacity-90 transition-opacity group-hover:opacity-95" />
+        <span className="absolute inset-0 bg-gradient-to-t from-obsidian-950/95 via-obsidian-950/35 to-transparent opacity-90 transition-opacity group-hover:opacity-95" />
         <span className="pointer-events-none absolute inset-3 rounded-xl border border-gold-500/0 transition-colors duration-500 group-hover:border-gold-400/50" />
-        <span aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-brand-500 via-gold-400 to-ember-500 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        <span aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-400 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
         <div className="absolute inset-x-0 bottom-0 p-6">
           <h3 className="font-serif text-[1.4rem] leading-tight text-ivory-50">{speaker.name}</h3>
           {(speaker.title || speaker.company) && (

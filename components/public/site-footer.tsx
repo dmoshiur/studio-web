@@ -15,7 +15,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   globe: Globe,
 };
 
-/** Footer — marble-textured obsidian slab with a calligraphic signature. */
+/** Footer — a near-black editorial slab with a restrained champagne accent. */
 export function SiteFooter({
   settings,
   footerLinks,
@@ -29,13 +29,9 @@ export function SiteFooter({
 
   return (
     <footer className="relative isolate overflow-hidden bg-obsidian-950">
-      <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-[3px] bg-gradient-to-r from-brand-700 via-gold-500 to-ember-500" />
-      <Backdrop src="/images/texture-marble.jpg" overlay="soft" className="opacity-[0.3]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-brand-950/60 via-obsidian-950/90 to-obsidian-950" />
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-24 right-[10%] h-72 w-72 rounded-full bg-brand-600/20 blur-3xl" />
-        <div className="absolute -bottom-28 left-[6%] h-72 w-72 rounded-full bg-ember-500/[0.08] blur-3xl" />
-      </div>
+      <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-px bg-gold-600/70" />
+      <Backdrop src="/images/texture-marble.jpg" overlay="soft" className="opacity-[0.14] grayscale" />
+      <div className="absolute inset-0 bg-obsidian-950/90" />
 
       {/* Footer CTA strip */}
       <div className="container relative pt-14">
@@ -50,7 +46,7 @@ export function SiteFooter({
           </div>
           <Link
             href="/events"
-            className="group inline-flex h-[50px] shrink-0 items-center gap-2.5 rounded-full bg-brand-gradient px-8 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-white shadow-brand transition-all hover:-translate-y-0.5 hover:shadow-brand"
+            className="group inline-flex h-[50px] shrink-0 items-center gap-2.5 rounded-full bg-gold-700 px-8 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-white shadow-gold transition-all hover:-translate-y-0.5 hover:shadow-gold"
           >
             Get your ticket
             <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
@@ -63,7 +59,7 @@ export function SiteFooter({
           {/* Identity */}
           <div>
             <Link href="/" className="group flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center bg-brand-gradient font-serif text-[1.4rem] text-white shadow-brand-sm transition-transform duration-300 group-hover:-translate-y-0.5">
+              <span className="flex h-11 w-11 items-center justify-center bg-gold-700 font-serif text-[1.4rem] text-white shadow-gold-sm transition-transform duration-300 group-hover:-translate-y-0.5">
                 {settings.siteName.charAt(0).toUpperCase()}
               </span>
               <span className="flex flex-col leading-none">
@@ -85,7 +81,7 @@ export function SiteFooter({
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={s.label}
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-ivory-400 transition-all hover:-translate-y-0.5 hover:border-brand-400/60 hover:bg-brand-600/20 hover:text-white"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-ivory-400 transition-all hover:-translate-y-0.5 hover:border-gold-400/60 hover:bg-gold-600/15 hover:text-white"
                   >
                     <Icon className="h-[16px] w-[16px]" />
                   </a>
@@ -106,7 +102,7 @@ export function SiteFooter({
                     href={l.href}
                     className="group/link inline-flex items-center gap-2 text-[13.5px] text-ivory-400/80 transition-colors hover:text-gold-200"
                   >
-                    <span aria-hidden className="h-px w-0 bg-gradient-to-r from-brand-400 to-ember-400 transition-all duration-300 group-hover/link:w-4" />
+                    <span aria-hidden className="h-px w-0 bg-gradient-to-r from-gold-500 to-gold-500 transition-all duration-300 group-hover/link:w-4" />
                     {l.label}
                   </Link>
                 </li>

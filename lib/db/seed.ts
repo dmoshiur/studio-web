@@ -55,8 +55,8 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
       timezone: "America/New_York",
       updatedAt: now,
       appearance: {
-        primaryColor: "#c9a227",
-        secondaryColor: "#e6c65c",
+        primaryColor: "#b99352",
+        secondaryColor: "#ddc99e",
         theme: "dark",
       },
       homepage: {
@@ -238,8 +238,8 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
 
   /* ---------------------------- Categories ----------------------------- */
   const categories = [
-    { id: "leadership", name: "Leadership", color: "#c9a227", description: "Strategy, culture and the craft of running things." },
-    { id: "product", name: "Product & Design", color: "#e6c65c", description: "Building things people actually want." },
+    { id: "leadership", name: "Leadership", color: "#b99352", description: "Strategy, culture and the craft of running things." },
+    { id: "product", name: "Product & Design", color: "#ddc99e", description: "Building things people actually want." },
     { id: "growth", name: "Growth", color: "#8f7b2f", description: "Distribution, story and compounding traction." },
     { id: "backstage", name: "Backstage", color: "#6f6a58", description: "Notes and interviews from behind the curtain." },
   ];

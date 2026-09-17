@@ -199,7 +199,7 @@ export function StatStrip({
           {onDark && (
             <span
               aria-hidden
-              className="mx-auto mb-5 block h-1 w-10 rounded-full bg-gradient-to-r from-gold-400 to-ember-400"
+              className="mx-auto mb-5 block h-1 w-10 rounded-full bg-gradient-to-r from-gold-400 to-gold-400"
             />
           )}
           <p
@@ -228,8 +228,8 @@ export function Marquee({ items, className }: { items: string[]; className?: str
   if (!items?.length) return null;
   const doubled = [...items, ...items];
   return (
-    <div className={cn("relative overflow-hidden border-y border-brand-600/10 bg-white py-6", className)}>
-      <span aria-hidden className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand-600/25 to-transparent" />
+    <div className={cn("relative overflow-hidden border-y border-gold-600/10 bg-white py-6", className)}>
+      <span aria-hidden className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-gold-600/25 to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-white to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-white to-transparent" />
       <ul className="flex w-max animate-marquee items-center gap-14 whitespace-nowrap">
@@ -260,19 +260,19 @@ export function Accordion({
       {items.map((item, i) => (
         <details
           key={item.q + i}
-          className="group rounded-xl border border-line bg-white shadow-card transition-all duration-300 open:border-brand-600/30 open:shadow-lift [&[open]]:bg-gradient-to-b [&[open]]:from-brand-50/60 [&[open]]:to-white"
+          className="group rounded-xl border border-line bg-white shadow-card transition-all duration-300 open:border-gold-600/30 open:shadow-lift [&[open]]:bg-gradient-to-b [&[open]]:from-gold-50/60 [&[open]]:to-white"
         >
           <summary className="flex cursor-pointer list-none items-center gap-5 p-5 text-left sm:p-6 [&::-webkit-details-marker]:hidden">
             <span
               aria-hidden
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-paper-200 font-serif text-[0.95rem] text-ink-600 transition-all duration-300 group-open:bg-brand-gradient group-open:text-white group-open:shadow-brand-sm"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-paper-200 font-serif text-[0.95rem] text-ink-600 transition-all duration-300 group-open:bg-gold-700 group-open:text-white group-open:shadow-gold-sm"
             >
               {String(i + 1).padStart(2, "0")}
             </span>
-            <span className="flex-1 font-serif text-[1.15rem] leading-snug text-ink-900 transition-colors group-open:text-brand-800 sm:text-[1.3rem]">
+            <span className="flex-1 font-serif text-[1.15rem] leading-snug text-ink-900 transition-colors group-open:text-gold-800 sm:text-[1.3rem]">
               {item.q}
             </span>
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line transition-all duration-300 group-open:rotate-180 group-open:border-brand-600/40 group-open:bg-brand-600 group-open:text-white">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line transition-all duration-300 group-open:rotate-180 group-open:border-gold-600/40 group-open:bg-gold-600 group-open:text-white">
               <ChevronDown className="h-4 w-4" />
             </span>
           </summary>
@@ -311,7 +311,7 @@ export function Gallery({
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.05]"
             />
             <span className="absolute inset-0 bg-gradient-to-t from-obsidian-950/85 via-obsidian-950/20 to-transparent" />
-            <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-600 via-gold-500 to-ember-500" />
+            <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-gold-600 via-gold-500 to-gold-400" />
             {first.caption && (
               <figcaption className="absolute bottom-0 left-0 right-0 p-7">
                 <span className="pill-brand mb-4 !border-white/30 !bg-white/10 !text-white backdrop-blur-sm">
@@ -394,12 +394,12 @@ export function QuoteBlock({
         aria-hidden
         className={cn(
           "absolute inset-x-0 top-0 h-1",
-          accent === "brand" && "bg-gradient-to-r from-brand-700 via-brand-500 to-brand-300",
-          accent === "ember" && "bg-gradient-to-r from-ember-600 via-ember-500 to-gold-400",
+          accent === "brand" && "bg-gradient-to-r from-gold-700 via-gold-500 to-gold-300",
+          accent === "ember" && "bg-gradient-to-r from-gold-700 via-gold-500 to-gold-300",
           accent === "gold" && "bg-gradient-to-r from-gold-700 via-gold-500 to-gold-300"
         )}
       />
-      <span aria-hidden className="calligraphic absolute -top-2 left-7 text-[5rem] leading-none text-brand-600/15">
+      <span aria-hidden className="calligraphic absolute -top-2 left-7 text-[5rem] leading-none text-gold-600/15">
         &ldquo;
       </span>
       <blockquote className="relative font-serif text-[1.4rem] italic leading-[1.6] text-ink-800 sm:text-[1.65rem]">
@@ -532,7 +532,7 @@ export function TextLink({
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       className={cn(
         "link-underline inline-flex items-center gap-2 font-sans text-[11.5px] font-semibold uppercase tracking-[0.2em] transition-colors",
-        tone === "brand" ? "text-brand-700 hover:text-brand-600" : "text-gold-700 hover:text-gold-600",
+        tone === "brand" ? "text-gold-700 hover:text-gold-600" : "text-gold-700 hover:text-gold-600",
         className
       )}
     >
