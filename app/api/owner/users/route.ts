@@ -33,14 +33,21 @@ const inviteSchema = z.object({
   email: z.string().email().max(254),
   password: z.string().min(8).max(200),
   displayName: z.string().min(2).max(80).optional(),
-  role: z.enum(["user", "admin", "owner"]).default("admin"),
+  role: z.enum(["user", "admin", "owner", "superadmin"]).default("admin"),
 });
 
-/** Provision a new admin/owner account — owner only. */
+/**
+ * Provision a new account from the operations console — HackerAdmin only.
+ * Site Admins ("admin") and HackerAdmins ("owner") can be created here;
+ * "superadmin" is reserved for actors that already hold it.
+ */
 export async function POST(req: Request) {
   try {
     const actor = await requireHackerAdmin();
     const body = await parseBody(req, inviteSchema);
+    if (body.role === "superadmin" && actor.role !== "superadmin") {
+      return apiError("Only a superadmin can create another superadmin", 403, "forbidden_role");
+    }
     const user = await createIdentityUser({
       email: body.email,
       password: body.password,

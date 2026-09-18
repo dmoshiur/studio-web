@@ -168,7 +168,7 @@ export default function OwnerSmtpPage() {
             </div>
             <div>
               <Label>From name</Label>
-              <Input value={form.fromName} onChange={(e) => setForm({ ...form, fromName: e.target.value })} placeholder="ManUp" autoComplete="off" />
+              <Input value={form.fromName} onChange={(e) => setForm({ ...form, fromName: e.target.value })} placeholder="Photography" autoComplete="off" />
             </div>
             <div className="sm:col-span-2">
               <Label>Reply-to (optional)</Label>

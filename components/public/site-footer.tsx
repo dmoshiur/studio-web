@@ -65,7 +65,7 @@ export function SiteFooter({
               <span className="flex flex-col leading-none">
                 <span className="font-serif text-[1.4rem] text-ivory-50">{settings.siteName}</span>
                 <span className="mt-1 font-sans text-[8.5px] uppercase tracking-luxe text-gold-400/80">
-                  Summit &amp; Salon
+                  Event Management Studio
                 </span>
               </span>
             </Link>

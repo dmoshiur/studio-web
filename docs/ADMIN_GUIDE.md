@@ -5,13 +5,16 @@ infrastructure secrets — those live in the owner console.
 
 ## Access
 
-- Sign in at `/login`. Admins are promoted by the owner in `/hackeradmin/users`.
+- Sign in at `/login`. Site Admins are promoted in the studio (`/admin/users`) or by a
+  HackerAdmin in `/hackeradmin/users`.
 - All `/admin` pages are gated **server-side** (layout) and every `/api/admin/*` route re-verifies
   the session + role. There is no client-only protection.
 
 ## Dashboard (`/admin`)
 
-Live counts (posts, events, speakers, media, unread messages, subscribers) + recent contact messages.
+A tight stats grid (posts, events, speakers, schedule days, media, unread messages, subscribers,
+reservations) plus the latest contact messages and a link to the site settings in the operations
+console.
 
 ## Posts (`/admin/posts`)
 
@@ -29,8 +32,16 @@ Published events appear at `/events` + `/events/[slug]` (with Event JSON-LD for 
 
 ## Speakers (`/admin/speakers`)
 
-Name/slug, title, company, bio, photo (library picker), social links, featured, status.
-Published profiles appear at `/speakers` + `/speakers/[slug]`.
+Name/slug, title, company, **talk topic**, bio, photo (library picker), social links, featured,
+status. Published profiles appear at `/speakers` + `/speakers/[slug]`, rendered as a
+ManUp-style grid: hover a portrait for the social links, open a card for the detail modal
+(topic, bio, socials, full-profile link).
+
+## Schedule (`/admin/schedule`)
+
+The day-by-day program (Day 1…N). Each day carries a date, a note and an ordered list of
+sessions — title, start/end time, venue, track and assigned speakers (picked from the speaker
+list). Saved days power the tabbed schedule on the homepage and at `/schedule` instantly.
 
 ## Categories (`/admin/categories`)
 

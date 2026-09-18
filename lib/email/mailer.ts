@@ -35,7 +35,7 @@ export function getSmtpConfigFromEnv(): SmtpConfig | null {
     user,
     password,
     fromEmail,
-    fromName: process.env.SMTP_FROM_NAME ?? "ManUp",
+    fromName: process.env.SMTP_FROM_NAME ?? "Photography",
     replyTo: process.env.SMTP_REPLY_TO || undefined,
   };
 }
@@ -168,7 +168,7 @@ export function baseEmailTemplate(params: { title: string; bodyHtml: string; foo
     <div style="background:#ffffff;border-bottom:3px solid #b99352;border-radius:0 0 10px 10px;padding:30px;color:#2a2b36;font-size:15px;line-height:1.65;">
       ${params.bodyHtml}
       <hr style="border:none;border-top:1px solid #e7e2d2;margin:24px 0;" />
-      <p style="color:#6a6b7c;font-size:12px;margin:0;">${params.footer ?? "ManUp Platform — automated notification. Please do not reply unless a reply-to address was provided."}</p>
+      <p style="color:#6a6b7c;font-size:12px;margin:0;">${params.footer ?? "Photography — automated notification. Please do not reply unless a reply-to address was provided."}</p>
     </div>
   </div></body></html>`;
 }

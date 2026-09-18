@@ -8,17 +8,17 @@ import { toISODate } from "@/lib/utils";
 export { DEFAULT_OWNER_PROFILE };
 
 export const DEFAULT_PUBLIC_SETTINGS: PublicSiteSettings = {
-  siteName: "ManUp",
-  tagline: "Change Your Mind To Become Success",
+  siteName: "Photography",
+  tagline: "Event Management Studio — Photo & Videography Events",
   contactEmail: "hello@example.com",
   phone: "",
   address: "",
   timezone: "UTC",
   seo: {
-    metaTitle: "ManUp — Conference & Events",
+    metaTitle: "Photography — Event Management Studio",
     metaDescription:
-      "ManUp is a modern conference and events platform — speakers, schedules, tickets and stories.",
-    keywords: "conference, events, speakers, tickets, ManUp",
+      "Photography is a modern event management studio — photo and video productions, schedules, speakers, tickets and stories.",
+    keywords: "photography, event management studio, photo events, videography, speakers, schedule, tickets",
     twitterCard: "summary_large_image",
   },
   social: {},
@@ -28,22 +28,22 @@ export const DEFAULT_PUBLIC_SETTINGS: PublicSiteSettings = {
     theme: "light",
   },
   homepage: {
-    heroBadge: "Annual Tech Conference",
-    heroTitle: "Change Your Mind To Become Success",
+    heroBadge: "Photo & Video Production Event",
+    heroTitle: "Where Every Frame Tells The Story",
     heroSubtitle:
-      "Join industry leaders, innovators and creators for two days of talks, workshops and networking.",
+      "Join leading photographers, filmmakers and creators for days of shoots, workshops, lighting labs and portfolio reviews.",
     heroCtaPrimary: { label: "Get Tickets", href: "/events" },
     heroCtaSecondary: { label: "Meet Speakers", href: "/speakers" },
-    eventVenue: "Mardavall Hotel, New York",
+    eventVenue: "Grand Meridian Hall, New York",
     showCountdown: true,
-    aboutTitle: "About the Conference",
+    aboutTitle: "About The Studio",
     aboutBody:
-      "ManUp brings together the brightest minds in technology and business. Across multiple tracks you'll find keynotes, panels, hands-on workshops and unforgettable networking.",
+      "Photography brings together the brightest image-makers in photo and video. Across multiple tracks you'll find keynotes, live shoots, hands-on workshops and unforgettable networking.",
     aboutStats: [
       { value: "2K+", label: "Attendees" },
       { value: "40+", label: "Speakers" },
       { value: "25+", label: "Sessions" },
-      { value: "2", label: "Days" },
+      { value: "3", label: "Days" },
     ],
     owner: DEFAULT_OWNER_PROFILE,
   },

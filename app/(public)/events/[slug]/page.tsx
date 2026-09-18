@@ -137,7 +137,7 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
             </div>
 
             {event.contentHtml && (
-              <div className="prose-manup mt-10" dangerouslySetInnerHTML={{ __html: event.contentHtml }} />
+              <div className="prose-editorial mt-10" dangerouslySetInnerHTML={{ __html: event.contentHtml }} />
             )}
 
             {speakers.length > 0 && (

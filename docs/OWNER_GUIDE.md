@@ -21,14 +21,30 @@ re-entering the current passcode and are audit-logged.
 
 ## Roles & the studio
 
-Regular user accounts (`/login`) still power the content studio (`/admin`, role `admin`+).
-The master administrator from `ADMIN_EMAIL`/`ADMIN_PASSWORD` is seeded into the database on
-first boot (hashed, idempotent) and keeps the `superadmin` role for studio access. To add more
-admins use **Users & Roles** in this console (or the studio's Accounts page for owners).
+Role naming: `user` (member) · `admin` (**Site Admin** — content studio) · `owner`
+(**HackerAdmin** — this operations console) · `superadmin` (**Super Admin** — unrestricted).
+
+- **Users & Roles** (`/hackeradmin/users`) creates and assigns HackerAdmin / Site Admin /
+  Super Admin accounts directly (Super Admin creation requires a Super Admin actor).
+- Site Admins can also add **sub-admins** from the studio's Accounts page (`/admin/users`);
+  owner/superadmin accounts remain manageable only from this console.
+- The master administrator from `ADMIN_EMAIL`/`ADMIN_PASSWORD` is seeded into the database on
+  first boot (hashed, idempotent) and keeps the `superadmin` role for studio access.
+
+## Authentication email (SMTP)
+
+All transactional authentication mail — password resets and email verification — is delivered
+through the studio's **custom SMTP transport** (Nodemailer). Firebase's default reset/verification
+emails are never used: the platform mints its own tokens and links and sends them itself
+(see `lib/server/auth-emails.ts` and `/api/auth/password-reset`, `/api/auth/verify`).
 
 ## Overview (`/hackeradmin`)
 
 - Live site status banner (online / maintenance / locked).
+- **Visitor analytics**: total page views and unique visitors, today's traffic, a live
+  "active now" counter (unique visitors in the last 5 minutes, auto-refreshed), a 14-day
+  traffic chart and the top pages/referrers. Counting is first-party and cookie-based
+  (opaque ids only, no IPs; bots excluded).
 - Health cards: app, Firestore, Auth, Storage, SMTP, maintenance — statuses only, **no secrets**.
 - Content inventory counts and quick links. Raw JSON at `/api/health`.
 

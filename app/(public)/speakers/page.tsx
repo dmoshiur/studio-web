@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Mic2 } from "lucide-react";
 import { listPublishedSpeakers } from "@/lib/firestore/content";
-import { SpeakerCard } from "@/components/public/cards";
-import { Reveal } from "@/components/public/reveal";
+import { SpeakerGrid } from "@/components/public/speaker-grid";
 import { EmptyState } from "@/components/ui/feedback";
 import { PageHero, Section, SectionHeading } from "@/components/public/ui-kit";
 
@@ -10,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Speakers",
-  description: "The founders, operators and storytellers taking the ManUp stage this edition.",
+  description: "The photographers, filmmakers and storytellers taking the Photography stage this edition.",
 };
 
 export default async function SpeakersPage() {
@@ -43,16 +42,12 @@ export default async function SpeakersPage() {
               script="Main stage"
               eyebrow={`${speakers.length} confirmed`}
               title="This edition's roster"
-              description="Talks run forty minutes with no filler, followed by twenty minutes of open questions."
+              description="Hover a portrait for social links; open a card for the full bio, topic and profile."
             />
 
             {featured.length > 0 && (
-              <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {featured.map((s, i) => (
-                  <Reveal key={s.id} delay={(i % 4) * 90}>
-                    <SpeakerCard speaker={s} />
-                  </Reveal>
-                ))}
+              <div className="mt-16">
+                <SpeakerGrid speakers={featured} />
               </div>
             )}
 
@@ -63,12 +58,8 @@ export default async function SpeakersPage() {
                   <span className="font-sans text-[10.5px] uppercase tracking-luxe text-gold-700">Also on stage</span>
                   <span className="h-px flex-1 bg-gradient-to-l from-transparent via-gold-500/40 to-gold-500/40" />
                 </div>
-                <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                  {rest.map((s, i) => (
-                    <Reveal key={s.id} delay={(i % 4) * 70}>
-                      <SpeakerCard speaker={s} />
-                    </Reveal>
-                  ))}
+                <div className="mt-12">
+                  <SpeakerGrid speakers={rest} />
                 </div>
               </>
             )}
@@ -91,13 +82,11 @@ export default async function SpeakersPage() {
               title: "Paid, as it should be",
               body: "Speakers are paid and travel is covered. We do not sell stage time — ever.",
             },
-          ].map((item, i) => (
-            <Reveal key={item.title} delay={i * 90}>
-              <div className="border-t border-ink-900/20 pt-7">
-                <h3 className="font-serif text-[1.4rem] text-ink-900">{item.title}</h3>
-                <p className="mt-3 text-[13.5px] leading-[1.9] text-ink-500">{item.body}</p>
-              </div>
-            </Reveal>
+          ].map((item) => (
+            <div key={item.title} className="border-t border-ink-900/20 pt-7">
+              <h3 className="font-serif text-[1.4rem] text-ink-900">{item.title}</h3>
+              <p className="mt-3 text-[13.5px] leading-[1.9] text-ink-500">{item.body}</p>
+            </div>
           ))}
         </div>
       </Section>

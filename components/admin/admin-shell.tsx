@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Newspaper, CalendarDays, Mic2, Tags, FileText, Image as ImageIcon,
   Inbox, Mail, Navigation as NavIcon, User, Menu, X, ExternalLink, LogOut, ShieldCheck, Users,
-  CalendarCheck2, UserRound,
+  CalendarCheck2, UserRound, CalendarClock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SessionUser } from "@/types";
@@ -50,7 +50,7 @@ export function AdminShell({ user, children }: { user: SessionUser; children: Re
           M
         </span>
         <div>
-          <p className="font-serif text-[1.1rem] leading-none text-ivory-50">ManUp Studio</p>
+          <p className="font-serif text-[1.1rem] leading-none text-ivory-50">Photography Studio</p>
           <p className="mt-1.5 font-sans text-[9px] font-semibold uppercase tracking-[0.24em] text-gold-400/90">
             Content &amp; Editorial
           </p>

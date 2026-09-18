@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Journal",
-  description: "Essays, interviews and behind-the-scenes notes from the ManUp stage.",
+  description: "Essays, interviews and behind-the-scenes notes from the Photography studio.",
 };
 
 export default async function BlogPage({ searchParams }: { searchParams: { category?: string } }) {

@@ -36,6 +36,13 @@ const ROLE_TONE: Record<string, "gold" | "default" | "info"> = {
   user: "default",
 };
 
+const ROLE_LABEL: Record<string, string> = {
+  superadmin: "Super Admin",
+  owner: "HackerAdmin",
+  admin: "Site Admin",
+  user: "User",
+};
+
 /** Accounts panel — create staff logins and change roles (admin+). */
 export default function AdminUsersPage() {
   const [users, setUsers] = React.useState<AccountRow[] | null>(null);
@@ -51,15 +58,9 @@ export default function AdminUsersPage() {
   const load = React.useCallback(async () => {
     setError(null);
     try {
-      // Owner routes expose role/disable management; fall back to the admin read-only list.
-      let data: AccountsResponse | null = null;
-      try {
-        data = await api<AccountsResponse>("/api/owner/users?limit=100");
-        setCanManage(true);
-      } catch {
-        data = await api<AccountsResponse>("/api/admin/users?limit=100");
-        setCanManage(false);
-      }
+      // Studio list — every admin can read accounts and manage users/sub-admins.
+      const data = await api<AccountsResponse>("/api/admin/users?limit=100");
+      setCanManage(true);
       setUsers(data.users);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load accounts");
@@ -88,8 +89,8 @@ export default function AdminUsersPage() {
 
   async function changeRole(uid: string, role: Role) {
     try {
-      await api("/api/owner/users", { method: "PATCH", body: JSON.stringify({ uid, role }) });
-      toast({ kind: "success", title: "Role updated" });
+      await api("/api/admin/users", { method: "PATCH", body: JSON.stringify({ uid, role }) });
+      toast({ kind: "success", title: "Role updated", message: "Their sessions were revoked so the new role applies immediately." });
       await load();
     } catch (err) {
       toast({ kind: "error", title: "Role change failed", message: err instanceof Error ? err.message : undefined });
@@ -99,7 +100,7 @@ export default function AdminUsersPage() {
   async function toggleDisabled(user: AccountRow) {
     setBusy(true);
     try {
-      await api(`/api/owner/users/${encodeURIComponent(user.uid)}`, {
+      await api(`/api/admin/users/${encodeURIComponent(user.uid)}`, {
         method: "PATCH",
         body: JSON.stringify({ disabled: !user.disabled }),
       });
@@ -116,7 +117,7 @@ export default function AdminUsersPage() {
   async function removeAccount(user: AccountRow) {
     setBusy(true);
     try {
-      await api(`/api/owner/users/${encodeURIComponent(user.uid)}`, { method: "DELETE" });
+      await api(`/api/admin/users/${encodeURIComponent(user.uid)}`, { method: "DELETE" });
       toast({ kind: "success", title: "Account deleted", message: `${user.email ?? user.uid} can no longer sign in.` });
       setDeleting(null);
       await load();
@@ -170,19 +171,18 @@ export default function AdminUsersPage() {
                   </div>
                 </TD>
                 <TD>
-                  {canManage ? (
+                  {canManage && (u.role === "user" || u.role === "admin") ? (
                     <Select
-                      value={u.role === "superadmin" ? "owner" : u.role}
+                      value={u.role}
                       aria-label={`Role for ${u.email ?? u.uid}`}
-                      className="h-10 w-[142px] text-[12.5px]"
+                      className="h-10 w-[150px] text-[12.5px]"
                       onChange={(e) => void changeRole(u.uid, e.target.value as Role)}
                     >
                       <option value="user">User</option>
-                      <option value="admin">Admin</option>
-                      <option value="owner">Owner</option>
+                      <option value="admin">Site Admin</option>
                     </Select>
                   ) : (
-                    <Badge variant={ROLE_TONE[u.role] ?? "default"}>{u.role}</Badge>
+                    <Badge variant={ROLE_TONE[u.role] ?? "default"}>{ROLE_LABEL[u.role] ?? u.role}</Badge>
                   )}
                 </TD>
                 <TD>
@@ -265,9 +265,11 @@ export default function AdminUsersPage() {
             <Label htmlFor="new-role">Role</Label>
             <Select id="new-role" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
               <option value="user">User — member access</option>
-              <option value="admin">Admin — studio content</option>
-              <option value="owner">Owner — full control</option>
+              <option value="admin">Site Admin — studio content</option>
             </Select>
+            <p className="mt-1.5 text-[12.5px] leading-relaxed text-ivory-500">
+              HackerAdmin accounts are created from the protected operations console.
+            </p>
           </div>
           <div className="flex items-center gap-4 pt-1">
             <Button type="submit" loading={busy}>

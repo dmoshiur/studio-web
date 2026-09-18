@@ -4,6 +4,7 @@ import { getMaintenanceState, isSiteOffline } from "@/lib/firestore/settings";
 import { getNavigation, listSocialLinks } from "@/lib/firestore/engagement";
 import { SiteHeader } from "@/components/public/site-header";
 import { SiteFooter } from "@/components/public/site-footer";
+import { VisitTracker } from "@/components/public/visit-tracker";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,7 @@ export default async function PublicLayout({ children }: { children: React.React
       <SiteHeader siteName={settings.siteName} logoUrl={settings.logoUrl} links={headerNav.links} />
       <main id="main-content">{children}</main>
       <SiteFooter settings={settings} footerLinks={footerNav.links} socialLinks={socialLinks} />
+      <VisitTracker />
     </>
   );
 }

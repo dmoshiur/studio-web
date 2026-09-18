@@ -30,6 +30,7 @@ export function SpeakerForm({ initial }: { initial?: Speaker }) {
       slug: initial?.slug ?? "",
       title: initial?.title ?? "",
       company: initial?.company ?? "",
+      topic: initial?.topic ?? "",
       bio: initial?.bio ?? "",
       photoURL: initial?.photoURL ?? "",
       socials: initial?.socials ?? [],
@@ -83,6 +84,13 @@ export function SpeakerForm({ initial }: { initial?: Speaker }) {
           <div>
             <Label>Company</Label>
             <Input {...register("company")} placeholder="Acme Inc." />
+          </div>
+          <div className="sm:col-span-2">
+            <Label>Talk / topic</Label>
+            <Input {...register("topic")} placeholder="Color Grading At Scale" />
+            <p className="mt-1.5 text-[12.5px] text-ivory-500">
+              Shown on speaker cards, the schedule and the detail modal.
+            </p>
           </div>
           <div className="sm:col-span-2">
             <Label>Bio *</Label>

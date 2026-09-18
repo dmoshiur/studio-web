@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Tickets, speaking, partnerships and press — reach the ManUp team directly.",
+  description: "Bookings, speaking, partnerships and press — reach the Photography team directly.",
 };
 
 export default async function ContactPage() {

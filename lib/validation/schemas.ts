@@ -91,6 +91,7 @@ export const speakerSchema = z.object({
   slug: slugSchema.optional(),
   title: z.string().max(120).optional().or(z.literal("")),
   company: z.string().max(120).optional().or(z.literal("")),
+  topic: z.string().max(160).optional().or(z.literal("")),
   bio: z.string().min(10).max(5000),
   photoURL: z.string().max(2048).optional().or(z.literal("")),
   socials: z
@@ -279,4 +280,26 @@ export type LoginInput = z.infer<typeof loginSchema>;
 export type PostInput = z.infer<typeof postSchema>;
 export type EventInput = z.infer<typeof eventSchema>;
 export type SpeakerInput = z.infer<typeof speakerSchema>;
+
+/* ----------------------------- Schedule ----------------------------- */
+export const scheduleSessionSchema = z.object({
+  id: z.string().max(80).optional().or(z.literal("")),
+  title: z.string().min(2).max(160),
+  description: z.string().max(1200).optional().or(z.literal("")),
+  startTime: z.string().regex(/^\d{2}:\d{2}$/, "Use HH:MM (24h)"),
+  endTime: z.string().regex(/^\d{2}:\d{2}$/, "Use HH:MM (24h)").optional().or(z.literal("")),
+  venue: z.string().max(160).optional().or(z.literal("")),
+  track: z.string().max(60).optional().or(z.literal("")),
+  speakerIds: z.array(z.string().max(128)).max(20).default([]),
+});
+
+export const scheduleDaySchema = z.object({
+  day: z.number().int().min(1).max(31),
+  label: z.string().min(1).max(60).optional().or(z.literal("")),
+  dateISO: z.string().datetime().optional().or(z.literal("")).nullable(),
+  note: z.string().max(300).optional().or(z.literal("")),
+  status: z.enum(["draft", "published", "archived"]).default("published"),
+  sessions: z.array(scheduleSessionSchema).max(60).default([]),
+});
+export type ScheduleDayInput = z.infer<typeof scheduleDaySchema>;
 export type ContactInput = z.infer<typeof contactSchema>;

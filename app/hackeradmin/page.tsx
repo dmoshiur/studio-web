@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { Database, KeyRound, HardDrive, Mail, Power, ArrowRight, RefreshCw } from "lucide-react";
 import { OwnerPageHeader, HealthCard } from "@/components/hackeradmin/owner-ui";
+import { VisitorAnalytics } from "@/components/hackeradmin/visitor-analytics";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -106,6 +107,9 @@ export default function OwnerOverviewPage() {
           </Button>
         </Link>
       </div>
+
+      {/* Visitor analytics — total + real-time traffic */}
+      <VisitorAnalytics />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <HealthCard label="Application" status="operational" detail={`${data.site.name} · ${data.app.url ?? "no public URL set"}`} icon={<Power className="h-4 w-4 text-ivory-500" />} />

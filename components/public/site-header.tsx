@@ -85,7 +85,7 @@ export function SiteHeader({
                 {siteName}
               </span>
               <span className="mt-1 hidden font-sans text-[8.5px] uppercase tracking-luxe text-gold-800 sm:block">
-                Summit &amp; Salon
+                Event Management Studio
               </span>
             </span>
           </Link>
@@ -160,30 +160,68 @@ export function SiteHeader({
       {/* Full-screen mobile drawer */}
       <div
         className={cn(
-          "fixed inset-0 z-40 bg-paper-100/[0.98] backdrop-blur-xl transition-all duration-400 lg:hidden",
+          "fixed inset-0 z-40 overflow-y-auto bg-paper-100/[0.98] backdrop-blur-xl transition-all duration-400 lg:hidden",
           open ? "visible opacity-100" : "invisible opacity-0"
         )}
       >
-        <div className="flex h-full flex-col px-6 pb-10 pt-28">
+        <div className="flex min-h-full flex-col px-6 pb-10 pt-28">
           <nav aria-label="Mobile" className="flex flex-col">
-            {links.map((link, i) => (
-              <Link
-                key={link.href + link.label}
-                href={link.href}
-                style={{ transitionDelay: open ? `${80 + i * 45}ms` : "0ms" }}
-                className={cn(
-                  "border-b border-line py-5 font-serif text-[1.65rem] text-ink-900 transition-all duration-500",
-                  open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {links.map((link, i) => {
+              const active = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+              return (
+                <Link
+                  key={link.href + link.label}
+                  href={link.href}
+                  {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  aria-current={active ? "page" : undefined}
+                  style={{ transitionDelay: open ? `${80 + i * 45}ms` : "0ms" }}
+                  className={cn(
+                    "group flex items-center justify-between gap-4 border-b border-line py-4 pl-4 pr-3 transition-all duration-500",
+                    active
+                      ? "rounded-xl border-b-line bg-gold-50 shadow-[inset_0_0_0_1px_rgba(185,147,82,0.35)]"
+                      : "",
+                    open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+                  )}
+                >
+                  <span className="flex flex-col leading-none">
+                    <span
+                      className={cn(
+                        "font-serif text-[1.55rem] transition-colors",
+                        active ? "text-gold-800" : "text-ink-900"
+                      )}
+                    >
+                      {link.label}
+                    </span>
+                    {active && (
+                      <span className="mt-2 flex items-center gap-2 font-sans text-[9px] font-semibold uppercase tracking-[0.26em] text-gold-700">
+                        <span aria-hidden className="h-1 w-4 rounded-full bg-gold-600" />
+                        You are here
+                      </span>
+                    )}
+                  </span>
+                  {active ? (
+                    <span
+                      aria-hidden
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gold-700 text-white shadow-gold-sm"
+                    >
+                      <ArrowUpRight className="h-4 w-4" />
+                    </span>
+                  ) : (
+                    <ArrowUpRight
+                      className={cn(
+                        "h-4 w-4 shrink-0 transition-colors",
+                        "text-ink-300 group-hover:text-gold-700"
+                      )}
+                    />
+                  )}
+                </Link>
+              );
+            })}
           </nav>
           <div className="mt-auto flex flex-col gap-3 pt-10">
             <Link
               href={user ? "/profile" : "/login"}
-              className="flex h-12 items-center justify-center border border-line bg-white font-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-ink-900"
+              className="flex h-12 items-center justify-center rounded-full border border-line bg-white font-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-ink-900 shadow-card"
             >
               {user ? "My account" : "Sign in"}
             </Link>

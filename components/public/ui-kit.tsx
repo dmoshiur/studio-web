@@ -437,7 +437,7 @@ export function PageHero({
   children?: React.ReactNode;
 }) {
   return (
-    <section className="relative isolate overflow-hidden border-b border-line bg-paper-100 pb-20 pt-40 sm:pb-24 sm:pt-48">
+    <section className="relative isolate overflow-hidden bg-paper-100 pb-20 pt-40 sm:pb-24 sm:pt-48">
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -496,10 +496,10 @@ export function Section({
     <section
       id={id}
       className={cn(
-        "relative py-20 sm:py-24 lg:py-28",
+        "relative border-t border-line py-20 sm:py-24 lg:py-28",
         tone === "light" && "bg-paper-gradient text-ink-900",
         tone === "obsidian" && "bg-paper-200 text-ink-900",
-        tone === "brand" && "bg-brand-deep text-white",
+        tone === "brand" && "border-white/10 bg-brand-deep text-white",
         tone === "lavender" && "bg-tint-lavender text-ink-900",
         tone === "peach" && "bg-tint-peach text-ink-900",
         tone === "sky" && "bg-tint-sky text-ink-900",
