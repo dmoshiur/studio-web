@@ -11,10 +11,12 @@ import {
   Users,
 } from "lucide-react";
 import { getPublicSettings } from "@/lib/firestore/settings";
-import { listPublishedEvents, listPublishedPosts, listPublishedSpeakers } from "@/lib/firestore/content";
+import { listPublishedEvents, listPublishedPosts, listPublishedScheduleDays, listPublishedSpeakers } from "@/lib/firestore/content";
 import { Reveal } from "@/components/public/reveal";
 import { Countdown } from "@/components/public/countdown";
-import { EventCard, PostCard, SpeakerCard } from "@/components/public/cards";
+import { EventCard, PostCard } from "@/components/public/cards";
+import { ScheduleTabs } from "@/components/public/schedule";
+import { SpeakerGrid } from "@/components/public/speaker-grid";
 import { NewsletterForm } from "@/components/public/newsletter-form";
 import { OwnerSpotlight } from "@/components/public/owner-spotlight";
 import {
@@ -74,16 +76,17 @@ const GALLERY_FALLBACKS: { image: string; caption: string }[] = [
 export default async function HomePage() {
   const settings = await getPublicSettings();
   const h = settings.homepage;
-  const [events, speakers, posts] = await Promise.all([
+  const [events, speakers, posts, scheduleDays] = await Promise.all([
     safe(() => listPublishedEvents({ limit: 3, upcomingOnly: true }), { items: [], nextCursor: null }),
     safe(
       () =>
-        listPublishedSpeakers({ limit: 4, featuredOnly: true }).then(async (s) =>
-          s.length ? s : listPublishedSpeakers({ limit: 4 })
+        listPublishedSpeakers({ limit: 8, featuredOnly: true }).then(async (s) =>
+          s.length ? s : listPublishedSpeakers({ limit: 8 })
         ),
       []
     ),
     safe(() => listPublishedPosts({ limit: 3 }), { items: [], nextCursor: null }),
+    safe(() => listPublishedScheduleDays(), []),
   ]);
 
   const stats = h.stats ?? h.aboutStats ?? [];
@@ -527,7 +530,7 @@ export default async function HomePage() {
               script="The Calendar"
               eyebrow="Upcoming"
               title="Dates worth clearing"
-              description="Keynotes, workshops and evening salons — each capped so the room stays worth your time."
+              description="Keynotes, live-shoot workshops and studio evenings — each capped so the room stays worth your time."
             />
             <TextLink href="/events" tone="brand" className="group pb-2">
               All events
@@ -563,14 +566,10 @@ export default async function HomePage() {
               script="On Stage"
               eyebrow="The Voices"
               title="Speakers who have earned the room"
-              description="Founders, operators and scientists — each asked for one idea they have never presented publicly."
+              description="Photographers, filmmakers and image scientists — each asked for one idea they have never presented publicly."
             />
-            <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {speakers.map((s, i) => (
-                <Reveal key={s.id} delay={i * 90}>
-                  <SpeakerCard speaker={s} />
-                </Reveal>
-              ))}
+            <div className="mt-16">
+              <SpeakerGrid speakers={speakers.slice(0, 8)} />
             </div>
             <Reveal className="mt-14 text-center">
               <Link
@@ -585,6 +584,30 @@ export default async function HomePage() {
         </Section>
       )}
 
+      {/* ================= SCHEDULE — day tabs ================= */}
+      {scheduleDays.length > 0 && (
+        <Section tone="light">
+          <SectionHeading
+            script="The Program"
+            eyebrow="Schedule"
+            title="Pick your day, build your route"
+            description="Keynotes, lighting labs and portfolio reviews — tab between days without leaving this page."
+          />
+          <div className="mt-14">
+            <ScheduleTabs days={scheduleDays} speakers={speakers} />
+          </div>
+          <Reveal className="mt-14 text-center">
+            <Link
+              href="/schedule"
+              className="inline-flex h-[52px] items-center gap-3 rounded-full border border-gold-600/30 bg-white px-8 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-gold-700 shadow-card transition-all hover:-translate-y-0.5 hover:border-gold-600 hover:shadow-gold-sm"
+            >
+              The full schedule
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </Reveal>
+        </Section>
+      )}
+
       {/* ================= GALLERY / MOMENTS — white, editorial ================= */}
       <Section tone="white" className="border-t border-line/70">
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -595,7 +618,7 @@ export default async function HomePage() {
             script="Moments"
             eyebrow="The room"
             title="Inside the last edition"
-            description="Unretouched, unposed — this is what the two days actually feel like."
+            description="Unretouched, unposed — this is what the summit actually feels like."
           />
           <div className="mt-14">
             <Gallery items={galleryItems} variant="editorial" />
@@ -793,8 +816,8 @@ export default async function HomePage() {
             </span>
             <h2 className="display-lg mt-7 text-white">Ready to Experience the Future?</h2>
             <p className="mx-auto mt-5 max-w-xl text-[15px] leading-[1.85] text-white/70">
-              Join {stats[0]?.value ?? "2,400+"} founders, operators and creatives for two days that
-              change the shape of your year. Seats are capped each edition.
+              Join {stats[0]?.value ?? "2,400+"} photographers, filmmakers and creatives for days that
+              change the shape of your portfolio. Seats are capped each edition.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <Link

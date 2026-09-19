@@ -1,8 +1,8 @@
 {
-  "name": "manup-platform",
+  "name": "photography-studio",
   "version": "2.0.0",
   "private": true,
-  "description": "ManUp — premium event/conference platform. Next.js + Firebase serverless CMS with secure admin and owner control panels.",
+  "description": "Photography — Event Management Studio. Next.js + Firebase serverless CMS with secure admin and owner control panels.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -45,12 +45,21 @@ let dbInstance: DatabaseSync | null = null;
 
 export function getSqlite(): DatabaseSync {
   if (dbInstance) return dbInstance;
-  const file = process.env.DATABASE_FILE ?? path.join(getDataDir(), "manup.db");
+  const dataDir = getDataDir();
+  // Prefer the current database file; fall back to the legacy file name so
+  // deployments seeded before the rebrand keep their data.
+  const preferred = process.env.DATABASE_FILE ?? path.join(dataDir, "photography.db");
+  const legacy = path.join(dataDir, "manup.db");
+  const file = fs.existsSync(preferred) || process.env.DATABASE_FILE
+    ? preferred
+    : fs.existsSync(legacy)
+      ? legacy
+      : preferred;
   let db: DatabaseSync;
   try {
     db = new DatabaseSync(file);
   } catch {
-    db = new DatabaseSync(path.join("/tmp", "manup.db"));
+    db = new DatabaseSync(path.join("/tmp", "photography.db"));
   }
   try {
     db.exec("PRAGMA journal_mode = WAL");

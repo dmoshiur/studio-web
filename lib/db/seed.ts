@@ -47,9 +47,9 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
   await db.collection("siteSettings").doc("public").set(
     {
       ...DEFAULT_PUBLIC_SETTINGS,
-      siteName: process.env.NEXT_PUBLIC_APP_NAME ?? "ManUp",
-      tagline: "Change Your Mind To Become Success",
-      contactEmail: process.env.CONTACT_EMAIL ?? "hello@manup.events",
+      siteName: process.env.NEXT_PUBLIC_APP_NAME ?? "Photography",
+      tagline: "Event Management Studio — Photo & Videography Events",
+      contactEmail: process.env.CONTACT_EMAIL ?? "hello@photography.studio",
       phone: "+1 (212) 555-0141",
       address: "Grand Meridian Hall, 128 Lexington Ave, New York, NY",
       timezone: "America/New_York",
@@ -61,31 +61,31 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
       },
       homepage: {
         ...DEFAULT_PUBLIC_SETTINGS.homepage,
-        heroBadge: "The 2026 Annual Summit",
-        heroTitle: "Where Ambition Meets The Stage",
+        heroBadge: "The 2026 Annual Photo & Video Summit",
+        heroTitle: "Where Every Frame Tells The Story",
         heroSubtitle:
-          "Two days of keynote conversations, hands-on workshops and black-tie networking with the founders, operators and creatives shaping what comes next.",
+          "Three days of keynote conversations, live shoots, lighting labs and portfolio reviews with the photographers, filmmakers and creatives shaping what comes next.",
         heroCtaPrimary: { label: "Reserve Your Seat", href: "/events" },
         heroCtaSecondary: { label: "Meet The Speakers", href: "/speakers" },
         heroImage: IMG.stage,
         eventDateISO: daysFromNow(45, 9).toISOString(),
         eventVenue: "Grand Meridian Hall, New York",
         showCountdown: true,
-        aboutTitle: "An Invitation To Rise",
+        aboutTitle: "An Invitation To Create",
         aboutBody:
-          "ManUp is a curated stage for people who refuse to settle. Across two days and four tracks we pair world-class keynotes with intimate workshops, so every idea you hear is one you can act on before you fly home.\n\nExpect candid conversations, real numbers and a room full of people who are already building the next chapter.",
+          "Photography is a curated stage for people who refuse to settle for average images. Across three days and four tracks we pair world-class keynotes with intimate, hands-on workshops, so every technique you learn is one you can use on your next shoot.\n\nExpect candid conversations, real lighting diagrams and a room full of people who are already shooting the next chapter.",
         aboutImage: IMG.audience,
         aboutStats: [
           { value: "2,400+", label: "Attendees" },
           { value: "48", label: "Speakers" },
           { value: "32", label: "Sessions" },
-          { value: "2", label: "Days" },
+          { value: "3", label: "Days" },
         ],
         stats: [
           { value: "2,400+", label: "Attendees" },
           { value: "48", label: "Speakers" },
           { value: "32", label: "Sessions" },
-          { value: "2", label: "Days" },
+          { value: "3", label: "Days" },
         ],
         experience: {
           eyebrow: "The Experience",
@@ -99,13 +99,13 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
               image: IMG.stage,
             },
             {
-              title: "Hands-On Workshops",
-              description: "Small-room sessions where you leave with the work actually done.",
+              title: "Live Shoot Workshops",
+              description: "Small-room sessions with live models and lighting rigs where you leave with the shot actually taken.",
               image: IMG.panel,
             },
             {
-              title: "Black-Tie Networking",
-              description: "Curated introductions and long-table dinners with people worth knowing.",
+              title: "Portfolio Reviews",
+              description: "Curated one-to-one reviews and long-table dinners with editors worth knowing.",
               image: IMG.networking,
             },
           ],
@@ -119,11 +119,11 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
         announcement: "Early-bird seats for the 2026 summit are open",
         tickets: [
           {
-            name: "Salon Pass",
+            name: "Studio Pass",
             price: "$499",
             note: "Single attendee",
             perks: [
-              "Both summit days",
+              "All three summit days",
               "All keynote sessions",
               "Networking reception",
               "12 months of session recordings",
@@ -135,11 +135,11 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
             note: "Most chosen",
             featured: true,
             perks: [
-              "Everything in the Salon Pass",
+              "Everything in the Studio Pass",
               "Reserved front-of-house seating",
               "Two hands-on workshops",
               "Black-tie gala dinner seat",
-              "Curated introduction list",
+              "Curated portfolio review list",
             ],
           },
           {
@@ -199,6 +199,7 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
           { label: "Home", href: "/" },
           { label: "About", href: "/about" },
           { label: "Speakers", href: "/speakers" },
+          { label: "Schedule", href: "/schedule" },
           { label: "Events", href: "/events" },
           { label: "Journal", href: "/blog" },
           { label: "Contact", href: "/contact" },
@@ -211,8 +212,9 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
       {
         links: [
           { label: "About", href: "/about" },
-          { label: "Events", href: "/events" },
           { label: "Speakers", href: "/speakers" },
+          { label: "Schedule", href: "/schedule" },
+          { label: "Events", href: "/events" },
           { label: "Journal", href: "/blog" },
           { label: "Contact", href: "/contact" },
           { label: "Privacy", href: "/privacy" },
@@ -257,27 +259,30 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
     {
       id: "amara-bell",
       name: "Amara Bell",
-      title: "Chief Executive Officer",
-      company: "Northwind Group",
-      bio: "Amara scaled Northwind from a twelve-person studio into a multinational group with offices on four continents. She speaks about the unglamorous middle years of company building — the part nobody photographs.",
+      title: "Founder & Lead Photographer",
+      company: "Northwind Studio",
+      bio: "Amara scaled Northwind from a twelve-person photo studio into a production group shooting on four continents. She speaks about the unglamorous middle years of studio building — the part nobody photographs.",
+      topic: "Building A Studio That Outlives Trends",
       featured: true,
       photoURL: IMG.portrait,
     },
     {
       id: "daniel-okafor",
       name: "Daniel Okafor",
-      title: "Founder & Chief Engineer",
-      company: "Threadline",
-      bio: "Daniel built Threadline's infrastructure twice: once for 10,000 users and once for eleven million. His talks are dense with diagrams, trade-offs and hard-won scar tissue.",
+      title: "Cinematographer & Colorist",
+      company: "Threadline Films",
+      bio: "Daniel rebuilt Threadline's pipeline twice: once for 10,000 delivered frames and once for eleven million. His talks are dense with diagrams, trade-offs and hard-won scar tissue.",
+      topic: "Color Grading At Scale: A Repeatable Pipeline",
       featured: true,
       photoURL: IMG.stage,
     },
     {
       id: "sofia-marchetti",
       name: "Sofia Marchetti",
-      title: "Design Director",
+      title: "Art Director",
       company: "Atelier Mono",
       bio: "Sofia leads a design practice that refuses to ship anything forgettable. She teaches teams how to earn attention honestly and how taste compounds faster than budget.",
+      topic: "Art Directing A Shoot Without Killing The Moment",
       featured: true,
       photoURL: IMG.panel,
     },
@@ -285,17 +290,19 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
       id: "jonas-reid",
       name: "Jonas Reid",
       title: "Managing Partner",
-      company: "Halcyon Ventures",
-      bio: "Jonas has written early cheques into forty companies and sat on the boards of a dozen. He brings a blunt, numbers-first view of what separates survivors from statistics.",
+      company: "Halcyon Media Ventures",
+      bio: "Jonas has funded forty production companies and sat on the boards of a dozen. He brings a blunt, numbers-first view of what separates surviving studios from statistics.",
+      topic: "The Business Side Of The Frame",
       featured: true,
       photoURL: IMG.networking,
     },
     {
       id: "priya-raman",
       name: "Dr. Priya Raman",
-      title: "Behavioural Scientist",
+      title: "Visual Psychologist",
       company: "Institute of Applied Cognition",
-      bio: "Priya studies how people decide under pressure. Her frameworks are used by negotiators, surgeons and founders who cannot afford to be wrong twice.",
+      bio: "Priya studies how people read images under pressure. Her frameworks are used by editors, art buyers and directors who cannot afford to be wrong twice.",
+      topic: "Why Some Images Persuade And Others Don't",
       featured: false,
       photoURL: IMG.audience,
     },
@@ -304,7 +311,8 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
       name: "Marcus Hale",
       title: "Head of Story",
       company: "Quill & Field",
-      bio: "Marcus has written launch narratives for products used by hundreds of millions of people. He argues that clarity is the only marketing channel that never saturates.",
+      bio: "Marcus has shaped visual campaigns for brands used by hundreds of millions of people. He argues that clarity is the only visual language that never saturates.",
+      topic: "Story Structure For Commercial Shoots",
       featured: false,
       photoURL: IMG.foyer,
     },
@@ -318,6 +326,7 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
           slug: s.id,
           title: s.title,
           company: s.company,
+          topic: s.topic,
           bio: s.bio,
           photoURL: s.photoURL,
           featured: s.featured,
@@ -325,6 +334,7 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
           socials: [
             { label: "LinkedIn", url: "https://linkedin.com" },
             { label: "X", url: "https://x.com" },
+            { label: "Instagram", url: "https://instagram.com" },
           ],
           createdAt: now,
           updatedAt: now,
@@ -338,12 +348,12 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
   const events = [
     {
       id: "annual-summit-2026",
-      title: "ManUp Annual Summit 2026",
+      title: "Photography Annual Summit 2026",
       slug: "annual-summit-2026",
       description:
-        "The flagship gathering: two days, four tracks and a room full of people who are building the next decade.",
+        "The flagship gathering: three days, four tracks and a room full of people shooting the next decade.",
       startAt: daysFromNow(45, 9),
-      endAt: daysFromNow(46, 18),
+      endAt: daysFromNow(47, 18),
       venue: "Grand Meridian Hall",
       address: "128 Lexington Ave, New York, NY",
       coverImage: IMG.stage,
@@ -352,23 +362,23 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
       registrationUrl: "/contact",
       speakerIds: ["amara-bell", "daniel-okafor", "sofia-marchetti", "jonas-reid"],
       contentHtml:
-        h2("Two days that change the shape of your year") +
+        h2("Three days that change the shape of your portfolio") +
         p([
-          "The Annual Summit is our flagship stage. Expect candid keynotes, small-room workshops and long dinner tables where the real conversations happen.",
+          "The Annual Summit is our flagship stage. Expect candid keynotes, small-room live shoots and long dinner tables where the real conversations happen.",
           "Every ticket includes all sessions, the networking gala and twelve months of on-demand recordings.",
         ]) +
         h2("What's on the schedule") +
         p([
-          "Day one opens with a keynote on building through uncertainty, followed by workshop tracks on product, growth and leadership.",
-          "Day two closes with an investor roundtable and the black-tie gala.",
+          "Day one opens with a keynote on building a studio that outlives trends, followed by workshop tracks on lighting, color and the business of the frame.",
+          "Day three closes with an art-buyer roundtable and the black-tie gala.",
         ]),
     },
     {
       id: "founders-workshop",
-      title: "Founders' Workshop: The First 100 Days",
+      title: "Studio Workshop: The First 100 Shoots",
       slug: "founders-workshop",
       description:
-        "A hands-on afternoon with operators who have launched, killed and relaunched products — bring a real decision you're facing.",
+        "A hands-on afternoon with photographers who have shot, culled and re-shot campaigns — bring a real portfolio problem you're facing.",
       startAt: daysFromNow(18, 13),
       endAt: daysFromNow(18, 18),
       venue: "The Atelier Room",
@@ -378,10 +388,10 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
       featured: false,
       speakerIds: ["daniel-okafor", "jonas-reid"],
       contentHtml:
-        h2("Bring a decision, leave with a plan") +
+        h2("Bring a portfolio, leave with a plan") +
         p([
-          "This is not a lecture. You will work through a live decision with two operators and eleven peers, then present it back to the room.",
-          "Seats are capped at twenty-four so every case gets real airtime.",
+          "This is not a lecture. You will work through a live portfolio problem with two working photographers and eleven peers, then present it back to the room.",
+          "Seats are capped at twenty-four so every portfolio gets real airtime.",
         ]),
     },
     {
@@ -452,6 +462,187 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
     )
   );
 
+  /* --------------------------- Schedule days --------------------------- */
+  const summitStart = daysFromNow(45, 9);
+  const scheduleDays = [
+    {
+      id: "day-1",
+      day: 1,
+      label: "Day 1",
+      dateISO: summitStart.toISOString(),
+      note: "Doors open 08:00 · Badge pickup from 07:30",
+      sessions: [
+        {
+          id: "d1-opening",
+          title: "Doors Open & Coffee Portrait Corner",
+          description: "Badge pickup, coffee and a live portrait corner run by the house team.",
+          startTime: "08:00",
+          endTime: "09:00",
+          venue: "Foyer, Grand Meridian Hall",
+          track: "Arrival",
+          speakerIds: [] as string[],
+        },
+        {
+          id: "d1-keynote",
+          title: "Building A Studio That Outlives Trends",
+          description:
+            "Opening keynote: the unglamorous middle years of running a photo business, and why consistency beats virality.",
+          startTime: "09:00",
+          endTime: "09:45",
+          venue: "Main Stage",
+          track: "Keynote",
+          speakerIds: ["amara-bell"],
+        },
+        {
+          id: "d1-lighting",
+          title: "One Light, Endless Looks",
+          description:
+            "A live demonstration building six distinct portrait styles from a single strobe and one modifier.",
+          startTime: "10:15",
+          endTime: "11:30",
+          venue: "Lighting Lab A",
+          track: "Workshop",
+          speakerIds: ["sofia-marchetti"],
+        },
+        {
+          id: "d1-color",
+          title: "Color Grading At Scale: A Repeatable Pipeline",
+          description:
+            "How a twelve-person team grades eleven million frames a year without losing its look.",
+          startTime: "13:00",
+          endTime: "14:15",
+          venue: "Post-Production Room",
+          track: "Workshop",
+          speakerIds: ["daniel-okafor"],
+        },
+        {
+          id: "d1-business",
+          title: "The Business Side Of The Frame",
+          description:
+            "Pricing, licensing and negotiating usage — a numbers-first walkthrough for working photographers.",
+          startTime: "15:00",
+          endTime: "15:45",
+          venue: "Main Stage",
+          track: "Keynote",
+          speakerIds: ["jonas-reid"],
+        },
+      ],
+    },
+    {
+      id: "day-2",
+      day: 2,
+      label: "Day 2",
+      dateISO: daysFromNow(46, 9).toISOString(),
+      note: "Portfolio review sign-ups close at 10:00",
+      sessions: [
+        {
+          id: "d2-psych",
+          title: "Why Some Images Persuade And Others Don't",
+          description:
+            "The psychology of first glances: what editors decide in 400 milliseconds and how to shoot for it.",
+          startTime: "09:30",
+          endTime: "10:15",
+          venue: "Main Stage",
+          track: "Keynote",
+          speakerIds: ["priya-raman"],
+        },
+        {
+          id: "d2-story",
+          title: "Story Structure For Commercial Shoots",
+          description:
+            "Narrative frameworks borrowed from cinema, applied to a thirty-second spot and a single print page.",
+          startTime: "10:45",
+          endTime: "12:00",
+          venue: "The Atelier Room",
+          track: "Workshop",
+          speakerIds: ["marcus-hale"],
+        },
+        {
+          id: "d2-setbuild",
+          title: "Art Directing A Shoot Without Killing The Moment",
+          description:
+            "Building a set that photographs beautifully while leaving room for the unplanned frame.",
+          startTime: "13:30",
+          endTime: "14:45",
+          venue: "Lighting Lab B",
+          track: "Workshop",
+          speakerIds: ["sofia-marchetti"],
+        },
+        {
+          id: "d2-reviews",
+          title: "One-to-One Portfolio Reviews",
+          description:
+            "Twenty-minute seated reviews with working art buyers and editors. Bring twelve images, leave with notes.",
+          startTime: "15:15",
+          endTime: "17:30",
+          venue: "Review Tables, Foyer",
+          track: "Reviews",
+          speakerIds: ["jonas-reid", "marcus-hale"],
+        },
+      ],
+    },
+    {
+      id: "day-3",
+      day: 3,
+      label: "Day 3",
+      dateISO: daysFromNow(47, 9).toISOString(),
+      note: "Gala dress code: black tie optional",
+      sessions: [
+        {
+          id: "d3-cine",
+          title: "From Stills To Motion: A Cinematographer's Crossover",
+          description:
+            "What photographers get wrong on their first video set — focus, rhythm and coverage.",
+          startTime: "09:30",
+          endTime: "10:45",
+          venue: "Screening Room",
+          track: "Workshop",
+          speakerIds: ["daniel-okafor"],
+        },
+        {
+          id: "d3-panel",
+          title: "The State Of The Industry: Panel & Open Questions",
+          description:
+            "Rates, AI, licensing and where clients are actually spending. No prepared answers.",
+          startTime: "11:15",
+          endTime: "12:15",
+          venue: "Main Stage",
+          track: "Panel",
+          speakerIds: ["amara-bell", "jonas-reid", "priya-raman"],
+        },
+        {
+          id: "d3-gala",
+          title: "Closing Gala & Print Auction",
+          description:
+            "Three-course dinner, the annual print auction and the awards for the weekend's best frames.",
+          startTime: "19:00",
+          endTime: "23:00",
+          venue: "Grand Ballroom",
+          track: "Evening",
+          speakerIds: [] as string[],
+        },
+      ],
+    },
+  ];
+
+  await Promise.all(
+    scheduleDays.map((d) =>
+      db.collection("scheduleDays").doc(d.id).set(
+        {
+          day: d.day,
+          label: d.label,
+          dateISO: d.dateISO,
+          note: d.note,
+          sessions: d.sessions,
+          status: "published",
+          createdAt: now,
+          updatedAt: now,
+        },
+        { merge: true }
+      )
+    )
+  );
+
   /* -------------------------------- Posts ------------------------------ */
   const posts = [
     {
@@ -490,7 +681,7 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
       categoryId: "backstage",
       categorySlug: "backstage",
       tags: ["events", "operations"],
-      authorName: "ManUp Editorial",
+      authorName: "Photography Editorial",
       coverImage: IMG.audience,
       featured: false,
       contentHtml:
@@ -616,12 +807,12 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
     db.collection("pages").doc("about").set(
       {
         slug: "about",
-        title: "About ManUp",
+        title: "About Photography",
         status: "published",
         contentHtml:
           h2("Why we exist") +
           p([
-            "ManUp began as a single room of forty operators who were tired of panels that said nothing. We kept the format that worked: fewer talks, sharper briefs and time built in for the conversations that outlast the agenda.",
+            "Photography began as a single room of forty image-makers who were tired of panels that said nothing. We kept the format that worked: fewer talks, sharper briefs and time built in for the conversations that outlast the agenda.",
           ]) +
           h2("How we program") +
           p([
@@ -653,6 +844,7 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
   const counts = {
     speakers: speakers.length,
     events: events.length,
+    scheduleDays: scheduleDays.length,
     posts: posts.length,
     categories: categories.length,
     pages: 3,

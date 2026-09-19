@@ -70,7 +70,15 @@ export const Select = React.forwardRef<
     className={cn(
       base,
       "h-12 appearance-none bg-[length:14px] bg-[right_1rem_center] bg-no-repeat pr-10",
-      toneClasses(tone),
+      // Solid background — a translucent bg renders the native dropdown list
+      // white in several browsers, making the light option text unreadable.
+      tone === "dark" ? "border-white/[0.12] bg-obsidian-800 text-ivory-100" : "border-ink-900/[0.12] bg-white text-ink-900",
+      "focus:border-gold-500/70 focus:outline-none",
+      // Native <option> elements inherit the select's colour but ignore
+      // translucent backgrounds — give them explicit readable styling.
+      tone === "dark"
+        ? "[&>option]:bg-[#141419] [&>option]:text-ivory-100 [&>option:checked]:bg-gold-500/30"
+        : "[&>option]:bg-white [&>option]:text-ink-900",
       // Chevron drawn as an inline SVG so it works on both tones
       "bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23c9a227%22 stroke-width=%221.75%22%3E%3Cpath d=%22M6 9l6 6 6-6%22/%3E%3C/svg%3E')]",
       error && "border-danger",

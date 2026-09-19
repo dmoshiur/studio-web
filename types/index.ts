@@ -1,5 +1,5 @@
 // =====================================================================
-// ManUp Platform — Shared TypeScript types
+// Photography Platform — Shared TypeScript types
 // =====================================================================
 
 export type Role = "user" | "admin" | "owner" | "superadmin";
@@ -97,10 +97,39 @@ export interface Speaker {
   slug: string;
   title?: string; // job title
   company?: string;
+  /** The talk / topic the speaker presents (shown on cards & the schedule). */
+  topic?: string;
   bio: string;
   photoURL?: string;
   socials?: { label: string; url: string }[];
   featured: boolean;
+  status: PublishStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** A single session inside a schedule day. */
+export interface ScheduleSession {
+  id: string;
+  title: string;
+  description?: string;
+  /** 24h "HH:MM" local-time strings. */
+  startTime: string;
+  endTime?: string;
+  venue?: string;
+  /** Free-form track label: Keynote, Workshop, Panel, Reviews, Evening… */
+  track?: string;
+  speakerIds: string[];
+}
+
+/** A day tab in the schedule (Day 1, Day 2, …). */
+export interface ScheduleDay {
+  id: string;
+  day: number;
+  label: string;
+  dateISO?: string;
+  note?: string;
+  sessions: ScheduleSession[];
   status: PublishStatus;
   createdAt: string;
   updatedAt: string;

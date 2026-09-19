@@ -111,7 +111,7 @@ export function RichEditor({
           />
         ) : (
           <div
-            className="prose-manup prose-on-dark max-w-none overflow-y-auto p-5 text-[15px]"
+            className="prose-editorial prose-on-dark max-w-none overflow-y-auto p-5 text-[15px]"
             style={{ minHeight }}
             dangerouslySetInnerHTML={{ __html: value || "<p class='text-ivory-500'>Nothing to preview yet.</p>" }}
           />

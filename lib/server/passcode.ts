@@ -202,7 +202,7 @@ export async function rotatePasscode(opts?: { force?: boolean; invalidateSession
   const passcode = generatePasscode();
   const expiresAt = new Date(now + VALIDITY_MS);
   const settings = await getPublicSettings().catch(() => null);
-  const siteName = settings?.siteName ?? "ManUp";
+  const siteName = settings?.siteName ?? "Photography";
 
   const delivered = await deliverPasscodeEmail(passcode, expiresAt, siteName);
   if (!delivered) {
@@ -328,7 +328,7 @@ export async function setCustomPassphrase(passphrase: string): Promise<{ ok: boo
     return { ok: false, reason: "SMTP is not configured — confirmation email cannot be sent" };
   }
   const settings = await getPublicSettings().catch(() => null);
-  const siteName = settings?.siteName ?? "ManUp";
+  const siteName = settings?.siteName ?? "Photography";
   const delivered = await sendMail({
     to: PASSCODE_RECIPIENT,
     subject: `[${siteName}] Operations passphrase changed (manual mode)`,

@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "The story, the standard and the people behind ManUp — a curated summit for founders, operators and creatives.",
+    "The story, the standard and the people behind Photography — a curated event management studio for photographers, filmmakers and creatives.",
 };
 
 const VALUES = [

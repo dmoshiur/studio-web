@@ -19,7 +19,7 @@ Set for **Production** (and Preview if you want staging to work fully):
 **Public (browser-visible):**
 ```
 NEXT_PUBLIC_APP_URL=https://your-domain.com
-NEXT_PUBLIC_APP_NAME=ManUp
+NEXT_PUBLIC_APP_NAME=Photography
 NEXT_PUBLIC_FIREBASE_API_KEY=…
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=…
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=…
@@ -56,7 +56,7 @@ SMTP_SECURE=false
 SMTP_USER=…
 SMTP_PASSWORD=…
 SMTP_FROM_EMAIL=no-reply@your-domain.com
-SMTP_FROM_NAME=ManUp
+SMTP_FROM_NAME=Photography
 SMTP_REPLY_TO=
 SESSION_COOKIE_NAME=__session
 SESSION_MAX_AGE_DAYS=5

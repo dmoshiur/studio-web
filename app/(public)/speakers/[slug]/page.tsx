@@ -73,6 +73,12 @@ export default async function SpeakerDetailPage({ params }: { params: { slug: st
                   {[speaker.title, speaker.company].filter(Boolean).join(" · ")}
                 </p>
               )}
+              {speaker.topic && (
+                <p className="mt-5 inline-flex items-center gap-2.5 rounded-full border border-gold-600/25 bg-gold-50 px-4 py-2 font-sans text-[11px] font-semibold text-gold-800">
+                  <span aria-hidden className="h-1 w-6 rounded-full bg-gold-600" />
+                  {speaker.topic}
+                </p>
+              )}
               <GoldRule className="mt-8 !mx-0 !max-w-[160px]" />
               <div className="mt-8 max-w-2xl space-y-5">
                 {(speaker.bio ?? "").split("\n\n").map((para, i) => (

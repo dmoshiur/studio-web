@@ -1,13 +1,15 @@
 import "server-only";
 import { seedIfEmpty } from "@/lib/db/seed";
+import { runRebrandMigration } from "@/lib/db/rebrand";
 import { opsInfo } from "@/lib/server/ops-log";
 
 /**
  * One-time-per-process startup tasks, kicked from the root layout:
  *   1. Seed demo content into an empty embedded store.
- *   2. Seed the environment-configured admin account (hashed password,
+ *   2. Migrate legacy-branded content to the current brand (idempotent).
+ *   3. Seed the environment-configured admin account (hashed password,
  *      idempotent — never duplicates, never resets).
- *   3. Provision the rotating operations passcode (emails the first code
+ *   4. Provision the rotating operations passcode (emails the first code
  *      to the security recipient when SMTP is configured).
  * Each task is idempotent and failure-isolated.
  */
@@ -27,6 +29,14 @@ async function boot(): Promise<void> {
     if (result.seeded) opsInfo("bootstrap", `Content store seeded (${Object.entries(result.counts).map(([k, v]) => `${k}:${v}`).join(", ")})`);
   } catch (err) {
     console.error("[bootstrap] seeding failed:", err);
+  }
+
+  // Rebrand migration — patches stores seeded under the legacy brand name.
+  try {
+    const result = await runRebrandMigration();
+    if (result === "applied") opsInfo("bootstrap", "Legacy content rebranded to Photography");
+  } catch (err) {
+    console.error("[bootstrap] rebrand migration failed:", err);
   }
 
   try {

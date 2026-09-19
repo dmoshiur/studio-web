@@ -361,31 +361,154 @@ export async function updateIdentityProfile(
   });
 }
 
+/* -------------------------------------------------------------------- */
+/* Password reset — custom token flow for BOTH backends.                */
+/* Firebase's own reset emails are never used: we mint our own token,    */
+/* store only its hash, and deliver the link via the studio's SMTP       */
+/* mailer. Completion sets the new password through the identity facade. */
+/* -------------------------------------------------------------------- */
+
+const RESET_TTL_MS = 30 * 60 * 1000; // 30 minutes
+
+function hashToken(token: string): string {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
+
 export async function beginPasswordReset(email: string, origin: string): Promise<{ token: string | null }> {
   const normalized = email.trim().toLowerCase();
+  void origin; // link construction happens in the API route
+
   if (identityBackend() === "local") {
     const token = createResetToken(normalized);
     return { token };
   }
+
+  // Firebase backend: mint our OWN token (never Firebase's OOB code) and
+  // store its hash with the resolved uid.
   const { getAdminAuth } = await import("@/lib/firebase/admin");
   const auth = getAdminAuth();
-  if (!auth) throw new IdentityError("Authentication backend not configured", "not_configured", 503);
+  const db = getAdminDb();
+  if (!auth || !db) throw new IdentityError("Authentication backend not configured", "not_configured", 503);
   try {
-    const link = await auth.generatePasswordResetLink(normalized);
-    return { token: link };
+    const user = await auth.getUserByEmail(normalized); // throws when absent
+    const token = crypto.randomBytes(32).toString("hex");
+    await db
+      .collection("passwordResets")
+      .doc(hashToken(token))
+      .set({
+        uid: user.uid,
+        email: normalized,
+        backend: "firebase",
+        expiresAt: new Date(Date.now() + RESET_TTL_MS),
+        createdAt: new Date(),
+      });
+    return { token };
   } catch {
+    // Unknown address (or transient failure) — respond exactly like success.
     return { token: null };
   }
-  void origin;
 }
 
 export async function completePasswordReset(token: string, password: string): Promise<void> {
-  if (identityBackend() !== "local") {
-    throw new IdentityError("Password reset for this deployment is handled by Firebase", "use_firebase", 400);
+  if (identityBackend() === "local") {
+    const uid = consumeResetToken(token, password);
+    if (!uid) throw new IdentityError("This reset link is invalid or has expired", "invalid_token", 400);
+    bumpSessionEpoch(uid);
+    return;
   }
-  const uid = consumeResetToken(token, password);
+
+  const { getAdminAuth } = await import("@/lib/firebase/admin");
+  const auth = getAdminAuth();
+  const db = getAdminDb();
+  if (!auth || !db) throw new IdentityError("Authentication backend not configured", "not_configured", 503);
+
+  const ref = db.collection("passwordResets").doc(hashToken(token));
+  const snap = await ref.get();
+  if (!snap.exists) throw new IdentityError("This reset link is invalid or has expired", "invalid_token", 400);
+  const data = snap.data() as { uid?: string; expiresAt?: { toDate?: () => Date } };
+  const expiresAt = data.expiresAt?.toDate?.().getTime() ?? 0;
+  if (expiresAt < Date.now()) {
+    await ref.delete().catch(() => undefined);
+    throw new IdentityError("This reset link is invalid or has expired", "invalid_token", 400);
+  }
+  const uid = data.uid;
   if (!uid) throw new IdentityError("This reset link is invalid or has expired", "invalid_token", 400);
-  bumpSessionEpoch(uid);
+
+  await auth.updateUser(uid, { password });
+  await auth.revokeRefreshTokens(uid).catch(() => undefined);
+  await ref.delete().catch(() => undefined);
+}
+
+/* -------------------------------------------------------------------- */
+/* Email verification                                                   */
+/* -------------------------------------------------------------------- */
+
+const VERIFY_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+/**
+ * Begin email verification. Returns a link that the caller delivers via
+ * the studio's SMTP mailer — never Firebase's default templates.
+ *  - local backend: own token, verified via PUT /api/auth/verify
+ *  - firebase backend: Firebase action link (marks emailVerified after
+ *    click), but still delivered through our SMTP transport
+ */
+export async function beginEmailVerification(user: {
+  uid: string;
+  email: string;
+}, origin: string): Promise<{ link: string | null }> {
+  if (identityBackend() === "local") {
+    const db = getAdminDb();
+    if (!db) return { link: null };
+    const token = crypto.randomBytes(32).toString("hex");
+    await db
+      .collection("emailVerifications")
+      .doc(hashToken(token))
+      .set({
+        uid: user.uid,
+        email: user.email.trim().toLowerCase(),
+        expiresAt: new Date(Date.now() + VERIFY_TTL_MS),
+        createdAt: new Date(),
+      });
+    return { link: `${origin}/verify-email?token=${token}` };
+  }
+
+  const { getAdminAuth } = await import("@/lib/firebase/admin");
+  const auth = getAdminAuth();
+  if (!auth) return { link: null };
+  try {
+    const link = await auth.generateEmailVerificationLink(user.email.trim().toLowerCase());
+    return { link };
+  } catch {
+    return { link: null };
+  }
+}
+
+/** Complete email verification with a token minted by beginEmailVerification (local backend). */
+export async function completeEmailVerification(token: string): Promise<void> {
+  if (identityBackend() !== "local") {
+    throw new IdentityError(
+      "Email verification for this deployment is completed through Firebase's action page",
+      "use_firebase",
+      400
+    );
+  }
+  const db = getAdminDb();
+  if (!db) throw new IdentityError("Authentication backend not configured", "not_configured", 503);
+
+  const ref = db.collection("emailVerifications").doc(hashToken(token));
+  const snap = await ref.get();
+  if (!snap.exists) throw new IdentityError("This verification link is invalid or has expired", "invalid_token", 400);
+  const data = snap.data() as { uid?: string; expiresAt?: { toDate?: () => Date } };
+  const expiresAt = data.expiresAt?.toDate?.().getTime() ?? 0;
+  if (expiresAt < Date.now()) {
+    await ref.delete().catch(() => undefined);
+    throw new IdentityError("This verification link is invalid or has expired", "invalid_token", 400);
+  }
+  const uid = data.uid;
+  if (!uid) throw new IdentityError("This verification link is invalid or has expired", "invalid_token", 400);
+
+  await mirrorUserDoc(uid, { emailVerified: true });
+  await ref.delete().catch(() => undefined);
 }
 
 /* --------------------------- Session tokens --------------------------- */

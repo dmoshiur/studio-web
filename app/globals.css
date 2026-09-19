@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* =====================================================================
-   ManUp — restrained editorial design system
+   Photography — restrained editorial design system
    Warm whites, near-black ink and one champagne accent. The public
    experience is intentionally quiet: photography and typography do the
    visual work, while colour is reserved for precise moments of emphasis.
@@ -350,48 +350,48 @@ body {
 /* Rich text (sanitized HTML from the studio)                           */
 /* Light by default — the public site is a light theme.                 */
 /* ------------------------------------------------------------------ */
-.prose-manup {
+.prose-editorial {
   @apply text-[15.5px] leading-[1.95] text-ink-500;
 }
-.prose-manup > * + * { margin-top: 1.35em; }
-.prose-manup h2 {
+.prose-editorial > * + * { margin-top: 1.35em; }
+.prose-editorial h2 {
   @apply mt-14 font-serif text-[1.75rem] leading-tight text-ink-900 sm:text-[2.1rem];
 }
-.prose-manup h3 {
+.prose-editorial h3 {
   @apply mt-10 font-serif text-[1.35rem] text-ink-900;
 }
-.prose-manup p { @apply text-ink-500; }
-.prose-manup strong { @apply text-ink-900; }
-.prose-manup a {
+.prose-editorial p { @apply text-ink-500; }
+.prose-editorial strong { @apply text-ink-900; }
+.prose-editorial a {
   @apply text-gold-700 underline decoration-gold-500/50 underline-offset-4 transition-colors hover:text-gold-600;
 }
-.prose-manup ul { @apply list-none pl-0; }
-.prose-manup ul > li {
+.prose-editorial ul { @apply list-none pl-0; }
+.prose-editorial ul > li {
   @apply relative pl-7;
 }
-.prose-manup ul > li::before {
+.prose-editorial ul > li::before {
   content: "";
   @apply absolute left-1 top-[0.85em] h-1.5 w-1.5 rotate-45 bg-gold-600;
 }
-.prose-manup ol { @apply list-decimal pl-6 marker:text-gold-600; }
-.prose-manup blockquote {
+.prose-editorial ol { @apply list-decimal pl-6 marker:text-gold-600; }
+.prose-editorial blockquote {
   @apply my-10 border-l-2 border-gold-500/70 pl-6 font-serif text-[1.35rem] italic leading-relaxed text-ink-800;
 }
-.prose-manup img {
+.prose-editorial img {
   @apply my-10 w-full rounded-sm border border-line shadow-luxe;
 }
-.prose-manup hr {
+.prose-editorial hr {
   @apply my-12 border-0 border-t border-line;
 }
-.prose-manup pre {
+.prose-editorial pre {
   @apply overflow-x-auto rounded-sm border border-line bg-paper-200 p-5 text-[13px] leading-relaxed text-ink-700;
 }
-.prose-manup code:not(pre code) {
+.prose-editorial code:not(pre code) {
   @apply rounded-sm bg-gold-500/10 px-1.5 py-0.5 text-[0.9em] text-gold-800;
 }
-.prose-manup table { @apply w-full border-collapse text-[14px]; }
-.prose-manup th, .prose-manup td { @apply border border-line px-3 py-2 text-left; }
-.prose-manup th { @apply bg-paper-200 font-sans text-[12px] uppercase tracking-wider text-ink-600; }
+.prose-editorial table { @apply w-full border-collapse text-[14px]; }
+.prose-editorial th, .prose-editorial td { @apply border border-line px-3 py-2 text-left; }
+.prose-editorial th { @apply bg-paper-200 font-sans text-[12px] uppercase tracking-wider text-ink-600; }
 
 /* Dark variant — used by the studio preview pane on obsidian. */
 .prose-on-dark { @apply text-ivory-300/80; }

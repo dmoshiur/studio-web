@@ -110,7 +110,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               </div>
             )}
 
-            <div className="prose-manup" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
+            <div className="prose-editorial" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
 
             <div className="mt-16 flex flex-wrap items-center justify-between gap-6 border-t border-line pt-8">
               <p className="font-serif text-[1.15rem] italic text-ink-600">

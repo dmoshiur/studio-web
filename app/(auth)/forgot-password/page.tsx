@@ -33,6 +33,7 @@ function ResetFlow() {
   const token = params.get("token");
   const { toast } = useToast();
   const [sent, setSent] = React.useState(false);
+  const [deliveryWarning, setDeliveryWarning] = React.useState(false);
   const [resetToken, setResetToken] = React.useState<string | null>(token);
   const [newPassword, setNewPassword] = React.useState("");
   const [done, setDone] = React.useState(false);
@@ -207,6 +208,12 @@ function ResetFlow() {
           <p className="mt-2 text-[13.5px] leading-relaxed text-ink-500">
             If an account exists for that address, a reset link is on its way. The link stays valid for 30 minutes.
           </p>
+          {deliveryWarning && (
+            <p className="mt-4 border border-gold-600/30 bg-gold-50 px-4 py-3 text-left text-[12.5px] leading-relaxed text-gold-900">
+              This studio&apos;s email server (SMTP) is not configured yet, so the message could not be
+              sent. Please contact the studio directly to restore access.
+            </p>
+          )}
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">

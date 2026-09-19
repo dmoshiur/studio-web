@@ -1,6 +1,6 @@
-# ManUp Platform v2
+# Photography — Event Management Studio (v2)
 
-A premium, fully dynamic event & publication platform — rebuilt from the classic
+A premium, fully dynamic photography & event management platform — rebuilt from the classic
 [ManUp template](https://github.com/themewagon/manup) (Colorlib, CC BY 3.0 — attribution retained in the footer)
 into a production-ready **Next.js 14** application with an editorial public site, a content studio and a
 separate owner control center.
@@ -32,26 +32,33 @@ and the studio switches over automatically.
 
 ## Highlights
 
-- **Public site** — home, about, events + detail, speakers + detail, journal (`/blog`) + post, contact, privacy,
-  unsubscribe; SEO-ready (metadata, OG/Twitter, sitemap, robots, JSON-LD, **RSS at `/feed.xml`**).
-- **Studio (`/admin`)** — dashboard, posts, events, speakers, categories, pages, media library (images,
-  video, audio, documents), messages, subscribers, navigation & social links, **owner section**, accounts,
+- **Public site** — home, about, events + detail, **speakers grid (ManUp-style: hover socials,
+  topic, detail modal)**, **tabbed day-by-day schedule (`/schedule`, Day 1/2/3… tabs switch
+  instantly client-side)**, journal (`/blog`) + post, contact, privacy, unsubscribe; SEO-ready
+  (metadata, OG/Twitter, sitemap, robots, JSON-LD, **RSS at `/feed.xml`**). Mobile-first with
+  clear active-state indicators in the mobile navigation and section separators on inner pages.
+- **Studio (`/admin`)** — dashboard, posts, events, speakers, **schedule (day/session editor)**,
+  categories, pages, media library (images, video, audio, documents), messages, subscribers,
+  navigation & social links, **owner section**, accounts (Site Admins can add sub-admins),
   profile. Role-gated to admin/owner/superadmin.
 - **Owner section** — a portrait, a name, a personal message, a pull quote, an optional signature image
   and an optional video message, shown on the homepage and the about page. Every field (including the
   visibility per page) is editable from **Studio → Owner Section** and from the owner console.
 - **Operations console (`/hackeradmin`)** — protected by a **rotating hourly passcode** emailed exclusively to the
-  security recipient (never logged, never exposed; brute-force locked). Inside: live system status, runtime controls,
+  security recipient (never logged, never exposed; brute-force locked). Inside: **visitor analytics (total +
+  real-time active visitors, 14-day chart, top pages)**, live system status, runtime controls,
   a real live log terminal, passcode management, backend status (secrets masked), site settings, SMTP (+ test send),
-  users & roles, audit logs, maintenance mode and the emergency lock.
+  users & roles (HackerAdmin / Site Admin / Super Admin creation), audit logs, maintenance mode and the emergency lock.
 - **User accounts & profiles** — self-registration, session persistence, real server-side logout, `/profile` dashboard
   with avatar upload (validated), password change and seat reservations.
 - **Seat reservations** — database-backed requests from event pages, manageable in the studio and visible on the
   user's dashboard.
 - **Master administrator from `.env`** — `ADMIN_EMAIL` / `ADMIN_PASSWORD` create an always-available
   `superadmin` with whole-platform access (content, users, roles, infrastructure). No database setup required.
-- **Complete auth flows** — sign in, self-registration (`ALLOW_REGISTRATION`), password reset (link delivered
-  by SMTP when configured), one-time owner bootstrap via `SETUP_TOKEN`.
+- **Complete auth flows, strictly custom SMTP** — sign in, self-registration (`ALLOW_REGISTRATION`),
+  password reset and email verification. All authentication mail is delivered by the studio's own
+  **Nodemailer SMTP transport**; Firebase's default reset/verification emails are bypassed entirely
+  (own tokens, own templates). One-time owner bootstrap via `SETUP_TOKEN`.
 - **Security-first** — signed httpOnly session cookies, scrypt-hashed credentials, roles
   `user` / `admin` / `owner` / `superadmin`, server-side authorization on every privileged route, Zod validation
   on both sides, rate limiting, security headers, CSP, and an audit log for privileged actions.

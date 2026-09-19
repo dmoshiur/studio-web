@@ -4,7 +4,7 @@ import { getAdminDb } from "@/lib/firebase/admin";
 import { slugify, toISODate } from "@/lib/utils";
 import { sanitizeRichText } from "@/lib/security/sanitize";
 import type {
-  Category, EventItem, Paginated, PageDoc, Post, PublishStatus, Speaker,
+  Category, EventItem, Paginated, PageDoc, Post, PublishStatus, ScheduleDay, ScheduleSession, Speaker,
 } from "@/types";
 
 function requireDb() {
@@ -261,6 +261,7 @@ function mapSpeaker(id: string, d: Record<string, unknown>): Speaker {
     slug: String(d.slug ?? id),
     title: (d.title as string) || undefined,
     company: (d.company as string) || undefined,
+    topic: (d.topic as string) || undefined,
     bio: String(d.bio ?? ""),
     photoURL: (d.photoURL as string) || undefined,
     socials: Array.isArray(d.socials) ? (d.socials as Speaker["socials"]) : [],
@@ -425,13 +426,14 @@ export async function deletePage(id: string) {
 // --------------------------- DASHBOARD COUNTS ------------------------
 export async function getDashboardCounts() {
   const db = requireDb();
-  const [posts, events, speakers, media, messages, subs] = await Promise.all([
+  const [posts, events, speakers, media, messages, subs, scheduleDays] = await Promise.all([
     db.collection("posts").count().get(),
     db.collection("events").count().get(),
     db.collection("speakers").count().get(),
     db.collection("media").count().get(),
     db.collection("messages").where("read", "==", false).count().get(),
     db.collection("newsletterSubscribers").where("status", "==", "active").count().get(),
+    db.collection("scheduleDays").count().get(),
   ]);
   return {
     posts: posts.data().count,
@@ -440,5 +442,104 @@ export async function getDashboardCounts() {
     media: media.data().count,
     unreadMessages: messages.data().count,
     subscribers: subs.data().count,
+    scheduleDays: scheduleDays.data().count,
   };
+}
+
+// ----------------------------- SCHEDULE ------------------------------
+function mapSession(raw: unknown, fallbackIndex: number): ScheduleSession {
+  const s = (raw ?? {}) as Record<string, unknown>;
+  return {
+    id: String(s.id ?? `session-${fallbackIndex}`),
+    title: String(s.title ?? ""),
+    description: (s.description as string) || undefined,
+    startTime: String(s.startTime ?? ""),
+    endTime: (s.endTime as string) || undefined,
+    venue: (s.venue as string) || undefined,
+    track: (s.track as string) || undefined,
+    speakerIds: Array.isArray(s.speakerIds) ? (s.speakerIds as string[]) : [],
+  };
+}
+
+function mapScheduleDay(id: string, d: Record<string, unknown>): ScheduleDay {
+  return {
+    id,
+    day: Number(d.day ?? 1),
+    label: String(d.label ?? `Day ${d.day ?? 1}`),
+    dateISO: toISODate(d.dateISO) ?? undefined,
+    note: (d.note as string) || undefined,
+    sessions: Array.isArray(d.sessions) ? d.sessions.map(mapSession) : [],
+    status: (d.status as PublishStatus) ?? "published",
+    createdAt: toISODate(d.createdAt) ?? new Date().toISOString(),
+    updatedAt: toISODate(d.updatedAt) ?? new Date().toISOString(),
+  };
+}
+
+/** Public schedule days (published only), ordered Day 1 → N. */
+export async function listPublishedScheduleDays(): Promise<ScheduleDay[]> {
+  const db = requireDb();
+  const snap = await db.collection("scheduleDays").orderBy("day", "asc").get();
+  return snap.docs
+    .map((d) => mapScheduleDay(d.id, d.data()))
+    .filter((d) => d.status === "published" && d.sessions.length > 0);
+}
+
+/** All schedule days for the studio (drafts included). */
+export async function listScheduleDaysAdmin(): Promise<ScheduleDay[]> {
+  const db = requireDb();
+  const snap = await db.collection("scheduleDays").orderBy("day", "asc").get();
+  return snap.docs.map((d) => mapScheduleDay(d.id, d.data()));
+}
+
+export async function getScheduleDay(id: string): Promise<ScheduleDay | null> {
+  const db = requireDb();
+  const snap = await db.collection("scheduleDays").doc(id).get();
+  if (!snap.exists) return null;
+  return mapScheduleDay(snap.id, snap.data() as Record<string, unknown>);
+}
+
+export interface ScheduleDayInput {
+  day: number;
+  label?: string;
+  dateISO?: string | null;
+  note?: string | null;
+  status?: PublishStatus;
+  sessions: ScheduleSession[];
+}
+
+/** Create or replace a schedule day document. */
+export async function saveScheduleDay(id: string | undefined, input: ScheduleDayInput): Promise<ScheduleDay> {
+  const db = requireDb();
+  const day = Math.min(Math.max(Number(input.day) || 1, 1), 31);
+  const label = input.label?.trim() || `Day ${day}`;
+  const sessions = (input.sessions ?? []).map((s, i) => ({
+    id: s.id || `s-${day}-${i + 1}`,
+    title: s.title,
+    description: s.description ?? "",
+    startTime: s.startTime,
+    endTime: s.endTime ?? "",
+    venue: s.venue ?? "",
+    track: s.track ?? "",
+    speakerIds: s.speakerIds ?? [],
+  }));
+  const payload = {
+    day,
+    label,
+    dateISO: input.dateISO || null,
+    note: input.note || null,
+    status: input.status ?? "published",
+    sessions,
+    updatedAt: FieldValue.serverTimestamp(),
+  };
+  const ref = id ? db.collection("scheduleDays").doc(id) : db.collection("scheduleDays").doc();
+  await ref.set(
+    { ...payload, ...(id ? {} : { createdAt: FieldValue.serverTimestamp() }) },
+    { merge: true }
+  );
+  const saved = await ref.get();
+  return mapScheduleDay(ref.id, saved.data() as Record<string, unknown>);
+}
+
+export async function deleteScheduleDay(id: string): Promise<void> {
+  await requireDb().collection("scheduleDays").doc(id).delete();
 }

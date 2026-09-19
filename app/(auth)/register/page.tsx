@@ -51,7 +51,7 @@ export default function RegisterPage() {
       if (!res.ok) throw new Error(data.error ?? "Registration failed");
 
       // Registration now returns a session cookie directly — no second request needed
-      toast({ kind: "success", title: "Welcome to ManUp", message: "Your account is ready." });
+      toast({ kind: "success", title: "Welcome to Photography", message: "Your account is ready." });
       router.push(data.redirect ?? "/");
       router.refresh();
     } catch (err) {

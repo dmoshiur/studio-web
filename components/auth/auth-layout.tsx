@@ -29,7 +29,7 @@ export function AuthLayout({
             <span className="flex h-11 w-11 items-center justify-center border border-ink-900/25 bg-white/60 font-serif text-[1.4rem] text-ink-900">
               M
             </span>
-            <span className="font-serif text-[1.35rem] tracking-[0.06em] text-ink-900">ManUp</span>
+            <span className="font-serif text-[1.35rem] tracking-[0.06em] text-ink-900">Photography</span>
           </Link>
 
           <div>
@@ -39,7 +39,7 @@ export function AuthLayout({
             </p>
             <span className="mt-7 flex items-center gap-3 text-[10.5px] uppercase tracking-luxe text-ink-400">
               <Diamond className="h-1 w-1" />
-              Summit &amp; Salon
+              Event Management Studio
             </span>
           </div>
 
@@ -57,7 +57,7 @@ export function AuthLayout({
             <span className="flex h-11 w-11 items-center justify-center border border-ink-900/25 bg-white font-serif text-[1.4rem] text-ink-900">
               M
             </span>
-            <span className="font-serif text-[1.35rem] text-ink-900">ManUp</span>
+            <span className="font-serif text-[1.35rem] text-ink-900">Photography</span>
           </Link>
 
           <div className="relative border border-line bg-white p-8 shadow-luxe sm:p-10">

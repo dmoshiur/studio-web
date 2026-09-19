@@ -39,7 +39,7 @@ export default async function PrivacyPage() {
       <Section tone="light">
         <div className="mx-auto max-w-3xl border border-line bg-white p-8 shadow-luxe sm:p-12">
           <div
-            className="prose-manup [&_h2]:text-ink-900 [&_li]:text-ink-500 [&_p]:text-ink-500"
+            className="prose-editorial [&_h2]:text-ink-900 [&_li]:text-ink-500 [&_p]:text-ink-500"
             dangerouslySetInnerHTML={{ __html: html }}
           />
         </div>

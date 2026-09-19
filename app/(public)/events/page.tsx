@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Events",
-  description: "The full ManUp calendar — summits, workshops and evening salons. Find your seat.",
+  description: "The full Photography calendar — summits, shoots and studio evenings. Find your seat.",
 };
 
 export default async function EventsPage() {
@@ -34,7 +34,7 @@ export default async function EventsPage() {
         script="The Calendar"
         eyebrow="Events"
         title="Dates worth clearing"
-        description="Two-day summits, single-afternoon workshops and intimate evening salons — each capped so the room stays worth your time."
+        description="Three-day summits, single-afternoon shoots and intimate studio evenings — each capped so the room stays worth your time."
         image="/images/hero-stage.jpg"
         breadcrumb={[{ label: "Home", href: "/" }, { label: "Events" }]}
       >

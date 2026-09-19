@@ -15,7 +15,7 @@ import crypto from "node:crypto";
  *   CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
  *   CLOUDINARY_CLOUD_NAME / CLOUDINARY_API_KEY / CLOUDINARY_API_SECRET
  * Optional:
- *   CLOUDINARY_FOLDER="manup"            root folder inside the account
+ *   CLOUDINARY_FOLDER="photography"       root folder inside the account
  *   CLOUDINARY_UPLOAD_PRESET="<preset>"  signed preset with extra rules
  */
 
@@ -90,11 +90,11 @@ export function getCloudinaryConfig(): CloudinaryConfig | null {
   const apiKey = process.env.CLOUDINARY_API_KEY?.trim() || fromUrl?.apiKey || "";
   const apiSecret = process.env.CLOUDINARY_API_SECRET?.trim() || fromUrl?.apiSecret || "";
   if (!cloudName || !apiKey || !apiSecret) return null;
-  const rootFolder = (process.env.CLOUDINARY_FOLDER ?? fromUrl?.rootFolder ?? "manup")
+  const rootFolder = (process.env.CLOUDINARY_FOLDER ?? fromUrl?.rootFolder ?? "photography")
     .replace(/^\/+|\/+$/g, "")
     .replace(/[^a-zA-Z0-9/_-]/g, "-");
   const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET?.trim() || undefined;
-  return { cloudName, apiKey, apiSecret, rootFolder: rootFolder || "manup", uploadPreset };
+  return { cloudName, apiKey, apiSecret, rootFolder: rootFolder || "photography", uploadPreset };
 }
 
 export function isCloudinaryConfigured(): boolean {

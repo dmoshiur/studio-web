@@ -4,6 +4,7 @@ import { apiError, handleApiError, parseBody, requestIp } from "@/lib/server/api
 import { rateLimit, RATE_PRESETS } from "@/lib/server/rate-limit";
 import { auditLog } from "@/lib/server/audit";
 import { createIdentityUser, createIdentitySession, IdentityError } from "@/lib/server/identity";
+import { sendEmailVerificationEmail } from "@/lib/server/auth-emails";
 import { SESSION_COOKIE } from "@/lib/server/auth";
 
 export const runtime = "nodejs";
@@ -47,6 +48,16 @@ export async function POST(req: Request) {
       result: "success",
       ip: requestIp(req),
     });
+
+    // Email verification — delivered through the studio's custom SMTP
+    // transport (never Firebase's default flow). Fire-and-forget: a mail
+    // outage must never block a registration.
+    if (user.email) {
+      void sendEmailVerificationEmail(
+        { uid: user.uid, email: user.email },
+        process.env.NEXT_PUBLIC_APP_URL ?? new URL(req.url).origin
+      ).catch((err) => console.error("[register] verification email failed:", err));
+    }
 
     const res = NextResponse.json(
       { ok: true, user: { uid: user.uid, email: user.email, role: user.role }, redirect: "/" },
