@@ -97,7 +97,7 @@ export default async function AboutPage() {
               <span aria-hidden className="absolute inset-4 border border-white/30" />
             </div>
             <div className="mt-8 border border-line bg-white p-7 shadow-luxe">
-              <Script className="text-[2.1rem] leading-none">our promise</Script>
+              <Script>our promise</Script>
               <p className="mt-3 font-serif text-[1.15rem] italic leading-relaxed text-ink-700">
                 “If an idea cannot be used within a week of leaving the room, it does not belong on the stage.”
               </p>

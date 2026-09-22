@@ -110,7 +110,7 @@ export function OwnerSpotlight({
 
           {owner.quote && (
             <Reveal className="relative mt-9 border-l-2 border-gold-600/50 pl-6" delay={180}>
-              <span aria-hidden className="calligraphic absolute -top-6 left-3 text-[3.6rem] leading-none text-gold-500/30">
+              <span aria-hidden className="absolute -top-6 left-3 font-serif text-[3.6rem] font-bold leading-none text-gold-500/30">
                 &ldquo;
               </span>
               <p className="relative font-serif text-[1.3rem] italic leading-[1.7] text-ink-800">{owner.quote}</p>

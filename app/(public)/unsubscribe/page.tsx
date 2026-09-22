@@ -100,7 +100,7 @@ function UnsubscribeForm() {
     return (
       <div className="border border-emerald-600/25 bg-white p-10 text-center shadow-luxe">
         <CheckCircle2 className="mx-auto h-9 w-9 text-emerald-600" />
-        <Script className="mt-5 block text-[2.2rem] leading-none">thank you</Script>
+        <Script className="mt-5 block">thank you</Script>
         <p className="mt-3 font-serif text-[1.35rem] text-ink-900">You have been unsubscribed</p>
         <p className="mt-2 text-[13.5px] text-ink-500">
           You will not receive further newsletter emails. The archive and events remain open to you.

@@ -5,6 +5,7 @@ import {
   GraduationCap,
   Mail,
   MapPin,
+  CheckCircle2,
   Mic,
   Sparkles,
   Ticket,
@@ -25,7 +26,6 @@ import {
   Gallery,
   Marquee,
   QuoteBlock,
-  Script,
   Section,
   SectionHeading,
   StatStrip,
@@ -63,6 +63,12 @@ const EXPERIENCE_ACCENTS = [
     numeral: "text-gold-700",
     icon: Users,
   },
+];
+
+const TRUST_MARKERS = [
+  "Vetted speakers only",
+  "No-filler programming",
+  "Capped, curated rooms",
 ];
 
 const GALLERY_FALLBACKS: { image: string; caption: string }[] = [
@@ -113,94 +119,54 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* ================= HERO — full-bleed cinematic stage photography ================= */}
-      <section className="relative isolate overflow-hidden bg-obsidian-950">
-        {/* Large background image — the stage fills the entire first viewport */}
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={heroImage}
-            alt=""
-            role="presentation"
-            loading="eager"
-            fetchPriority="high"
-            className="h-full w-full object-cover"
-          />
-          {/* A restrained charcoal scrim keeps the copy legible while the stage
-              remains bright and visible across the right half of the frame. */}
-          <div className="absolute inset-0 bg-gradient-to-r from-obsidian-950/92 via-obsidian-950/54 to-obsidian-950/12" />
-          <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950/76 via-transparent to-obsidian-950/20" />
-        </div>
-
-        {/* Decorative depth — one quiet editorial grid, no competing colour fields. */}
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute right-[10%] top-[20%] hidden h-28 w-28 dot-grid-gold opacity-35 lg:block" />
-        </div>
+      {/* ================= HERO — corporate navy, trust-first ================= */}
+      <section className="relative isolate overflow-hidden bg-obsidian-gradient pt-36 sm:pt-40">
+        {/* Gold radial glow — quiet depth in the top-right corner */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(234,179,8,0.08),transparent_50%)]"
+        />
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-x-6 inset-y-6 hidden border border-white/[0.14] lg:block"
+          className="pointer-events-none absolute inset-x-6 inset-y-6 hidden border border-white/[0.08] lg:block"
         />
 
-        {/* Floating date chip over the photography (desktop) */}
-        {h.eventDateISO && (
-          <Reveal
-            delay={280}
-            className="absolute top-32 z-10 hidden animate-floaty lg:block lg:right-10 xl:right-[max(2.5rem,calc((100vw_-_80rem)/2_+_2.5rem))]"
-          >
-            <div className="flex items-center gap-3 rounded-2xl border border-line bg-white/95 px-4 py-3 shadow-lift backdrop-blur">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gold-700 text-white shadow-gold-sm">
-                <CalendarDays className="h-[18px] w-[18px]" />
-              </span>
-              <span>
-                <span className="block font-sans text-[9.5px] font-semibold uppercase tracking-[0.22em] text-gold-700">
-                  Save the date
-                </span>
-                <span className="block font-serif text-[1.05rem] leading-tight text-ink-900">
-                  {formatDate(h.eventDateISO, { month: "short", day: "numeric" })}
-                </span>
-              </span>
-            </div>
-          </Reveal>
-        )}
-
-        <div className="container relative flex min-h-[92svh] flex-col justify-center pb-24 pt-32 sm:pt-36">
+        <div className="container relative grid items-center gap-14 pb-24 pt-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:pb-28">
+          {/* Copy column */}
           <div className="max-w-2xl">
             <Reveal className="animate-fade-up">
               {h.heroBadge && (
-                <div className="flex flex-wrap items-center gap-4">
-                  <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-luxe text-gold-300">
-                    <span aria-hidden className="h-px w-8 bg-gradient-to-r from-transparent to-gold-400/80" />
-                    {h.heroBadge}
-                  </p>
-                  {h.eventVenue && (
-                    <span className="hidden items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-gold-100 backdrop-blur-sm sm:flex">
-                      <MapPin className="h-3.5 w-3.5" />
-                      {h.eventVenue}
-                    </span>
-                  )}
-                </div>
+                <p className="inline-flex items-center gap-2.5 rounded-full border border-gold-500/40 bg-gold-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-300">
+                  <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-400" />
+                  {h.heroBadge}
+                </p>
               )}
 
-              <h1 className="display-xl mt-8 font-semibold text-white [text-shadow:0_2px_32px_rgba(8,8,10,0.45)]">
+              <h1 className="display-xl mt-6 font-extrabold text-white">
                 {h.heroTitle}
               </h1>
 
-              <span
-                aria-hidden
-                className="mt-8 block h-[2px] w-44 bg-gold-500"
-              />
-
-              <p className="mt-7 max-w-xl text-[15px] leading-[1.85] text-white/80 sm:text-[16.5px]">
+              <p className="mt-6 max-w-xl text-[15.5px] leading-[1.85] text-ivory-300/85 sm:text-[16.5px]">
                 {h.heroSubtitle}
               </p>
 
+              {/* Trust markers — professional verification signals */}
+              <ul className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+                {TRUST_MARKERS.map((t) => (
+                  <li key={t} className="flex items-center gap-2 text-[12.5px] font-semibold text-white/90">
+                    <CheckCircle2 className="h-4 w-4 text-gold-400" />
+                    {t}
+                  </li>
+                ))}
+              </ul>
+
               {/* Trust row — driven by real summit stats */}
               {stats.length > 0 && (
-                <dl className="mt-7 flex flex-wrap items-center gap-x-7 gap-y-3">
+                <dl className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-white/10 pt-6">
                   {stats.slice(0, 3).map((s) => (
                     <div key={s.label} className="flex items-baseline gap-2">
                       <dt className="sr-only">{s.label}</dt>
-                      <dd className="font-serif text-[1.5rem] font-semibold text-gold-200">{s.value}</dd>
+                      <dd className="font-serif text-[1.5rem] font-extrabold text-gold-400">{s.value}</dd>
                       <dd className="font-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-white/55">
                         {s.label}
                       </dd>
@@ -210,43 +176,40 @@ export default async function HomePage() {
               )}
 
               <div className="mt-9 flex flex-wrap items-center gap-4">
-                <Link href={h.heroCtaPrimary.href} className="btn-editorial group rounded-full shadow-gold">
+                <Link href={h.heroCtaPrimary.href} className="btn-editorial group">
                   {h.heroCtaPrimary.label}
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </Link>
                 {h.heroCtaSecondary && (
-                  <Link
-                    href={h.heroCtaSecondary.href}
-                    className="btn-quiet !border-white/60 !bg-white/95 shadow-lift hover:!border-white hover:!bg-white rounded-full"
-                  >
+                  <Link href={h.heroCtaSecondary.href} className="btn-quiet-on-dark">
                     {h.heroCtaSecondary.label}
                   </Link>
                 )}
               </div>
 
-              {/* Compact badges — the save-the-date chip also appears as a floating card on lg+ */}
+              {/* Compact badges */}
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 {h.eventDateISO && (
-                  <span className="inline-flex items-center gap-2.5 rounded-full border border-line bg-white/95 py-1.5 pl-2 pr-4 shadow-lift backdrop-blur lg:hidden">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gold-700 text-white shadow-gold-sm">
+                  <span className="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.06] py-2 pl-3 pr-4 backdrop-blur-sm">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gold-gradient text-obsidian-950">
                       <CalendarDays className="h-4 w-4" />
                     </span>
                     <span>
-                      <span className="block font-sans text-[8.5px] font-semibold uppercase tracking-[0.22em] text-gold-700">
+                      <span className="block font-sans text-[8.5px] font-semibold uppercase tracking-[0.22em] text-gold-400">
                         Save the date
                       </span>
-                      <span className="block font-serif text-[0.95rem] leading-tight text-ink-900">
+                      <span className="block font-serif text-[0.95rem] font-semibold leading-tight text-white">
                         {formatDate(h.eventDateISO, { month: "short", day: "numeric" })}
                       </span>
                     </span>
                   </span>
                 )}
-                <span className="inline-flex items-center gap-2.5 rounded-full border border-line bg-white/95 py-2 pl-3 pr-4 shadow-lift backdrop-blur">
+                <span className="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.06] py-2 pl-3 pr-4 backdrop-blur-sm">
                   <span className="relative flex h-2.5 w-2.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold-600 opacity-45" />
-                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-gold-600" />
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold-400 opacity-45" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-gold-500" />
                   </span>
-                  <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-ink-700">
+                  <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-white/85">
                     {stats[0] ? `${stats[0].value} ${stats[0].label.toLowerCase()}` : "Seats filling fast"}
                   </span>
                 </span>
@@ -255,49 +218,68 @@ export default async function HomePage() {
 
             {h.showCountdown && h.eventDateISO && (
               <Reveal
-                className="mt-10 max-w-xl rounded-2xl border border-white/40 bg-white/95 p-6 shadow-luxe backdrop-blur"
+                className="mt-10 max-w-xl rounded-2xl border border-white/15 bg-white/[0.06] p-6 backdrop-blur-md"
                 delay={160}
               >
                 <div className="flex flex-wrap items-end gap-x-10 gap-y-6">
                   <div>
-                    <p className="eyebrow mb-4">Doors open in</p>
+                    <p className="eyebrow mb-4 !text-gold-400">Doors open in</p>
                     <Countdown targetISO={h.eventDateISO} />
                   </div>
                   <div className="pb-1">
-                    <p className="font-sans text-[10.5px] uppercase tracking-[0.24em] text-ink-400">
+                    <p className="font-sans text-[10.5px] font-semibold uppercase tracking-[0.24em] text-ivory-400">
                       {formatDate(h.eventDateISO, { weekday: "long", month: "long", day: "numeric" })}
                     </p>
                     {h.eventVenue && (
-                      <p className="mt-2 font-serif text-[1.2rem] text-ink-700">{h.eventVenue}</p>
+                      <p className="mt-2 flex items-center gap-2 font-serif text-[1.15rem] font-semibold text-white">
+                        <MapPin className="h-4 w-4 text-gold-400" />
+                        {h.eventVenue}
+                      </p>
                     )}
                   </div>
                 </div>
               </Reveal>
             )}
           </div>
-        </div>
 
-        {/* Floating stage badge — bottom right over the hall (xl only, where the
-            copy column never reaches) */}
-        <div className="absolute bottom-24 right-10 z-10 hidden xl:block xl:right-[max(2.5rem,calc((100vw_-_80rem)/2_+_2.5rem))]">
-          <div className="flex items-center gap-3.5 rounded-2xl border border-white/20 bg-obsidian-950/60 px-5 py-4 shadow-luxe backdrop-blur-md">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/15">
-              <Ticket className="h-5 w-5 text-gold-200" />
-            </span>
-            <span>
-              <span className="block font-sans text-[10px] font-semibold uppercase tracking-[0.26em] text-gold-200">
-                Main stage
-              </span>
-              <span className="mt-1 block font-serif text-[1.15rem] leading-tight text-white">
-                Two days, one unforgettable room
-              </span>
-            </span>
-          </div>
-        </div>
+          {/* Hero image column */}
+          <Reveal delay={140} className="relative lg:mt-4">
+            <div className="relative overflow-hidden rounded-3xl border border-white/10 shadow-brand">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={heroImage}
+                alt=""
+                role="presentation"
+                loading="eager"
+                fetchPriority="high"
+                className="h-[340px] w-full object-cover sm:h-[440px] lg:h-[540px]"
+              />
+              <span className="absolute inset-0 bg-gradient-to-t from-obsidian-950/55 via-transparent to-transparent" />
+              <span aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gold-gradient" />
+            </div>
 
-        <div aria-hidden className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-3 lg:flex">
-          <span className="font-sans text-[9.5px] uppercase tracking-luxe text-white/60">Scroll</span>
-          <span className="h-12 w-px bg-gradient-to-b from-gold-300/80 via-gold-300/40 to-transparent" />
+            {/* Experience badge — floats over the image corner */}
+            {stats[0] && (
+              <div className="absolute -bottom-6 left-5 flex items-center gap-4 rounded-2xl border border-line bg-white px-5 py-4 shadow-luxe sm:left-10">
+                <span className="font-serif text-[2.4rem] font-extrabold leading-none text-obsidian-700">
+                  {stats[0].value}
+                </span>
+                <span className="max-w-[110px] text-[10.5px] font-semibold uppercase leading-relaxed tracking-[0.18em] text-ink-500">
+                  {stats[0].label}
+                </span>
+              </div>
+            )}
+
+            {/* Venue chip — top right over the image */}
+            {h.eventVenue && (
+              <div className="absolute right-5 top-6 hidden items-center gap-2.5 rounded-full border border-white/20 bg-obsidian-950/70 px-4 py-2 backdrop-blur-md sm:flex">
+                <Ticket className="h-4 w-4 text-gold-400" />
+                <span className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-white">
+                  {h.eventVenue}
+                </span>
+              </div>
+            )}
+          </Reveal>
         </div>
       </section>
 
@@ -339,7 +321,7 @@ export default async function HomePage() {
             </div>
             <div className="absolute -bottom-10 -right-4 hidden w-[58%] overflow-hidden rounded-2xl border border-line bg-white p-7 shadow-luxe sm:block lg:-right-10">
               <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gold-600" />
-              <Script className="text-[2.4rem] leading-none">est. 2019</Script>
+              <span className="calligraphic text-[11px] text-gold-700">est. 2019</span>
               <p className="mt-3 text-[13px] leading-relaxed text-ink-500">
                 Seven editions, one standard: no filler on stage, no strangers in the room.
               </p>
@@ -362,7 +344,7 @@ export default async function HomePage() {
               ))}
             </Reveal>
             <Reveal className="mt-9 flex flex-wrap items-center gap-8">
-              <Link href="/about" className="btn-editorial group rounded-full shadow-gold-sm">
+              <Link href="/about" className="btn-editorial group">
                 Our story
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>
@@ -502,7 +484,7 @@ export default async function HomePage() {
                 </div>
 
                 <div className="mt-10 flex flex-wrap items-center gap-5">
-                  <Link href={`/events/${featuredEvent.slug}`} className="btn-editorial rounded-full shadow-gold-sm">
+                  <Link href={`/events/${featuredEvent.slug}`} className="btn-editorial">
                     Reserve your seat
                   </Link>
                   {featuredEvent.price && <Badge variant="goldSoft">{featuredEvent.price}</Badge>}
@@ -697,8 +679,8 @@ export default async function HomePage() {
                       href="/contact"
                       className={
                         tier.featured
-                          ? "btn-editorial mt-9 w-full rounded-full shadow-gold-sm"
-                          : "btn-quiet mt-9 w-full rounded-full"
+                          ? "btn-editorial mt-9 w-full"
+                          : "btn-quiet mt-9 w-full"
                       }
                     >
                       Request this pass
@@ -822,14 +804,14 @@ export default async function HomePage() {
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <Link
                 href="/events"
-                className="group inline-flex h-[54px] items-center gap-3 rounded-full bg-gold-700 px-9 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-white shadow-gold transition-all duration-300 hover:-translate-y-0.5 hover:bg-gold-600 hover:shadow-gold"
+                className="group inline-flex h-[54px] items-center gap-3 rounded-xl bg-gold-gradient px-9 font-sans text-[12px] font-bold uppercase tracking-[0.16em] text-obsidian-950 shadow-gold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-gold active:scale-[0.98]"
               >
                 Get Your Ticket
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>
               <Link
                 href="/contact"
-                className="inline-flex h-[54px] items-center gap-3 rounded-full border border-white/30 px-9 font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-white transition-all duration-300 hover:border-gold-300/70 hover:text-gold-200"
+                className="inline-flex h-[54px] items-center gap-3 rounded-xl border border-white/30 px-9 font-sans text-[12px] font-bold uppercase tracking-[0.16em] text-white transition-all duration-300 hover:border-gold-400/70 hover:text-gold-200 active:scale-[0.98]"
               >
                 Talk to us
               </Link>
@@ -860,7 +842,7 @@ export default async function HomePage() {
         <span aria-hidden className="pointer-events-none absolute inset-x-6 inset-y-6 hidden border border-ink-900/[0.07] lg:block" />
         <div className="container relative py-24 text-center sm:py-28">
           <Reveal className="mx-auto max-w-2xl">
-            <Script className="text-[2.6rem] leading-none sm:text-[3.2rem]">Join the inner circle</Script>
+            <span className="calligraphic text-[12px] text-gold-700">Join the inner circle</span>
             <h2 className="display-lg mt-6 text-ink-900">Never miss an announcement</h2>
             <p className="lead mt-5">
               Speaker drops, early-bird tickets and the occasional letter from the founders. One email a month, no noise.

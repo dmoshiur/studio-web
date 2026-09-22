@@ -12,7 +12,7 @@ export default function UnauthorizedPage() {
         <span className="mx-auto flex h-16 w-16 items-center justify-center border border-gold-600/40 bg-white text-gold-700 shadow-card">
           <Lock className="h-7 w-7" />
         </span>
-        <Script className="mt-7 block text-[2.8rem] leading-none">members only</Script>
+        <Script className="mt-7 block">members only</Script>
         <h1 className="display-md mt-5 text-ink-900">Sign in required</h1>
         <p className="lead mx-auto mt-4 max-w-md">Sign in to continue to your studio or account.</p>
         <Link

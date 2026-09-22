@@ -3,26 +3,26 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 /**
- * Button — champagne gold on obsidian. Squared, editorial proportions.
- * `gold` is the primary action, `outlineLight` sits on dark imagery,
+ * Button — gold gradient on navy ink. Corporate rounded-xl proportions.
+ * `gold` is the primary action, `outlineLight` sits on dark surfaces,
  * `ghostDark` is for the studio surfaces.
  */
 const buttonVariants = cva(
-  "group/btn relative inline-flex items-center justify-center gap-2.5 overflow-hidden whitespace-nowrap rounded-sm font-sans text-[12.5px] font-semibold uppercase tracking-[0.18em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:pointer-events-none disabled:opacity-45 [&_svg]:size-[15px] [&_svg]:shrink-0",
+  "group/btn relative inline-flex items-center justify-center gap-2.5 overflow-hidden whitespace-nowrap rounded-xl font-sans text-[12.5px] font-bold uppercase tracking-[0.14em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB] focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:pointer-events-none disabled:opacity-45 active:scale-[0.98] [&_svg]:size-[15px] [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        gold: "bg-gold-gradient text-obsidian-950 shadow-gold-sm hover:shadow-gold hover:brightness-[1.06]",
-        obsidian: "bg-obsidian-900 text-ivory-100 hover:bg-obsidian-800 shadow-luxe",
+        gold: "bg-gold-gradient text-obsidian-950 shadow-gold-sm hover:shadow-gold hover:brightness-105",
+        obsidian: "bg-obsidian-700 text-white hover:bg-obsidian-600 shadow-brand-sm",
         outline:
           "border border-gold-500/50 text-gold-200 hover:border-gold-400 hover:bg-gold-500/[0.08]",
         outlineLight:
           "border border-white/25 bg-white/[0.04] text-ivory-100 backdrop-blur-sm hover:border-gold-400/60 hover:bg-white/[0.08]",
         ivory: "bg-ivory-100 text-obsidian-900 hover:bg-white",
         /* Light-theme actions */
-        ink: "bg-ink-900 text-white shadow-card hover:bg-ink-800 hover:shadow-lift",
+        ink: "bg-obsidian-700 text-white shadow-brand-sm hover:bg-obsidian-600 hover:shadow-brand",
         outlineInk:
-          "border border-line bg-white text-ink-900 hover:border-gold-600/50 hover:text-gold-700",
+          "border border-line bg-white text-ink-900 shadow-card hover:border-obsidian-700 hover:text-obsidian-700",
         ghost: "text-ivory-300 hover:bg-white/[0.06] hover:text-ivory-100",
         ghostDark: "text-ink-500 hover:bg-ink-900/[0.05] hover:text-ink-900",
         danger: "bg-crimson-500 text-white hover:bg-crimson-400",

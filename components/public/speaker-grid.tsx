@@ -115,7 +115,7 @@ function SpeakerModal({ speaker, onClose }: { speaker: Speaker; onClose: () => v
               ))}
               <Link
                 href={`/speakers/${speaker.slug}`}
-                className="inline-flex items-center gap-2 rounded-full bg-gold-700 px-5 py-2.5 font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-white shadow-gold-sm transition-all hover:-translate-y-0.5 hover:shadow-gold"
+                className="inline-flex items-center gap-2 rounded-lg bg-gold-gradient px-5 py-2.5 font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-obsidian-950 shadow-gold-sm transition-all hover:-translate-y-0.5 hover:shadow-gold"
               >
                 Full profile
               </Link>

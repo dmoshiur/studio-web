@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { MapPin, Phone, Mail, Facebook, Instagram, Youtube, Linkedin, Twitter, Globe } from "lucide-react";
+import { MapPin, Phone, Mail, Facebook, Instagram, Youtube, Linkedin, Twitter, Globe, ArrowUpRight, ShieldCheck } from "lucide-react";
 import type { NavLink, PublicSiteSettings, SocialLink } from "@/types";
 import { NewsletterForm } from "./newsletter-form";
-import { Backdrop, GoldRule, Script } from "./ui-kit";
+import { GoldRule } from "./ui-kit";
 import { Diamond } from "@/components/ui/badge";
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -15,7 +15,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   globe: Globe,
 };
 
-/** Footer — a near-black editorial slab with a restrained champagne accent. */
+/** Footer — a deep navy slab with gold accents and clear contact routes. */
 export function SiteFooter({
   settings,
   footerLinks,
@@ -28,28 +28,30 @@ export function SiteFooter({
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative isolate overflow-hidden bg-obsidian-950">
-      <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-px bg-gold-600/70" />
-      <Backdrop src="/images/texture-marble.jpg" overlay="soft" className="opacity-[0.14] grayscale" />
-      <div className="absolute inset-0 bg-obsidian-950/90" />
+    <footer className="relative isolate overflow-hidden bg-obsidian-gradient text-ivory-300">
+      <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-[3px] bg-gold-gradient" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(234,179,8,0.06),transparent_50%)]"
+      />
 
       {/* Footer CTA strip */}
       <div className="container relative pt-14">
-        <div className="flex flex-col items-center justify-between gap-6 rounded-2xl border border-white/10 bg-white/[0.04] px-8 py-7 backdrop-blur-sm sm:px-10 lg:flex-row">
+        <div className="flex flex-col items-center justify-between gap-6 rounded-2xl border border-white/10 bg-white/[0.05] px-8 py-7 backdrop-blur-sm sm:px-10 lg:flex-row">
           <div className="text-center lg:text-left">
-            <p className="font-serif text-[1.5rem] leading-tight text-ivory-50 sm:text-[1.7rem]">
+            <p className="font-serif text-[1.5rem] font-bold leading-tight text-white sm:text-[1.7rem]">
               Seats for the next edition are open
             </p>
-            <p className="mt-2 text-[13px] text-ivory-400/70">
+            <p className="mt-2 text-[13px] text-ivory-400/80">
               Capped rooms, curated introductions and two days that pay for themselves.
             </p>
           </div>
           <Link
             href="/events"
-            className="group inline-flex h-[50px] shrink-0 items-center gap-2.5 rounded-full bg-gold-700 px-8 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-white shadow-gold transition-all hover:-translate-y-0.5 hover:shadow-gold"
+            className="group inline-flex h-[50px] shrink-0 items-center gap-2.5 rounded-xl bg-gold-gradient px-8 font-sans text-[11.5px] font-bold uppercase tracking-[0.16em] text-obsidian-950 shadow-gold-sm transition-all hover:-translate-y-0.5 hover:shadow-gold active:scale-[0.98]"
           >
             Get your ticket
-            <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
+            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </Link>
         </div>
       </div>
@@ -59,18 +61,21 @@ export function SiteFooter({
           {/* Identity */}
           <div>
             <Link href="/" className="group flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center bg-gold-700 font-serif text-[1.4rem] text-white shadow-gold-sm transition-transform duration-300 group-hover:-translate-y-0.5">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gold-gradient font-serif text-[1.4rem] font-bold text-obsidian-950 shadow-gold-sm transition-transform duration-300 group-hover:-translate-y-0.5">
                 {settings.siteName.charAt(0).toUpperCase()}
               </span>
               <span className="flex flex-col leading-none">
-                <span className="font-serif text-[1.4rem] text-ivory-50">{settings.siteName}</span>
-                <span className="mt-1 font-sans text-[8.5px] uppercase tracking-luxe text-gold-400/80">
+                <span className="font-serif text-[1.4rem] font-bold text-white">{settings.siteName}</span>
+                <span className="mt-1 font-sans text-[8.5px] font-semibold uppercase tracking-[0.25em] text-gold-400">
                   Event Management Studio
                 </span>
               </span>
             </Link>
             <p className="mt-6 max-w-sm text-[14px] leading-[1.9] text-ivory-400/80">{settings.tagline}</p>
-            <Script className="mt-7 block text-[2rem] leading-none">{settings.siteName}</Script>
+            <p className="mt-6 flex items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-400">
+              <ShieldCheck className="h-4 w-4" />
+              Verified &amp; professional
+            </p>
             <div className="mt-6 flex gap-2">
               {socialLinks.map((s) => {
                 const Icon = ICONS[s.icon.toLowerCase()] ?? Globe;
@@ -81,7 +86,7 @@ export function SiteFooter({
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={s.label}
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-ivory-400 transition-all hover:-translate-y-0.5 hover:border-gold-400/60 hover:bg-gold-600/15 hover:text-white"
+                    className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 text-ivory-400 transition-all hover:-translate-y-0.5 hover:border-gold-400/60 hover:bg-gold-500/15 hover:text-white"
                   >
                     <Icon className="h-[16px] w-[16px]" />
                   </a>
@@ -92,7 +97,7 @@ export function SiteFooter({
 
           {/* Explore */}
           <nav aria-label="Footer">
-            <h3 className="font-sans text-[10.5px] font-semibold uppercase tracking-[0.3em] text-gold-400">
+            <h3 className="font-sans text-[10.5px] font-bold uppercase tracking-[0.25em] text-gold-400">
               Explore
             </h3>
             <ul className="mt-6 space-y-3.5">
@@ -112,7 +117,7 @@ export function SiteFooter({
 
           {/* Contact */}
           <div>
-            <h3 className="font-sans text-[10.5px] font-semibold uppercase tracking-[0.3em] text-gold-400">
+            <h3 className="font-sans text-[10.5px] font-bold uppercase tracking-[0.25em] text-gold-400">
               Contact
             </h3>
             <ul className="mt-6 space-y-4 text-[13.5px] text-ivory-400/80">
@@ -141,8 +146,8 @@ export function SiteFooter({
 
           {/* Newsletter */}
           <div>
-            <h3 className="font-sans text-[10.5px] font-semibold uppercase tracking-[0.3em] text-gold-400">
-              The Invitation List
+            <h3 className="font-sans text-[10.5px] font-bold uppercase tracking-[0.25em] text-gold-400">
+              Stay Updated
             </h3>
             <p className="mt-6 text-[13.5px] leading-relaxed text-ivory-400/80">
               Speaker drops, early-bird releases and the occasional letter from the founders. No noise.
@@ -159,18 +164,16 @@ export function SiteFooter({
           <p className="flex items-center gap-3">
             <Diamond className="h-1 w-1" />© {year} {settings.siteName}. All rights reserved.
           </p>
-          {/* License attribution: visual design adapted from the Colorlib "Manup" template (CC BY 3.0). */}
           <p className="flex items-center gap-3">
-            Design language adapted from{" "}
+            Professional design language inspired by{" "}
             <a
-              href="https://colorlib.com/wp/templates/"
+              href="https://tranzobd.netlify.app/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gold-300 underline underline-offset-4 hover:text-gold-200"
             >
-              Colorlib Manup
-            </a>{" "}
-            (CC BY 3.0)
+              Tranzo BD
+            </a>
           </p>
         </div>
       </div>

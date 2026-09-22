@@ -12,7 +12,7 @@ export default function ForbiddenPage() {
         <span className="mx-auto flex h-16 w-16 items-center justify-center border border-crimson-400/40 bg-white text-crimson-500 shadow-card">
           <ShieldX className="h-7 w-7" />
         </span>
-        <Script className="mt-7 block text-[2.8rem] leading-none">not your room</Script>
+        <Script className="mt-7 block">not your room</Script>
         <h1 className="display-md mt-5 text-ink-900">Access denied</h1>
         <p className="lead mx-auto mt-4 max-w-md">
           Your account does not have permission for this area. If you believe this is a mistake, contact the site owner.

@@ -23,12 +23,12 @@ export default async function MaintenancePage() {
       <div className="relative w-full max-w-xl text-center">
         {state.emergencyLock ? (
           <>
-            <Script className="text-[2.9rem] leading-none">we will return</Script>
+            <Script>we will return</Script>
             <p className="mt-6 font-sans text-[10.5px] uppercase tracking-luxe text-ink-400">Temporarily unavailable</p>
           </>
         ) : (
           <>
-            <Script className="text-[2.9rem] leading-none">{settings.siteName}</Script>
+            <Script>{settings.siteName}</Script>
             <p className="mt-6 font-sans text-[10.5px] uppercase tracking-luxe text-gold-600">Private viewings only</p>
           </>
         )}
