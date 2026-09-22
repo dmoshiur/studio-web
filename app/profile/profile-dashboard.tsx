@@ -146,10 +146,25 @@ export function ProfileDashboard({ canAdmin }: { canAdmin: boolean }) {
     if (newPw !== newPw2) return setPwError("New passwords do not match.");
     setSavingPw(true);
     try {
+      // On Firebase deployments the current password is proved by signing in
+      // to Firebase Auth (the store login + reset use) and passing a fresh
+      // ID token; the embedded backend verifies server-side directly.
+      let proofIdToken: string | undefined;
+      const { getFirebaseAuth } = await import("@/lib/firebase/client");
+      const { signInWithEmailAndPassword } = await import("firebase/auth");
+      const fbAuth = getFirebaseAuth();
+      if (fbAuth && profile?.email) {
+        try {
+          const cred = await signInWithEmailAndPassword(fbAuth, profile.email, currentPw);
+          proofIdToken = await cred.user.getIdToken(true);
+        } catch {
+          throw new Error("Current password is incorrect");
+        }
+      }
       const res = await fetch("/api/account/password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ currentPassword: currentPw, newPassword: newPw }),
+        body: JSON.stringify({ currentPassword: currentPw, newPassword: newPw, ...(proofIdToken ? { proofIdToken } : {}) }),
       });
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; message?: string; error?: string };
       if (!res.ok) throw new Error(data.error ?? "Password change failed");

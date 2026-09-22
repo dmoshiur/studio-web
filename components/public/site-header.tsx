@@ -55,34 +55,34 @@ export function SiteHeader({
       {hasTopbar && (
         <div className="relative z-50 hidden bg-obsidian-950 md:block">
           <div className="container flex h-9 items-center justify-between gap-6">
-            <div className="flex items-center gap-6 text-[12px] text-ivory-300">
+            <div className="flex min-w-0 items-center gap-4 text-[12px] text-ivory-300 xl:gap-6">
               {contact?.phone && (
                 <a
                   href={`tel:${contact.phone.replace(/\s/g, "")}`}
-                  className="flex items-center gap-2 transition-colors hover:text-gold-300"
+                  className="flex shrink-0 items-center gap-2 whitespace-nowrap transition-colors hover:text-gold-300"
                 >
-                  <Phone className="h-3.5 w-3.5 text-gold-500" />
+                  <Phone className="h-3.5 w-3.5 shrink-0 text-gold-500" />
                   {contact.phone}
                 </a>
               )}
               {contact?.email && (
                 <a
                   href={`mailto:${contact.email}`}
-                  className="flex items-center gap-2 transition-colors hover:text-gold-300"
+                  className="flex shrink-0 items-center gap-2 whitespace-nowrap transition-colors hover:text-gold-300"
                 >
-                  <Mail className="h-3.5 w-3.5 text-gold-500" />
+                  <Mail className="h-3.5 w-3.5 shrink-0 text-gold-500" />
                   {contact.email}
                 </a>
               )}
               {contact?.address && (
-                <span className="flex items-center gap-2">
-                  <MapPin className="h-3.5 w-3.5 text-gold-500" />
-                  {contact.address}
+                <span className="hidden min-w-0 items-center gap-2 whitespace-nowrap lg:flex">
+                  <MapPin className="h-3.5 w-3.5 shrink-0 text-gold-500" />
+                  <span className="truncate">{contact.address}</span>
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-2 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-gold-400">
-              <CheckCircle2 className="h-3.5 w-3.5" />
+            <div className="hidden shrink-0 items-center gap-2 whitespace-nowrap text-[10.5px] font-semibold uppercase tracking-[0.2em] text-gold-400 xl:flex">
+              <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
               Trusted professional service
             </div>
           </div>
@@ -91,7 +91,7 @@ export function SiteHeader({
 
       {announcement && (
         <div className="relative z-50 flex items-center justify-center gap-3 bg-gradient-to-r from-[#EAB308] via-[#FACC15] to-[#EAB308] py-2 text-center">
-          <p className="font-sans text-[10.5px] font-bold uppercase tracking-[0.25em] text-obsidian-950">
+          <p className="w-full truncate whitespace-nowrap px-4 font-sans text-[10.5px] font-bold uppercase tracking-[0.25em] text-obsidian-950">
             {announcement}
           </p>
         </div>
@@ -108,29 +108,30 @@ export function SiteHeader({
       >
         {/* Gold accent bar */}
         <span aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gold-gradient" />
-        <div className="container flex h-[78px] items-center justify-between gap-6">
+        <div className="container flex h-[78px] items-center justify-between gap-4 xl:gap-6">
           {/* Wordmark */}
-          <Link href="/" className="group flex items-center gap-3" aria-label={`${siteName} — home`}>
+          <Link href="/" className="group flex min-w-0 shrink items-center gap-3" aria-label={`${siteName} — home`}>
             {logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={logoUrl} alt={siteName} className="h-9 w-auto object-contain" />
+              <img src={logoUrl} alt={siteName} className="h-9 w-auto shrink-0 object-contain" />
             ) : (
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-obsidian-gradient font-serif text-[1.4rem] font-bold text-gold-400 shadow-brand-sm transition-transform duration-300 group-hover:-translate-y-0.5">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-obsidian-gradient font-serif text-[1.4rem] font-bold text-gold-400 shadow-brand-sm transition-transform duration-300 group-hover:-translate-y-0.5">
                 {siteName.charAt(0).toUpperCase()}
               </span>
             )}
-            <span className="flex flex-col leading-none">
-              <span className="font-serif text-[1.35rem] font-bold tracking-[-0.01em] text-obsidian-950">
+            <span className="flex min-w-0 flex-col leading-none">
+              <span className="truncate font-serif text-[1.35rem] font-bold tracking-[-0.01em] text-obsidian-950">
                 {siteName}
               </span>
-              <span className="mt-1 hidden font-sans text-[8.5px] font-semibold uppercase tracking-[0.25em] text-gold-700 sm:block">
+              <span className="mt-1 hidden whitespace-nowrap font-sans text-[8.5px] font-semibold uppercase tracking-[0.25em] text-gold-700 sm:block">
                 Event Management Studio
               </span>
             </span>
           </Link>
 
-          {/* Desktop navigation */}
-          <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
+          {/* Desktop navigation — collapses to the drawer below xl so every
+              item always stays on a single line and the bar never overflows. */}
+          <nav aria-label="Primary" className="hidden min-w-0 items-center gap-1 xl:flex">
             {links.map((link) => {
               const active = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
               return (
@@ -140,7 +141,7 @@ export function SiteHeader({
                   {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "relative rounded-lg px-4 py-2 font-sans text-[11.5px] font-semibold uppercase tracking-[0.16em] transition-colors",
+                    "relative shrink-0 whitespace-nowrap rounded-lg px-3 py-2 font-sans text-[11.5px] font-semibold uppercase tracking-[0.16em] transition-colors 2xl:px-4",
                     active ? "bg-gold-50 text-obsidian-700" : "text-ink-600 hover:bg-paper-200 hover:text-obsidian-700"
                   )}
                 >
@@ -158,12 +159,12 @@ export function SiteHeader({
           </nav>
 
           {/* Actions */}
-          <div className="hidden items-center gap-5 lg:flex">
+          <div className="hidden shrink-0 items-center gap-5 xl:flex">
             {user ? (
               <Link
                 href="/profile"
                 aria-label="My account"
-                className="inline-flex items-center gap-2 font-sans text-[11.5px] font-semibold uppercase tracking-[0.16em] text-ink-600 transition-colors hover:text-obsidian-700"
+                className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap font-sans text-[11.5px] font-semibold uppercase tracking-[0.16em] text-ink-600 transition-colors hover:text-obsidian-700"
               >
                 <UserRound className="h-4 w-4" />
                 {user.displayName?.split(" ")[0] ?? "Account"}
@@ -171,22 +172,22 @@ export function SiteHeader({
             ) : (
               <Link
                 href="/login"
-                className="font-sans text-[11.5px] font-semibold uppercase tracking-[0.16em] text-ink-600 transition-colors hover:text-obsidian-700"
+                className="shrink-0 whitespace-nowrap font-sans text-[11.5px] font-semibold uppercase tracking-[0.16em] text-ink-600 transition-colors hover:text-obsidian-700"
               >
                 Sign in
               </Link>
             )}
             <Link
               href="/events"
-              className="group inline-flex h-11 items-center gap-2 rounded-xl bg-gold-gradient px-6 font-sans text-[11.5px] font-bold uppercase tracking-[0.16em] text-obsidian-950 shadow-gold-sm transition-all hover:-translate-y-0.5 hover:shadow-gold active:scale-[0.98]"
+              className="group inline-flex h-11 shrink-0 items-center gap-2 whitespace-nowrap rounded-xl bg-gold-gradient px-5 font-sans text-[11.5px] font-bold uppercase tracking-[0.16em] text-obsidian-950 shadow-gold-sm transition-all hover:-translate-y-0.5 hover:shadow-gold active:scale-[0.98] 2xl:px-6"
             >
               Reserve Seat
-              <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              <ArrowUpRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </Link>
           </div>
 
           <button
-            className="rounded-lg border border-line bg-white/70 p-2.5 text-ink-900 transition-colors hover:border-gold-500/60 hover:text-obsidian-700 lg:hidden"
+            className="shrink-0 rounded-lg border border-line bg-white/70 p-2.5 text-ink-900 transition-colors hover:border-gold-500/60 hover:text-obsidian-700 xl:hidden"
             onClick={() => setOpen(!open)}
             aria-expanded={open}
             aria-label={open ? "Close menu" : "Open menu"}
@@ -199,7 +200,7 @@ export function SiteHeader({
       {/* Full-screen mobile drawer */}
       <div
         className={cn(
-          "fixed inset-0 z-40 overflow-y-auto bg-paper-100/[0.98] backdrop-blur-xl transition-all duration-400 lg:hidden",
+          "fixed inset-0 z-40 overflow-y-auto bg-paper-100/[0.98] backdrop-blur-xl transition-all duration-400 xl:hidden",
           open ? "visible opacity-100" : "invisible opacity-0"
         )}
       >
@@ -222,10 +223,10 @@ export function SiteHeader({
                     open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
                   )}
                 >
-                  <span className="flex flex-col leading-none">
+                  <span className="flex min-w-0 flex-col leading-none">
                     <span
                       className={cn(
-                        "font-serif text-[1.55rem] font-semibold transition-colors",
+                        "truncate font-serif text-[1.55rem] font-semibold transition-colors",
                         active ? "text-obsidian-700" : "text-ink-900"
                       )}
                     >
@@ -282,13 +283,13 @@ export function SiteHeader({
           <div className="mt-auto flex flex-col gap-3 pt-10">
             <Link
               href={user ? "/profile" : "/login"}
-              className="flex h-12 items-center justify-center rounded-xl border border-line bg-white font-sans text-[11.5px] font-bold uppercase tracking-[0.18em] text-ink-900 shadow-card"
+              className="flex h-12 items-center justify-center whitespace-nowrap rounded-xl border border-line bg-white font-sans text-[11.5px] font-bold uppercase tracking-[0.18em] text-ink-900 shadow-card"
             >
               {user ? "My account" : "Sign in"}
             </Link>
             <Link
               href="/events"
-              className="flex h-12 items-center justify-center rounded-xl bg-gold-gradient font-sans text-[11.5px] font-bold uppercase tracking-[0.18em] text-obsidian-950 shadow-gold-sm"
+              className="flex h-12 items-center justify-center whitespace-nowrap rounded-xl bg-gold-gradient font-sans text-[11.5px] font-bold uppercase tracking-[0.18em] text-obsidian-950 shadow-gold-sm"
             >
               Reserve your seat
             </Link>

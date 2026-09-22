@@ -35,10 +35,14 @@ export function getDataDir(): string {
   const dir = process.env.DATA_DIR ?? path.join(process.cwd(), "data");
   try {
     fs.mkdirSync(dir, { recursive: true });
+    // Verify the directory is actually writable (mkdir may "succeed" on a
+    // path whose parent is read-only in some serverless sandboxes).
+    fs.accessSync(dir, fs.constants.W_OK);
+    return dir;
   } catch {
-    /* read-only filesystem (e.g. serverless) — fall back to tmp */
+    // Read-only filesystem (e.g. serverless) — fall back to tmp.
+    return "/tmp";
   }
-  return dir;
 }
 
 let dbInstance: DatabaseSync | null = null;

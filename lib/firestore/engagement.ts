@@ -2,6 +2,7 @@ import "server-only";
 import { FieldValue, type Query } from "firebase-admin/firestore";
 import { getAdminDb } from "@/lib/firebase/admin";
 import { toISODate } from "@/lib/utils";
+import { normalizeBrandDeep, normalizeBrandString } from "@/lib/brand";
 import type {
   AuditLog, ContactMessage, MediaItem, NavigationDoc, NavLink, SocialLink, Subscriber,
 } from "@/types";
@@ -47,6 +48,11 @@ function invalidateNavCache(id?: string) {
     cache.delete("nav:footer");
   }
   cache.delete("socialLinks");
+}
+
+/** Public cache reset — used by boot migrations after stored values change. */
+export function invalidateAllNavCaches(): void {
+  invalidateNavCache();
 }
 
 // ------------------------------ MESSAGES -----------------------------
@@ -291,7 +297,9 @@ export async function getNavigation(id: "header" | "footer"): Promise<Navigation
     const d = snap.data() as { links?: NavLink[]; updatedAt?: unknown };
     const result: NavigationDoc = {
       id,
-      links: Array.isArray(d.links) ? d.links : fallback.links,
+      links: Array.isArray(d.links)
+        ? d.links.map((l) => ({ ...l, label: normalizeBrandString(String(l.label ?? "")) }))
+        : fallback.links,
       updatedAt: toISODate(d.updatedAt) ?? new Date(0).toISOString(),
     };
     setCache(cacheKey, result, NAV_CACHE_TTL_MS);
@@ -321,13 +329,13 @@ export async function listSocialLinks(): Promise<SocialLink[]> {
     const snap = await db.collection("socialLinks").orderBy("label", "asc").limit(20).get();
     const result = snap.docs.map((d) => {
       const m = d.data() as Record<string, unknown>;
-      return {
+      return normalizeBrandDeep({
         id: d.id,
         label: String(m.label ?? ""),
         href: String(m.href ?? ""),
         icon: String(m.icon ?? "globe"),
         updatedAt: toISODate(m.updatedAt) ?? new Date().toISOString(),
-      };
+      });
     });
     setCache("socialLinks", result, SOCIAL_CACHE_TTL_MS);
     return result;

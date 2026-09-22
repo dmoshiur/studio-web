@@ -1,6 +1,7 @@
 import "server-only";
 import { getAdminDb, getDataBackend } from "@/lib/firebase/admin";
 import { DEFAULT_PUBLIC_SETTINGS } from "@/lib/firestore/settings";
+import { normalizeBrandDeep, normalizeSiteName } from "@/lib/brand";
 
 /**
  * Seeds a complete, launch-ready content set the first time the embedded
@@ -47,9 +48,10 @@ export async function seedIfEmpty(force = false): Promise<{ seeded: boolean; cou
   await db.collection("siteSettings").doc("public").set(
     {
       ...DEFAULT_PUBLIC_SETTINGS,
-      siteName: process.env.NEXT_PUBLIC_APP_NAME ?? "Photography",
+      // A stale NEXT_PUBLIC_APP_NAME must never reintroduce a legacy brand.
+      siteName: normalizeSiteName(process.env.NEXT_PUBLIC_APP_NAME ?? "Photography"),
       tagline: "Event Management Studio — Photo & Videography Events",
-      contactEmail: process.env.CONTACT_EMAIL ?? "hello@photography.studio",
+      contactEmail: normalizeBrandDeep(process.env.CONTACT_EMAIL ?? "hello@photography.studio"),
       phone: "+1 (212) 555-0141",
       address: "Grand Meridian Hall, 128 Lexington Ave, New York, NY",
       timezone: "America/New_York",

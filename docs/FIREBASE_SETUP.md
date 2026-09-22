@@ -3,7 +3,7 @@
 ## 1. Create the project
 
 1. Go to [Firebase Console](https://console.firebase.google.com) → **Add project**.
-2. Name it (e.g. `manup-platform`), disable Google Analytics unless you need it.
+2. Name it (e.g. `photography-studio`), disable Google Analytics unless you need it.
 3. Note the **Project ID**.
 
 ## 2. Authentication

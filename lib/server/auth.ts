@@ -42,8 +42,12 @@ export function getAdminEmails(): string[] {
 }
 
 export function getAdminPassword(): string | null {
-  const password = process.env.ADMIN_PASSWORD;
-  return password && password.length > 0 ? password : null;
+  // Tolerate quoted values pasted from `.env` samples into a host's env-var
+  // UI (Vercel keeps the quotes literally, which silently breaks login).
+  const raw = process.env.ADMIN_PASSWORD;
+  if (!raw || raw.length === 0) return null;
+  const unquoted = raw.trim().replace(/^(['"])(.*)\1$/, "$2");
+  return unquoted.length > 0 ? unquoted : null;
 }
 
 export function getAdminDisplayName(): string {
@@ -161,7 +165,7 @@ async function resolveEnvAdminSession(value: string): Promise<SessionUser | null
   if (!value.startsWith(prefix)) return null;
   const token = value.slice(prefix.length);
   const { verifySessionToken } = await import("@/lib/server/session");
-  const payload = verifySessionToken(token ?? "");
+  const payload = await verifySessionToken(token ?? "");
   if (!payload) return null;
   const email = payload.email ?? payload.uid?.replace(prefix, "");
   if (!email || !isEnvAdmin(email)) return null;

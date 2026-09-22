@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { getAdminAuth } from "@/lib/firebase/admin";
 import { requireSession, SESSION_COOKIE } from "@/lib/server/auth";
 import { createIdentitySession, identityBackend, updateIdentityProfile, IdentityError } from "@/lib/server/identity";
 import { apiError, handleApiError, ok, parseBody } from "@/lib/server/api-helpers";
@@ -16,18 +17,23 @@ const schema = z.object({
     .min(8)
     .max(128)
     .regex(/^(?=.*[A-Za-z])(?=.*\d).+$/, "New password needs letters and numbers"),
+  // Firebase deployments: the client re-authenticates with the CURRENT
+  // password (Firebase Auth is the credential store) and sends a fresh ID
+  // token as proof — the Admin SDK cannot verify passwords itself.
+  proofIdToken: z.string().min(10).max(10000).optional(),
 });
 
 /**
- * Change own password. Requires the current password (verification),
- * hashes the new one with scrypt, then revokes all pre-existing sessions
- * for this account by bumping the session epoch.
+ * Change own password. Requires the current password (verified against the
+ * same credential store the login and forgot-password flows use), hashes /
+ * stores the new one through the identity facade, then revokes all
+ * pre-existing sessions for this account.
  */
 export async function POST(req: Request) {
   try {
     const user = await requireSession();
     if (!user.email) return apiError("This account has no email address", 400, "no_email");
-    const { currentPassword, newPassword } = await parseBody(req, schema);
+    const { currentPassword, newPassword, proofIdToken } = await parseBody(req, schema);
 
     if (identityBackend() === "local") {
       const cred = getCredentialByUid(user.uid);
@@ -53,17 +59,39 @@ export async function POST(req: Request) {
         maxAge: maxAgeSeconds,
       });
       return res;
-    } else {
-      // Firebase backend: verify via Admin SDK by re-fetching the user and
-      // delegating to the identity facade (password change invalidates tokens).
-      try {
-        await updateIdentityProfile(user.uid, { password: newPassword });
-      } catch (err) {
-        if (err instanceof IdentityError) return apiError(err.message, err.status, err.code);
-        throw err;
-      }
     }
 
+    // Firebase backend: verify the CURRENT password via a freshly minted
+    // Firebase ID token (the client signs in with it), then delegate the
+    // change to the identity facade.
+    const auth = getAdminAuth();
+    if (!auth) return apiError("Authentication service is not configured", 503, "not_configured");
+    if (!proofIdToken) {
+      return apiError("Current password verification is required", 400, "reauth_required");
+    }
+    let decoded;
+    try {
+      decoded = await auth.verifyIdToken(proofIdToken, true);
+    } catch {
+      await auditLog({ actor: user, action: "account.password.change", result: "failure", metadata: { reason: "bad_proof" } });
+      return apiError("Current password is incorrect", 401, "wrong_password");
+    }
+    if (decoded.uid !== user.uid) {
+      return apiError("Current password is incorrect", 401, "wrong_password");
+    }
+    // The proof must be fresh: it was minted by re-entering the current
+    // password moments ago (auth_time is set at actual sign-in).
+    const authTime = Number(decoded.auth_time ?? 0) * 1000;
+    if (!authTime || Date.now() - authTime > 10 * 60_000) {
+      return apiError("Current password verification expired — please try again", 401, "stale_proof");
+    }
+    try {
+      await updateIdentityProfile(user.uid, { password: newPassword });
+    } catch (err) {
+      if (err instanceof IdentityError) return apiError(err.message, err.status, err.code);
+      throw err;
+    }
+    await auth.revokeRefreshTokens(user.uid).catch(() => undefined);
     await auditLog({ actor: user, action: "account.password.change", result: "success" });
     return ok({ ok: true, message: "Password updated. Other active sessions were signed out." });
   } catch (err) {

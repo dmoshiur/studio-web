@@ -4,6 +4,7 @@ import { getAdminDb } from "@/lib/firebase/admin";
 import type { MaintenanceState, OwnerProfile, PublicSiteSettings } from "@/types";
 import { DEFAULT_OWNER_PROFILE } from "@/lib/owner-defaults";
 import { toISODate } from "@/lib/utils";
+import { normalizeBrandDeep, normalizeSiteName } from "@/lib/brand";
 
 export { DEFAULT_OWNER_PROFILE };
 
@@ -134,8 +135,12 @@ export async function getPublicSettings(): Promise<PublicSiteSettings> {
       data
     ) as unknown as PublicSiteSettings;
     const homepage = (data.homepage as Record<string, unknown> | undefined) ?? {};
-    const result: PublicSiteSettings = {
+    // Stored values may still carry a legacy brand identity (e.g. an old
+    // siteName seeded from a stale env var) — normalize before display so
+    // the current brand is consistent on every surface, immediately.
+    const result: PublicSiteSettings = normalizeBrandDeep({
       ...merged,
+      siteName: normalizeSiteName(merged.siteName),
       seo: { ...DEFAULT_PUBLIC_SETTINGS.seo, ...(data.seo as object | undefined) },
       social: (data.social as Record<string, string>) ?? {},
       appearance: { ...DEFAULT_PUBLIC_SETTINGS.appearance, ...(data.appearance as object | undefined) },
@@ -150,7 +155,7 @@ export async function getPublicSettings(): Promise<PublicSiteSettings> {
         },
       },
       updatedAt: toISODate(data.updatedAt) ?? new Date(0).toISOString(),
-    };
+    });
     setCache("publicSettings", result, SETTINGS_CACHE_TTL_MS);
     return result;
   } catch (err) {

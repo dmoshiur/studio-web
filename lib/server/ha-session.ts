@@ -24,10 +24,12 @@ interface HaPayload {
   epoch: number; // passcode epoch at grant time
 }
 
-function secret(): string {
-  // Derive a purpose-specific key from the session secret so this cookie
-  // can never be confused with (or forged from) a user session token.
-  const base = process.env.SESSION_SECRET ?? "";
+async function secret(): Promise<string> {
+  // Derive a purpose-specific key from the shared session secret so this
+  // cookie can never be confused with (or forged from) a user session token
+  // — and so every serverless instance validates the same tokens.
+  const { ensureSessionSecret } = await import("@/lib/server/session");
+  const base = await ensureSessionSecret();
   return crypto
     .createHash("sha256")
     .update(`hackeradmin-session-key:${base}`)
@@ -38,17 +40,17 @@ function b64url(input: string): string {
   return Buffer.from(input).toString("base64url");
 }
 
-export function signHaSession(payload: HaPayload): string {
+export async function signHaSession(payload: HaPayload): Promise<string> {
   const body = b64url(JSON.stringify(payload));
-  const sig = crypto.createHmac("sha256", secret()).update(body).digest("base64url");
+  const sig = crypto.createHmac("sha256", await secret()).update(body).digest("base64url");
   return `ha1.${body}.${sig}`;
 }
 
-export function verifyHaToken(token: string): HaPayload | null {
+export async function verifyHaToken(token: string): Promise<HaPayload | null> {
   const parts = token.split(".");
   if (parts.length !== 3 || parts[0] !== "ha1") return null;
   const [, body, sig] = parts;
-  const expected = crypto.createHmac("sha256", secret()).update(body).digest("base64url");
+  const expected = crypto.createHmac("sha256", await secret()).update(body).digest("base64url");
   const a = Buffer.from(sig);
   const b = Buffer.from(expected);
   if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
@@ -62,10 +64,10 @@ export function verifyHaToken(token: string): HaPayload | null {
 }
 
 /** Create a fresh session token bound to the current passcode epoch. */
-export function issueHaSession(epoch: number): { token: string; maxAgeSeconds: number } {
+export async function issueHaSession(epoch: number): Promise<{ token: string; maxAgeSeconds: number }> {
   const now = Date.now();
   const payload: HaPayload = { v: 1, iat: now, exp: now + HA_TTL_MS, epoch };
-  return { token: signHaSession(payload), maxAgeSeconds: Math.floor(HA_TTL_MS / 1000) };
+  return { token: await signHaSession(payload), maxAgeSeconds: Math.floor(HA_TTL_MS / 1000) };
 }
 
 /**
@@ -76,7 +78,7 @@ export async function getHaSession(): Promise<HaPayload | null> {
   const cookieStore = cookies();
   const raw = cookieStore.get(HA_COOKIE)?.value;
   if (!raw) return null;
-  const payload = verifyHaToken(raw);
+  const payload = await verifyHaToken(raw);
   if (!payload) return null;
   try {
     const state = await getPasscodeState();
@@ -104,7 +106,7 @@ export function haCookieOptions(maxAgeSeconds: number) {
 }
 
 /** Sliding re-issue: fresh expiry on each authenticated owner request. */
-export function refreshHaCookie(payload: HaPayload): { token: string; maxAgeSeconds: number } | null {
+export async function refreshHaCookie(payload: HaPayload): Promise<{ token: string; maxAgeSeconds: number } | null> {
   const remaining = payload.exp - Date.now();
   if (remaining < HA_TTL_MS / 2) return null; // still fresh enough
   return issueHaSession(payload.epoch);
