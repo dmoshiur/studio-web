@@ -65,7 +65,7 @@ export function NewsletterForm({ variant = "light", source = "website" }: { vari
       <button
         type="submit"
         disabled={loading}
-        className="inline-flex h-11 shrink-0 items-center gap-2 bg-gold-700 px-5 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-white shadow-gold-sm transition-all hover:shadow-gold disabled:opacity-60"
+        className="inline-flex h-11 shrink-0 items-center gap-2 rounded-lg bg-gold-gradient px-5 font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-obsidian-950 shadow-gold-sm transition-all hover:shadow-gold disabled:opacity-60"
       >
         <span className="hidden sm:inline">{loading ? "Joining" : "Join"}</span>
         <ArrowRight className="h-3.5 w-3.5 sm:hidden" />

@@ -7,12 +7,12 @@ import { cn } from "@/lib/utils";
  */
 
 const base =
-  "w-full rounded-sm border px-4 text-[14px] transition-colors placeholder:text-ivory-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60";
+  "w-full rounded-lg border px-4 text-[14px] transition-colors placeholder:text-ivory-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60";
 
 const darkTone =
   "border-white/[0.12] bg-white/[0.04] text-ivory-100 focus:border-gold-500/70 focus:bg-white/[0.06]";
 const lightTone =
-  "border-ink-900/[0.12] bg-white text-ink-900 placeholder:text-ink-400 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20";
+  "border-line bg-white text-ink-900 placeholder:text-ink-400 focus:border-[#183A72] focus:ring-2 focus:ring-[#2563EB]/15";
 
 function toneClasses(tone: "dark" | "light") {
   return tone === "light" ? lightTone : darkTone;

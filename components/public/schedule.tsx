@@ -63,7 +63,7 @@ export function ScheduleTabs({ days, speakers }: { days: ScheduleDay[]; speakers
               className={cn(
                 "group relative flex min-w-[104px] flex-1 flex-col items-center justify-center border px-4 py-4 transition-all duration-300 sm:min-w-[150px] sm:px-8 sm:py-5",
                 selected
-                  ? "border-gold-700 bg-gold-700 text-white shadow-gold-sm"
+                  ? "border-transparent bg-gold-gradient text-obsidian-950 shadow-gold-sm"
                   : "border-line bg-white text-ink-900 shadow-card hover:-translate-y-0.5 hover:border-gold-600/50 hover:text-gold-800"
               )}
             >

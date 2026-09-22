@@ -38,21 +38,21 @@ export default async function SpeakerDetailPage({ params }: { params: { slug: st
       <section className="relative isolate overflow-hidden pb-20 pt-40 sm:pt-48">
         <Backdrop src="/images/texture-marble.jpg" overlay="paper" priority />
         <div className="container relative">
-          <nav aria-label="Breadcrumb" className="mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-ink-400">
-            <Link href="/" className="transition-colors hover:text-gold-700">
+          <nav aria-label="Breadcrumb" className="mb-10 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-ivory-400">
+            <Link href="/" className="transition-colors hover:text-gold-300">
               Home
             </Link>
             <Diamond className="opacity-50" />
-            <Link href="/speakers" className="transition-colors hover:text-gold-700">
+            <Link href="/speakers" className="transition-colors hover:text-gold-300">
               Speakers
             </Link>
             <Diamond className="opacity-50" />
-            <span className="text-gold-700">{speaker.name}</span>
+            <span className="text-gold-400">{speaker.name}</span>
           </nav>
 
           <div className="grid items-end gap-12 lg:grid-cols-[380px_1fr] lg:gap-16">
             <div className="relative">
-              <div className="relative overflow-hidden border border-line">
+              <div className="relative overflow-hidden rounded-xl border border-white/15">
                 {speaker.photoURL ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={speaker.photoURL} alt={speaker.name} className="aspect-[3/4] w-full object-cover" />
@@ -61,28 +61,28 @@ export default async function SpeakerDetailPage({ params }: { params: { slug: st
                     <span className="font-serif text-[6rem] text-gold-500/60">{speaker.name.charAt(0)}</span>
                   </div>
                 )}
-                <span aria-hidden className="absolute inset-4 border border-line-strong" />
+                <span aria-hidden className="absolute inset-4 rounded-lg border border-white/25" />
               </div>
             </div>
 
             <div>
-              <Script className="text-[2.2rem] leading-none">on stage</Script>
-              <h1 className="display-xl mt-5 text-ink-900 text-shadow-luxe">{speaker.name}</h1>
+              <Script className="!text-gold-300">on stage</Script>
+              <h1 className="display-xl mt-5 text-white">{speaker.name}</h1>
               {(speaker.title || speaker.company) && (
-                <p className="mt-5 font-sans text-[11.5px] uppercase tracking-[0.24em] text-gold-700">
+                <p className="mt-5 font-sans text-[11.5px] font-semibold uppercase tracking-[0.24em] text-gold-300">
                   {[speaker.title, speaker.company].filter(Boolean).join(" · ")}
                 </p>
               )}
               {speaker.topic && (
-                <p className="mt-5 inline-flex items-center gap-2.5 rounded-full border border-gold-600/25 bg-gold-50 px-4 py-2 font-sans text-[11px] font-semibold text-gold-800">
-                  <span aria-hidden className="h-1 w-6 rounded-full bg-gold-600" />
+                <p className="mt-5 inline-flex items-center gap-2.5 rounded-full border border-gold-500/30 bg-gold-500/10 px-4 py-2 font-sans text-[11px] font-semibold text-gold-300">
+                  <span aria-hidden className="h-1 w-6 rounded-full bg-gold-400" />
                   {speaker.topic}
                 </p>
               )}
               <GoldRule className="mt-8 !mx-0 !max-w-[160px]" />
               <div className="mt-8 max-w-2xl space-y-5">
                 {(speaker.bio ?? "").split("\n\n").map((para, i) => (
-                  <p key={i} className="lead">
+                  <p key={i} className="text-[15.5px] leading-[1.85] text-ivory-300/85">
                     {para}
                   </p>
                 ))}
@@ -102,7 +102,7 @@ export default async function SpeakerDetailPage({ params }: { params: { slug: st
                     href={s.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 border border-line-strong px-5 py-3 font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-ink-700 transition-colors hover:border-gold-600/50 hover:text-gold-700"
+                    className="inline-flex items-center gap-2 rounded-lg border border-white/25 px-5 py-3 font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-ivory-200 transition-colors hover:border-gold-400/60 hover:text-gold-200"
                   >
                     {s.label}
                     <ExternalLink className="h-3.5 w-3.5" />

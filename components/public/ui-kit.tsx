@@ -72,7 +72,7 @@ export function GoldFrame({ className }: { className?: string }) {
 /* Typographic accents                                                 */
 /* ------------------------------------------------------------------ */
 
-/** Calligraphic accent word. */
+/** Corporate accent label — crisp, uppercase, professional. */
 export function Script({
   children,
   className,
@@ -80,7 +80,9 @@ export function Script({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <span className={cn("calligraphic gold-text", className)}>{children}</span>;
+  return (
+    <span className={cn("calligraphic text-[12px] text-obsidian-700", className)}>{children}</span>
+  );
 }
 
 export function Eyebrow({
@@ -95,21 +97,21 @@ export function Eyebrow({
   return (
     <p
       className={cn(
-        "flex items-center gap-3 text-[11px] font-semibold uppercase tracking-luxe text-gold-700",
+        "flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.25em] text-gold-700",
         align === "center" ? "justify-center" : "justify-start",
         className
       )}
     >
-      <span aria-hidden className="h-px w-8 bg-gradient-to-r from-transparent to-gold-600/70" />
+      <span aria-hidden className="h-[2px] w-8 rounded-full bg-gold-500" />
       {children}
-      {align === "center" && <span aria-hidden className="h-px w-8 bg-gradient-to-l from-transparent to-gold-600/70" />}
+      {align === "center" && <span aria-hidden className="h-[2px] w-8 rounded-full bg-gold-500" />}
     </p>
   );
 }
 
 export function GoldRule({ className }: { className?: string }) {
   return (
-    <span aria-hidden className={cn("relative block h-px w-full max-w-[220px] bg-gradient-to-r from-transparent via-gold-600/70 to-transparent", className)}>
+    <span aria-hidden className={cn("relative block h-px w-full max-w-[220px] bg-gradient-to-r from-transparent via-gold-500/80 to-transparent", className)}>
       <Diamond className="absolute -top-[3px] left-1/2 -translate-x-1/2" />
     </span>
   );
@@ -146,7 +148,7 @@ export function SectionHeading({
     >
       {(eyebrow || script) && (
         <div className={cn("mb-5 flex flex-col gap-2", align === "center" ? "items-center" : "items-start")}>
-          {script && <Script className="text-[2rem] leading-none sm:text-[2.4rem]">{script}</Script>}
+          {script && <Script>{script}</Script>}
           {eyebrow && <Eyebrow align={align}>{eyebrow}</Eyebrow>}
         </div>
       )}
@@ -163,8 +165,8 @@ export function SectionHeading({
       )}
       <span
         className={cn(
-          "mt-8 block h-px w-24 bg-gradient-to-r via-gold-600 to-transparent",
-          align === "center" ? "mx-auto from-transparent" : "from-gold-600/70 to-transparent"
+          "mt-8 block h-[3px] w-24 rounded-full bg-gradient-to-r via-gold-500 to-transparent",
+          align === "center" ? "mx-auto from-transparent" : "from-gold-500/80 to-transparent"
         )}
       />
     </Reveal>
@@ -199,12 +201,12 @@ export function StatStrip({
           {onDark && (
             <span
               aria-hidden
-              className="mx-auto mb-5 block h-1 w-10 rounded-full bg-gradient-to-r from-gold-400 to-gold-400"
+              className="mx-auto mb-5 block h-1 w-10 rounded-full bg-gold-gradient"
             />
           )}
           <p
             className={cn(
-              "font-serif text-[2.5rem] font-medium leading-none tracking-[-0.02em] sm:text-[3.1rem]",
+              "font-serif text-[2.5rem] font-extrabold leading-none tracking-[-0.03em] sm:text-[3.1rem]",
               onDark ? "text-white" : "text-ink-900"
             )}
           >
@@ -236,7 +238,7 @@ export function Marquee({ items, className }: { items: string[]; className?: str
         {doubled.map((item, i) => (
           <li
             key={`${item}-${i}`}
-            className="flex items-center gap-14 font-serif text-[1.15rem] tracking-[0.16em] text-ink-400"
+            className="flex items-center gap-14 font-serif text-[1.15rem] font-semibold tracking-[0.14em] text-ink-400"
           >
             <span className="uppercase">{item}</span>
             <Diamond className="opacity-70" />
@@ -394,15 +396,15 @@ export function QuoteBlock({
         aria-hidden
         className={cn(
           "absolute inset-x-0 top-0 h-1",
-          accent === "brand" && "bg-gradient-to-r from-gold-700 via-gold-500 to-gold-300",
-          accent === "ember" && "bg-gradient-to-r from-gold-700 via-gold-500 to-gold-300",
-          accent === "gold" && "bg-gradient-to-r from-gold-700 via-gold-500 to-gold-300"
+          accent === "brand" && "bg-gradient-to-r from-gold-500 via-gold-400 to-gold-300",
+          accent === "ember" && "bg-gradient-to-r from-gold-500 via-gold-400 to-gold-300",
+          accent === "gold" && "bg-gradient-to-r from-gold-500 via-gold-400 to-gold-300"
         )}
       />
-      <span aria-hidden className="calligraphic absolute -top-2 left-7 text-[5rem] leading-none text-gold-600/15">
+      <span aria-hidden className="absolute -top-2 left-7 font-serif text-[5rem] font-bold leading-none text-gold-500/20">
         &ldquo;
       </span>
-      <blockquote className="relative font-serif text-[1.4rem] italic leading-[1.6] text-ink-800 sm:text-[1.65rem]">
+      <blockquote className="relative font-serif text-[1.25rem] font-medium leading-[1.7] text-ink-800 sm:text-[1.4rem]">
         {quote}
       </blockquote>
       <figcaption className="mt-8 flex items-center gap-4">
@@ -437,7 +439,7 @@ export function PageHero({
   children?: React.ReactNode;
 }) {
   return (
-    <section className="relative isolate overflow-hidden bg-paper-100 pb-20 pt-40 sm:pb-24 sm:pt-48">
+    <section className="relative isolate overflow-hidden bg-obsidian-gradient pb-20 pt-40 sm:pb-24 sm:pt-48">
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -446,33 +448,36 @@ export function PageHero({
           aria-hidden
           loading="eager"
           fetchPriority="high"
-          className="h-full w-full scale-[1.02] object-cover opacity-[0.13] saturate-[0.85]"
+          className="h-full w-full scale-[1.02] object-cover opacity-[0.18]"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-paper-100/60 via-paper-100/85 to-paper-100" />
-        <div className="absolute inset-0 bg-gradient-to-r from-paper-100 via-paper-100/60 to-paper-100/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-obsidian-950/92 via-obsidian-950/75 to-obsidian-950/55" />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(234,179,8,0.08),transparent_50%)]"
+        />
       </div>
       <div className="container relative">
         {breadcrumb?.length ? (
-          <nav aria-label="Breadcrumb" className="mb-8 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-ink-400">
+          <nav aria-label="Breadcrumb" className="mb-8 flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-ivory-400">
             {breadcrumb.map((crumb, i) => (
               <span key={crumb.label} className="flex items-center gap-2">
                 {i > 0 && <Diamond className="opacity-60" />}
                 {crumb.href ? (
-                  <Link href={crumb.href} className="transition-colors hover:text-gold-700">
+                  <Link href={crumb.href} className="transition-colors hover:text-gold-300">
                     {crumb.label}
                   </Link>
                 ) : (
-                  <span className="text-gold-700">{crumb.label}</span>
+                  <span className="text-gold-400">{crumb.label}</span>
                 )}
               </span>
             ))}
           </nav>
         ) : null}
         <div className="max-w-3xl">
-          {script && <Script className="text-[2.1rem] leading-none sm:text-[2.6rem]">{script}</Script>}
-          {eyebrow && <Eyebrow align="left" className="mt-4">{eyebrow}</Eyebrow>}
-          <h1 className="display-xl mt-6 font-semibold text-ink-900">{title}</h1>
-          {description && <p className="lead mt-6 max-w-2xl">{description}</p>}
+          {script && <span className="calligraphic text-[12px] text-gold-300">{script}</span>}
+          {eyebrow && <Eyebrow align="left" className="mt-4 !text-gold-400">{eyebrow}</Eyebrow>}
+          <h1 className="display-xl mt-6 font-extrabold text-white">{title}</h1>
+          {description && <p className="mt-6 max-w-2xl text-[15.5px] leading-[1.85] text-ivory-300/85 sm:text-[16.5px]">{description}</p>}
           {children && <div className="mt-9">{children}</div>}
         </div>
       </div>

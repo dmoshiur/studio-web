@@ -45,7 +45,7 @@ export default async function ContactPage() {
           <Reveal delay={120} className="lg:sticky lg:top-28 lg:self-start">
             <div className="relative overflow-hidden border border-gold-600/25 bg-white p-9 text-ink-800">
               <span aria-hidden className="pointer-events-none absolute inset-3 border border-gold-600/25" />
-              <Script className="text-[2.2rem] leading-none">reach us</Script>
+              <Script>reach us</Script>
               <ul className="mt-8 space-y-7 text-[14px]">
                 {settings.address && (
                   <li className="flex gap-4">

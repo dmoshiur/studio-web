@@ -33,7 +33,7 @@ export function AuthLayout({
           </Link>
 
           <div>
-            <Script className="text-[2.6rem] leading-none">welcome back</Script>
+            <Script>welcome back</Script>
             <p className="mt-6 max-w-sm font-serif text-[1.5rem] italic leading-relaxed text-ink-700">
               “The room, the standard and the work — all in one place.”
             </p>
@@ -62,7 +62,7 @@ export function AuthLayout({
 
           <div className="relative border border-line bg-white p-8 shadow-luxe sm:p-10">
             <span aria-hidden className="pointer-events-none absolute inset-x-3 top-3 h-px bg-gradient-to-r from-transparent via-gold-600/50 to-transparent" />
-            {script && <Script className="block text-[1.9rem] leading-none">{script}</Script>}
+            {script && <Script className="block">{script}</Script>}
             <h1 className="mt-3 font-serif text-[2rem] leading-tight text-ink-900">{title}</h1>
             {subtitle && <p className="mt-3 text-[13.5px] leading-relaxed text-ink-500">{subtitle}</p>}
             <div className="mt-8">{children}</div>

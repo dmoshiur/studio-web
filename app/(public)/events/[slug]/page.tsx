@@ -66,19 +66,20 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* Hero */}
-      <section className="relative isolate overflow-hidden pb-20 pt-40 sm:pb-24 sm:pt-48">
-        <Backdrop src={event.coverImage ?? "/images/hero-stage.jpg"} overlay="paper" priority alt={event.title} />
+      <section className="relative isolate overflow-hidden bg-obsidian-gradient pb-20 pt-40 sm:pb-24 sm:pt-48">
+        <Backdrop src={event.coverImage ?? "/images/hero-stage.jpg"} overlay="none" className="opacity-[0.2]" priority alt={event.title} />
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-obsidian-950/92 via-obsidian-950/80 to-obsidian-950/60" />
         <div className="container relative">
-          <nav aria-label="Breadcrumb" className="mb-8 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-ink-400">
-            <Link href="/" className="transition-colors hover:text-gold-700">
+          <nav aria-label="Breadcrumb" className="mb-8 flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-ivory-400">
+            <Link href="/" className="transition-colors hover:text-gold-300">
               Home
             </Link>
             <Diamond className="opacity-50" />
-            <Link href="/events" className="transition-colors hover:text-gold-700">
+            <Link href="/events" className="transition-colors hover:text-gold-300">
               Events
             </Link>
             <Diamond className="opacity-50" />
-            <span className="text-gold-700">{event.title}</span>
+            <span className="text-gold-400">{event.title}</span>
           </nav>
 
           <div className="grid gap-12 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
@@ -88,11 +89,11 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
                   <Badge variant="solidGold">Flagship event</Badge>
                 </span>
               )}
-              <h1 className="display-xl max-w-3xl text-ink-900 text-shadow-luxe">{event.title}</h1>
+              <h1 className="display-xl max-w-3xl text-white">{event.title}</h1>
               <GoldRule className="mt-9 !mx-0 !max-w-[170px]" />
-              <p className="lead mt-7 max-w-2xl">{event.description}</p>
+              <p className="mt-7 max-w-2xl text-[15.5px] leading-[1.85] text-ivory-300/85">{event.description}</p>
 
-              <div className="mt-9 flex flex-wrap gap-x-9 gap-y-3 text-[12.5px] text-ink-500">
+              <div className="mt-9 flex flex-wrap gap-x-9 gap-y-3 text-[12.5px] text-ivory-300/80">
                 <span className="flex items-center gap-2.5">
                   <CalendarDays className="h-4 w-4 text-gold-500" />
                   {formatDate(event.startAt, { weekday: "long", month: "long", day: "numeric" })}
@@ -111,8 +112,8 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
             </div>
 
             {new Date(event.startAt).getTime() > Date.now() && (
-              <div className="border border-gold-600/25 bg-white p-7 shadow-card">
-                <p className="eyebrow mb-5">Doors open in</p>
+              <div className="rounded-2xl border border-white/15 bg-white/[0.06] p-7 backdrop-blur-md">
+                <p className="eyebrow mb-5 !text-gold-400">Doors open in</p>
                 <Countdown targetISO={event.startAt} />
               </div>
             )}
@@ -184,7 +185,7 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
           {/* Booking rail */}
           <aside>
             <div className="border border-gold-600/25 bg-white p-8 shadow-luxe lg:sticky lg:top-28">
-              <Script className="text-[2rem] leading-none">reserve</Script>
+              <Script>reserve</Script>
               <h2 className="mt-3 font-serif text-[1.5rem] text-ink-900">Passes for this date</h2>
 
               <dl className="mt-7 divide-y divide-line">

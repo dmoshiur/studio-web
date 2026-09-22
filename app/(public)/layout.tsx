@@ -25,7 +25,12 @@ export default async function PublicLayout({ children }: { children: React.React
 
   return (
     <>
-      <SiteHeader siteName={settings.siteName} logoUrl={settings.logoUrl} links={headerNav.links} />
+      <SiteHeader
+        siteName={settings.siteName}
+        logoUrl={settings.logoUrl}
+        links={headerNav.links}
+        contact={{ phone: settings.phone, email: settings.contactEmail, address: settings.address }}
+      />
       <main id="main-content">{children}</main>
       <SiteFooter settings={settings} footerLinks={footerNav.links} socialLinks={socialLinks} />
       <VisitTracker />

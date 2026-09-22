@@ -60,21 +60,21 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         <header className="relative isolate overflow-hidden pb-20 pt-40 sm:pt-48">
           <Backdrop src={post.coverImage ?? "/images/texture-marble.jpg"} overlay="paper" priority alt={post.title} />
           <div className="container relative">
-            <nav aria-label="Breadcrumb" className="mb-9 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-ink-400">
-              <Link href="/" className="transition-colors hover:text-gold-700">
+            <nav aria-label="Breadcrumb" className="mb-9 flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-ivory-400">
+              <Link href="/" className="transition-colors hover:text-gold-300">
                 Home
               </Link>
               <Diamond className="opacity-50" />
-              <Link href="/blog" className="transition-colors hover:text-gold-700">
+              <Link href="/blog" className="transition-colors hover:text-gold-300">
                 Journal
               </Link>
               <Diamond className="opacity-50" />
-              <span className="text-gold-700">{post.categorySlug ?? "Essay"}</span>
+              <span className="text-gold-400">{post.categorySlug ?? "Essay"}</span>
             </nav>
 
             <div className="max-w-4xl">
-              <div className="flex flex-wrap items-center gap-4 text-[11px] uppercase tracking-[0.22em] text-ink-500">
-                <span className="text-gold-700">{post.authorName}</span>
+              <div className="flex flex-wrap items-center gap-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-ivory-300/75">
+                <span className="text-gold-400">{post.authorName}</span>
                 <Diamond className="h-1 w-1" />
                 <span>{formatDate(post.publishedAt)}</span>
                 <Diamond className="h-1 w-1" />
@@ -84,8 +84,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                 </span>
               </div>
 
-              <h1 className="display-xl mt-7 text-ink-900 text-shadow-luxe">{post.title}</h1>
-              <p className="lead mt-7 max-w-2xl">{post.excerpt}</p>
+              <h1 className="display-xl mt-7 text-white">{post.title}</h1>
+              <p className="mt-7 max-w-2xl text-[15.5px] leading-[1.85] text-ivory-300/85">{post.excerpt}</p>
             </div>
           </div>
         </header>
@@ -123,7 +123,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
             {/* Invitation */}
             <div className="mt-14 border border-gold-600/30 bg-paper-100 p-9 text-center shadow-card">
-              <p className="calligraphic gold-text text-[2rem] leading-none">the invitation list</p>
+              <p className="calligraphic gold-text text-[12px]">the invitation list</p>
               <p className="mt-4 font-serif text-[1.35rem] text-ink-900">Get the next essay in your inbox</p>
               <p className="mt-3 text-[13.5px] leading-relaxed text-ink-500">
                 One long-form letter each month, plus early access to summit passes.

@@ -3,87 +3,95 @@
 @tailwind utilities;
 
 /* =====================================================================
-   Photography — restrained editorial design system
-   Warm whites, near-black ink and one champagne accent. The public
-   experience is intentionally quiet: photography and typography do the
-   visual work, while colour is reserved for precise moments of emphasis.
+   Tranzo Professional design system
+   Corporate navy surfaces, one gold accent and a cool slate canvas.
+   Poppins carries the headings, Inter the body copy. The language is
+   confident and trust-building: clear hierarchy, soft navy elevation,
+   precise gold moments of emphasis.
    ===================================================================== */
 
 :root {
-  /* One public accent — champagne / antique gold. */
-  --brand: #b99352;
-  --brand-deep: #8c672d;
-  --brand-ink: #4c3618;
-  --ember: #b99352;
-  --ember-deep: #8c672d;
-  --royal: #6f6f6a;
-  --gold: #b99352;
-  --gold-light: #ddc99e;
-  --gold-pale: #f6efe1;
-  --gold-deep: #8c672d;
-  --crimson: #40403c;
+  /* One public accent — corporate gold. */
+  --brand: #eab308;
+  --brand-deep: #a16207;
+  --brand-ink: #713f12;
+  --ember: #eab308;
+  --ember-deep: #a16207;
+  --royal: #183a72;
+  --gold: #eab308;
+  --gold-light: #fcd34d;
+  --gold-pale: #fff9e6;
+  --gold-deep: #a16207;
+  --crimson: #be123c;
 
   /* Light surfaces */
-  --paper: #fafaf8;
-  --paper-soft: #f5f5f1;
-  --paper-deep: #efefea;
+  --paper: #f8fafc;
+  --paper-soft: #f1f5f9;
+  --paper-deep: #e8eef7;
   --card: #ffffff;
-  --line: #e8e8e5;
-  --line-strong: #dcdcd5;
+  --line: #e2e8f0;
+  --line-strong: #d9e2f2;
 
   /* Ink */
-  --ink: #111111;
-  --ink-soft: #3e3e3a;
-  --muted: #6b6b6b;
-  --muted-soft: #8b8b86;
+  --ink: #0f172a;
+  --ink-soft: #334155;
+  --muted: #64748b;
+  --muted-soft: #94a3b8;
 
-  /* Dark surfaces */
-  --obsidian: #0f0f0f;
-  --obsidian-soft: #171717;
-  --obsidian-raised: #242424;
-  --ivory: #f8f5ef;
+  /* Dark surfaces — corporate navy */
+  --obsidian: #0f1e36;
+  --obsidian-soft: #122244;
+  --obsidian-raised: #1e3566;
+  --ivory: #f8fafc;
 
   /* Backwards-compatible aliases used by the studio and legacy components. */
   --brand-legacy: var(--gold);
   --ember-legacy: var(--gold-light);
 
-  --shadow-card: 0 1px 2px rgba(17, 17, 17, 0.04), 0 10px 28px -14px rgba(17, 17, 17, 0.1);
-  --shadow-lift: 0 2px 4px rgba(17, 17, 17, 0.05), 0 26px 52px -22px rgba(17, 17, 17, 0.18);
-  --shadow-luxe: 0 1px 2px rgba(17, 17, 17, 0.05), 0 24px 60px -28px rgba(17, 17, 17, 0.22);
-  --shadow-gold: 0 18px 50px -20px rgba(185, 147, 82, 0.34);
+  --shadow-card: 0 10px 15px -3px rgba(15, 23, 42, 0.05), 0 4px 6px -4px rgba(15, 23, 42, 0.05);
+  --shadow-lift: 0 18px 45px rgba(30, 53, 102, 0.12);
+  --shadow-luxe: 0 24px 70px rgba(30, 53, 102, 0.14);
+  --shadow-gold: 0 18px 45px -15px rgba(234, 179, 8, 0.45);
 }
 
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 
 body {
   @apply bg-paper-100 text-ink-900 font-sans antialiased;
   text-rendering: optimizeLegibility;
   font-feature-settings: "kern" 1, "liga" 1;
+  overflow-x: hidden;
 }
 
 ::selection {
-  background: rgba(185, 147, 82, 0.24);
-  color: #111111;
+  background: rgba(234, 179, 8, 0.28);
+  color: #0f172a;
 }
 
 :focus-visible {
-  outline: 2px solid var(--gold-deep);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
-/* Scrollbar — quiet, paper-toned */
-::-webkit-scrollbar { width: 11px; height: 11px; }
-::-webkit-scrollbar-track { background: #f2f2ee; }
+/* Scrollbar — thin, cool slate */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f8fafc; }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #cfcfc8, #b9b9b2);
-  border-radius: 999px;
-  border: 2px solid #f2f2ee;
+  background: #e2e8f0;
+  border-radius: 10px;
 }
-::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #b4b4ac, #9d9d96); }
+::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+
+img {
+  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+}
 
 /* ------------------------------------------------------------------ */
 /* Typography                                                          */
@@ -94,62 +102,62 @@ body {
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif font-medium tracking-[-0.01em] text-ink-900;
+    @apply font-serif font-bold tracking-[-0.025em] text-ink-900;
   }
 
-  /* Calligraphic accent — reserved for eyebrows, flourishes and signatures */
+  /* Corporate accent label — crisp, uppercase, never calligraphic. */
   .calligraphic {
-    font-family: var(--font-script), "Great Vibes", cursive;
-    font-weight: 400;
-    letter-spacing: 0.01em;
-    line-height: 1.2;
+    font-family: var(--font-script), "Poppins", sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    line-height: 1.3;
   }
 
   .eyebrow {
-    @apply text-[11px] font-semibold uppercase tracking-[0.42em] text-gold-700;
+    @apply text-[11px] font-semibold uppercase tracking-[0.25em] text-gold-700;
   }
 
   .display-xl {
-    @apply font-serif text-[2.9rem] leading-[1.02] tracking-[-0.02em] sm:text-[3.6rem] lg:text-[4.4rem];
+    @apply font-serif text-[2.6rem] font-extrabold leading-[1.08] tracking-[-0.03em] sm:text-[3.4rem] lg:text-[4.2rem];
   }
 
   .display-lg {
-    @apply font-serif text-[2.2rem] leading-[1.06] tracking-[-0.02em] sm:text-[2.8rem] lg:text-[3.4rem];
+    @apply font-serif text-[2rem] font-bold leading-[1.12] tracking-[-0.025em] sm:text-[2.6rem] lg:text-[3.1rem];
   }
 
   .display-md {
-    @apply font-serif text-[1.75rem] leading-[1.12] sm:text-[2.1rem];
+    @apply font-serif text-[1.6rem] font-bold leading-[1.15] sm:text-[2rem];
   }
 
   .lead {
-    @apply text-[15px] leading-[1.85] text-ink-500 sm:text-[16.5px];
+    @apply text-[15px] leading-[1.8] text-ink-500 sm:text-[16px];
   }
 
   .lead-dark {
-    @apply text-[15px] leading-[1.85] text-ink-500 sm:text-[16.5px];
+    @apply text-[15px] leading-[1.8] text-ink-500 sm:text-[16px];
   }
 
-  /* Thin gold rule with a diamond centre */
+  /* Thin gold rule */
   .gold-rule {
-    @apply relative mx-auto h-px w-24 bg-gradient-to-r from-transparent via-gold-500 to-transparent;
+    @apply relative mx-auto h-1 w-24 rounded-full bg-gold-gradient;
   }
 
   .gold-frame {
-    @apply relative border border-gold-500/30;
+    @apply relative border border-gold-500/40;
   }
 
-  /* Editorial card surfaces ---------------------------------------- */
+  /* Card surfaces ---------------------------------------- */
   .surface-light {
     @apply border border-line bg-white shadow-card;
   }
 
-  /* Formerly the translucent dark card — now a clean white panel. */
   .surface-dark {
     @apply border border-line bg-white shadow-card;
   }
 
   .link-gold {
-    @apply relative inline-flex items-center gap-2 text-gold-700 transition-colors hover:text-gold-600;
+    @apply relative inline-flex items-center gap-2 font-semibold text-[#183A72] transition-colors hover:text-[#2563EB];
   }
 
   .link-underline {
@@ -157,56 +165,56 @@ body {
   }
   .link-underline::after {
     content: "";
-    @apply absolute -bottom-1 left-0 h-px w-0 bg-gold-600 transition-all duration-300;
+    @apply absolute -bottom-1 left-0 h-[2px] w-0 rounded-full bg-[#EAB308] transition-all duration-300;
   }
   .link-underline:hover::after { @apply w-full; }
 
-  /* Editorial buttons — one restrained accent ------------------ */
+  /* Action buttons — gold gradient primary, navy-friendly secondaries -- */
   .btn-editorial {
-    @apply inline-flex h-[52px] items-center justify-center gap-3 rounded-full bg-gold-gradient px-8
-      font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-white shadow-gold-sm
-      transition-all duration-300 hover:-translate-y-0.5 hover:shadow-gold;
+    @apply inline-flex h-[52px] items-center justify-center gap-3 rounded-xl bg-gold-gradient px-8
+      font-sans text-[12.5px] font-bold uppercase tracking-[0.14em] text-obsidian-950 shadow-gold-sm
+      transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-gold active:scale-[0.98];
   }
 
   .btn-ember {
-    @apply inline-flex h-[52px] items-center justify-center gap-3 rounded-full bg-gold-700 px-8
-      font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-white
-      transition-all duration-300 hover:-translate-y-0.5 hover:bg-gold-600 hover:shadow-gold;
+    @apply inline-flex h-[52px] items-center justify-center gap-3 rounded-xl bg-obsidian-700 px-8
+      font-sans text-[12.5px] font-bold uppercase tracking-[0.14em] text-white shadow-brand-sm
+      transition-all duration-300 hover:-translate-y-0.5 hover:bg-obsidian-600 hover:shadow-brand active:scale-[0.98];
   }
 
   .btn-quiet {
-    @apply inline-flex h-[52px] items-center justify-center gap-3 rounded-full border border-line bg-white px-8
-      font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-ink-900
-      transition-all duration-300 hover:-translate-y-0.5 hover:border-gold-600/50 hover:text-gold-700 hover:shadow-card;
+    @apply inline-flex h-[52px] items-center justify-center gap-3 rounded-xl border border-line bg-white px-8
+      font-sans text-[12.5px] font-bold uppercase tracking-[0.14em] text-ink-900 shadow-card
+      transition-all duration-300 hover:-translate-y-0.5 hover:border-obsidian-700 hover:text-obsidian-700 active:scale-[0.98];
   }
 
   .btn-quiet-on-dark {
-    @apply inline-flex h-[52px] items-center justify-center gap-3 rounded-full border border-white/25 px-8
-      font-sans text-[11.5px] font-semibold uppercase tracking-[0.22em] text-ivory-100
-      transition-all duration-300 hover:border-gold-400/70 hover:text-gold-200;
+    @apply inline-flex h-[52px] items-center justify-center gap-3 rounded-xl border border-white/25 bg-white/[0.06] px-8
+      font-sans text-[12.5px] font-bold uppercase tracking-[0.14em] text-ivory-100 backdrop-blur-sm
+      transition-all duration-300 hover:-translate-y-0.5 hover:border-gold-400/70 hover:text-gold-200 active:scale-[0.98];
   }
 
   /* Small accent pill used above headings and imagery */
   .pill-brand {
-    @apply inline-flex items-center gap-2 rounded-full border border-gold-600/25 bg-gold-50 px-4 py-1.5
+    @apply inline-flex items-center gap-2 rounded-full border border-gold-500/35 bg-gold-50 px-4 py-1.5
       font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-gold-700;
   }
   .pill-ember {
-    @apply inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-50 px-4 py-1.5
-      font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-gold-700;
+    @apply inline-flex items-center gap-2 rounded-full border border-obsidian-700/15 bg-blue-50 px-4 py-1.5
+      font-sans text-[10.5px] font-semibold uppercase tracking-[0.2em] text-obsidian-700;
   }
 
   /* Decorative helpers */
   .dot-grid {
-    background-image: radial-gradient(rgba(185, 147, 82, 0.22) 1.2px, transparent 1.2px);
+    background-image: radial-gradient(rgba(24, 58, 114, 0.18) 1.2px, transparent 1.2px);
     background-size: 18px 18px;
   }
   .dot-grid-gold {
-    background-image: radial-gradient(rgba(185, 147, 82, 0.35) 1.2px, transparent 1.2px);
+    background-image: radial-gradient(rgba(234, 179, 8, 0.4) 1.2px, transparent 1.2px);
     background-size: 16px 16px;
   }
   .ring-deco {
-    @apply pointer-events-none absolute rounded-full border border-gold-600/15;
+    @apply pointer-events-none absolute rounded-full border border-gold-500/25;
   }
 }
 
@@ -218,7 +226,7 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.035;
+  opacity: 0.03;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
@@ -230,48 +238,49 @@ body {
   opacity: 0.5;
   background-image: repeating-linear-gradient(
     90deg,
-    rgba(17, 17, 17, 0.05) 0,
-    rgba(17, 17, 17, 0.05) 1px,
+    rgba(15, 23, 42, 0.05) 0,
+    rgba(15, 23, 42, 0.05) 1px,
     transparent 1px,
     transparent 96px
   );
   mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
 }
 
-/* Dark scrims — image-led, near-black and free of extra hues. */
+/* Dark scrims — corporate navy. */
 .overlay-obsidian {
-  background: linear-gradient(180deg, rgba(15, 15, 15, 0.94) 0%, rgba(15, 15, 15, 0.86) 45%, rgba(15, 15, 15, 0.98) 100%);
+  background: linear-gradient(180deg, rgba(15, 30, 54, 0.94) 0%, rgba(15, 30, 54, 0.86) 45%, rgba(15, 30, 54, 0.98) 100%);
 }
 
 .overlay-editorial {
-  background: linear-gradient(180deg, rgba(8, 8, 10, 0.55) 0%, rgba(8, 8, 10, 0.35) 40%, rgba(8, 8, 10, 0.92) 100%);
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.55) 0%, rgba(15, 23, 42, 0.35) 40%, rgba(15, 30, 54, 0.92) 100%);
 }
 
-/* Light scrim — imagery ghosts through warm paper */
+/* Light scrim — imagery ghosts through cool slate */
 .overlay-paper {
   background:
-    radial-gradient(120% 90% at 85% 0%, rgba(185, 147, 82, 0.07) 0%, transparent 55%),
-    linear-gradient(180deg, rgba(250, 250, 248, 0.82) 0%, rgba(250, 250, 248, 0.9) 45%, rgba(250, 250, 248, 0.98) 100%);
+    radial-gradient(120% 90% at 85% 0%, rgba(234, 179, 8, 0.08) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(248, 250, 252, 0.82) 0%, rgba(248, 250, 252, 0.9) 45%, rgba(248, 250, 252, 0.98) 100%);
 }
 
 .overlay-paper-soft {
-  background: linear-gradient(180deg, rgba(250, 250, 248, 0.9) 0%, rgba(245, 245, 241, 0.96) 100%);
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.9) 0%, rgba(241, 245, 249, 0.96) 100%);
 }
 
-/* Kept for API compatibility — neutral on the light theme */
+/* Kept for API compatibility */
 .text-shadow-luxe {
   text-shadow: none;
 }
 
+/* Gold gradient headline text */
 .gold-text {
-  background: linear-gradient(100deg, #6e4f21 0%, #a77e3c 34%, #c9ad76 52%, #8c672d 78%, #6e4f21 100%);
+  background: linear-gradient(90deg, #EAB308 0%, #FACC15 55%, #E6B325 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .gold-text-soft {
-  background: linear-gradient(100deg, #8c672d 0%, #b99352 45%, #8c672d 100%);
+  background: linear-gradient(90deg, #A16207 0%, #EAB308 50%, #A16207 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -293,7 +302,7 @@ body {
 .reveal {
   opacity: 0;
   transform: translateY(26px);
-  transition: opacity 0.9s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .reveal.is-visible {
   opacity: 1;
@@ -319,12 +328,12 @@ body {
   100% { background-position: 500px 0; }
 }
 .skeleton {
-  background: linear-gradient(90deg, #16161c 25%, #1e1e26 50%, #16161c 75%);
+  background: linear-gradient(90deg, #0f1e36 25%, #1e3566 50%, #0f1e36 75%);
   background-size: 1000px 100%;
   animation: shimmer 1.6s infinite linear;
 }
 .skeleton-light {
-  background: linear-gradient(90deg, #efeae0 25%, #f8f5ef 50%, #efeae0 75%);
+  background: linear-gradient(90deg, #e8eef7 25%, #f8fafc 50%, #e8eef7 75%);
   background-size: 1000px 100%;
   animation: shimmer 1.6s infinite linear;
 }
@@ -351,19 +360,19 @@ body {
 /* Light by default — the public site is a light theme.                 */
 /* ------------------------------------------------------------------ */
 .prose-editorial {
-  @apply text-[15.5px] leading-[1.95] text-ink-500;
+  @apply text-[15.5px] leading-[1.9] text-ink-500;
 }
 .prose-editorial > * + * { margin-top: 1.35em; }
 .prose-editorial h2 {
-  @apply mt-14 font-serif text-[1.75rem] leading-tight text-ink-900 sm:text-[2.1rem];
+  @apply mt-14 font-serif text-[1.75rem] font-bold leading-tight text-ink-900 sm:text-[2.1rem];
 }
 .prose-editorial h3 {
-  @apply mt-10 font-serif text-[1.35rem] text-ink-900;
+  @apply mt-10 font-serif text-[1.35rem] font-bold text-ink-900;
 }
 .prose-editorial p { @apply text-ink-500; }
 .prose-editorial strong { @apply text-ink-900; }
 .prose-editorial a {
-  @apply text-gold-700 underline decoration-gold-500/50 underline-offset-4 transition-colors hover:text-gold-600;
+  @apply font-semibold text-[#183A72] underline decoration-[#183A72]/40 underline-offset-4 transition-colors hover:text-[#2563EB];
 }
 .prose-editorial ul { @apply list-none pl-0; }
 .prose-editorial ul > li {
@@ -371,29 +380,29 @@ body {
 }
 .prose-editorial ul > li::before {
   content: "";
-  @apply absolute left-1 top-[0.85em] h-1.5 w-1.5 rotate-45 bg-gold-600;
+  @apply absolute left-1 top-[0.85em] h-1.5 w-1.5 rounded-[2px] bg-gold-500;
 }
 .prose-editorial ol { @apply list-decimal pl-6 marker:text-gold-600; }
 .prose-editorial blockquote {
-  @apply my-10 border-l-2 border-gold-500/70 pl-6 font-serif text-[1.35rem] italic leading-relaxed text-ink-800;
+  @apply my-10 border-l-4 border-gold-500 pl-6 font-serif text-[1.3rem] font-medium leading-relaxed text-ink-800;
 }
 .prose-editorial img {
-  @apply my-10 w-full rounded-sm border border-line shadow-luxe;
+  @apply my-10 w-full rounded-xl border border-line shadow-luxe;
 }
 .prose-editorial hr {
   @apply my-12 border-0 border-t border-line;
 }
 .prose-editorial pre {
-  @apply overflow-x-auto rounded-sm border border-line bg-paper-200 p-5 text-[13px] leading-relaxed text-ink-700;
+  @apply overflow-x-auto rounded-xl border border-line bg-paper-200 p-5 text-[13px] leading-relaxed text-ink-700;
 }
 .prose-editorial code:not(pre code) {
-  @apply rounded-sm bg-gold-500/10 px-1.5 py-0.5 text-[0.9em] text-gold-800;
+  @apply rounded-md bg-gold-500/10 px-1.5 py-0.5 text-[0.9em] text-gold-800;
 }
 .prose-editorial table { @apply w-full border-collapse text-[14px]; }
 .prose-editorial th, .prose-editorial td { @apply border border-line px-3 py-2 text-left; }
 .prose-editorial th { @apply bg-paper-200 font-sans text-[12px] uppercase tracking-wider text-ink-600; }
 
-/* Dark variant — used by the studio preview pane on obsidian. */
+/* Dark variant — used by the studio preview pane on navy. */
 .prose-on-dark { @apply text-ivory-300/80; }
 .prose-on-dark h2, .prose-on-dark h3 { @apply text-ivory-50; }
 .prose-on-dark p { @apply text-ivory-300/80; }
@@ -401,10 +410,10 @@ body {
 .prose-on-dark a { @apply text-gold-300 underline decoration-gold-500/40 hover:text-gold-200; }
 .prose-on-dark ul > li::before { @apply bg-gold-500; }
 .prose-on-dark ol { @apply marker:text-gold-500; }
-.prose-on-dark blockquote { @apply border-gold-500/70 text-ivory-100; }
+.prose-on-dark blockquote { @apply border-gold-500 text-ivory-100; }
 .prose-on-dark img { @apply border-white/10 shadow-2xl; }
 .prose-on-dark hr { @apply border-white/10; }
-.prose-on-dark pre { @apply border-white/10 bg-black/60 text-ivory-200; }
+.prose-on-dark pre { @apply border-white/10 bg-black/40 text-ivory-200; }
 .prose-on-dark code:not(pre code) { @apply bg-gold-500/10 text-gold-200; }
 .prose-on-dark th, .prose-on-dark td { @apply border-white/10; }
 .prose-on-dark th { @apply bg-white/[0.04] text-gold-300; }
@@ -414,38 +423,38 @@ body {
 .prose-light h2, .prose-light h3 { @apply text-ink-900; }
 .prose-light p { @apply text-ink-600; }
 .prose-light a { @apply text-gold-700 underline; }
-.prose-light blockquote { @apply border-gold-500/60 text-ink-800; }
+.prose-light blockquote { @apply border-gold-500 text-ink-800; }
 
 /* ------------------------------------------------------------------ */
-/* Studio (admin/owner) surfaces — intentionally dark                  */
+/* Studio (admin/owner) surfaces — corporate navy                       */
 /* ------------------------------------------------------------------ */
 .studio-sidebar {
   background:
-    radial-gradient(120% 60% at 0% 0%, rgba(185, 147, 82, 0.1) 0%, transparent 60%),
-    linear-gradient(180deg, #0b0b0f 0%, #08080a 100%);
+    radial-gradient(120% 60% at 0% 0%, rgba(234, 179, 8, 0.12) 0%, transparent 60%),
+    linear-gradient(180deg, #0F1E36 0%, #0B1626 100%);
 }
 
 .studio-nav-item {
-  @apply relative flex items-center gap-3 rounded-sm px-3 py-2.5 text-[13.5px] font-medium text-ivory-400/70 transition-all duration-200;
+  @apply relative flex items-center gap-3 rounded-md px-3 py-2.5 text-[13.5px] font-medium text-ivory-400/70 transition-all duration-200;
 }
 .studio-nav-item:hover {
   @apply bg-white/[0.05] text-ivory-100;
 }
 .studio-nav-item[aria-current="page"] {
-  @apply bg-gold-500/[0.12] text-gold-100;
+  @apply bg-gold-500/[0.14] text-gold-100;
 }
 .studio-nav-item[aria-current="page"]::before {
   content: "";
-  @apply absolute left-0 top-1/2 h-5 w-[2px] -translate-y-1/2 bg-gold-400;
+  @apply absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-gold-400;
 }
 
 .studio-panel {
-  @apply rounded-sm border border-white/[0.08] bg-white/[0.025];
+  @apply rounded-xl border border-white/[0.08] bg-white/[0.025];
 }
 
 .studio-input {
-  @apply w-full rounded-sm border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-[14px] text-ivory-100
-    placeholder:text-ivory-500/50 transition-colors focus:border-gold-500/60 focus:bg-white/[0.05] focus:outline-none;
+  @apply w-full rounded-lg border border-white/10 bg-white/[0.04] px-3.5 py-2.5 text-[14px] text-ivory-100
+    placeholder:text-ivory-500/50 transition-colors focus:border-gold-500/60 focus:bg-white/[0.06] focus:outline-none;
 }
 
 .data-table { @apply w-full border-collapse text-[13.5px]; }

@@ -6,7 +6,7 @@ export default function NotFound() {
     <main className="relative isolate flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 text-center">
       <Backdrop src="/images/texture-marble.jpg" overlay="paper" priority />
       <div className="relative">
-        <Script className="text-[3.4rem] leading-none">lost the thread</Script>
+        <Script>lost the thread</Script>
         <h1 className="display-lg mt-6 text-ink-900">This page has moved on</h1>
         <p className="lead mx-auto mt-5 max-w-md">
           The address you followed does not exist. The calendar, the journal and the roster are all one click away.
