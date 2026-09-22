@@ -526,7 +526,7 @@ export async function createIdentitySession(
     email: user.email,
     exp: Math.floor(Date.now() / 1000) + maxAgeSeconds,
   };
-  return { token: signSession(payload), maxAgeSeconds };
+  return { token: await signSession(payload), maxAgeSeconds };
 }
 
 export interface ResolvedIdentity {
@@ -549,7 +549,7 @@ export async function resolveIdentitySession(cookieValue: string): Promise<Resol
     }
   }
 
-  const payload = verifySessionToken(cookieValue);
+  const payload = await verifySessionToken(cookieValue);
   if (!payload) return null;
   const cred = getCredentialByUid(payload.uid);
   if (cred && cred.session_epoch !== payload.epoch) return null; // session revoked

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getPublicSettings } from "@/lib/firestore/settings";
 import { getMaintenanceState, isSiteOffline } from "@/lib/firestore/settings";
 import { getNavigation, listSocialLinks } from "@/lib/firestore/engagement";
+import { ensureSeededOnce } from "@/lib/db/bootstrap";
 import { SiteHeader } from "@/components/public/site-header";
 import { SiteFooter } from "@/components/public/site-footer";
 import { VisitTracker } from "@/components/public/visit-tracker";
@@ -9,6 +10,9 @@ import { VisitTracker } from "@/components/public/visit-tracker";
 export const dynamic = "force-dynamic";
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
+  // Finish boot (seed + brand migration) BEFORE reading display data, so a
+  // request can never cache and serve pre-migration values.
+  await ensureSeededOnce();
   // Check maintenance mode server-side (cached, no extra fetch needed)
   const [settings, maintenance, headerNav, footerNav, socialLinks] = await Promise.all([
     getPublicSettings(),

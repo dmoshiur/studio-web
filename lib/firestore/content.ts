@@ -3,6 +3,7 @@ import { FieldValue, type Query } from "firebase-admin/firestore";
 import { getAdminDb } from "@/lib/firebase/admin";
 import { slugify, toISODate } from "@/lib/utils";
 import { sanitizeRichText } from "@/lib/security/sanitize";
+import { normalizeBrandDeep } from "@/lib/brand";
 import type {
   Category, EventItem, Paginated, PageDoc, Post, PublishStatus, ScheduleDay, ScheduleSession, Speaker,
 } from "@/types";
@@ -13,13 +14,48 @@ function requireDb() {
   return db;
 }
 
+type QDoc = { id: string; data: () => Record<string, unknown> };
+
+/** Numeric sort value for a stored date-ish field (Timestamp | Date | ISO). */
+function timeVal(d: QDoc, field: string): number {
+  const v = d.data()[field];
+  if (!v) return 0;
+  const isoStr = toISODate(v);
+  return isoStr ? Date.parse(isoStr) : 0;
+}
+
+/**
+ * Run a composed query; when Firestore rejects it because the required
+ * composite index has not been deployed (FAILED_PRECONDITION), fall back to
+ * an in-memory filter/sort of the collection so public pages and APIs keep
+ * working. Deploy `firestore.indexes.json` to avoid the fallback
+ * (`firebase deploy --only firestore:indexes`).
+ */
+async function queryDocs(q: Query, fallback: () => Promise<QDoc[]>): Promise<QDoc[]> {
+  try {
+    const snap = await q.get();
+    return snap.docs as unknown as QDoc[];
+  } catch (err) {
+    const code = (err as { code?: number | string }).code;
+    const msg = err instanceof Error ? err.message : String(err);
+    if (code === 9 || /requires an index|FAILED_PRECONDITION/i.test(msg)) {
+      console.error(
+        "[content] Firestore composite index missing — using in-memory fallback. Deploy the indexes with `firebase deploy --only firestore:indexes`.",
+        msg.split("\n")[0]
+      );
+      return fallback();
+    }
+    throw err;
+  }
+}
+
 function iso(v: unknown, fallback?: string | null): string | null {
   return toISODate(v) ?? fallback ?? null;
 }
 
 // ------------------------------- POSTS -------------------------------
 function mapPost(id: string, d: Record<string, unknown>): Post {
-  return {
+  return normalizeBrandDeep({
     id,
     title: String(d.title ?? ""),
     slug: String(d.slug ?? id),
@@ -39,7 +75,7 @@ function mapPost(id: string, d: Record<string, unknown>): Post {
     scheduledAt: iso(d.scheduledAt),
     createdAt: toISODate(d.createdAt) ?? new Date().toISOString(),
     updatedAt: toISODate(d.updatedAt) ?? new Date().toISOString(),
-  };
+  });
 }
 
 export async function listPublishedPosts(opts: {
@@ -55,11 +91,26 @@ export async function listPublishedPosts(opts: {
     const cur = await db.collection("posts").doc(opts.cursor).get();
     if (cur.exists) q = q.startAfter(cur);
   }
-  const snap = await q.get();
-  const docs = snap.docs.slice(0, limit);
+  const docs = await queryDocs(q, async () => {
+    const snap = await db.collection("posts").get();
+    let all = (snap.docs as unknown as QDoc[]).filter((d) => {
+      const data = d.data();
+      if (data.status !== "published") return false;
+      if (opts.categorySlug && data.categorySlug !== opts.categorySlug) return false;
+      if (opts.featuredOnly && data.featured !== true) return false;
+      return true;
+    });
+    all.sort((a, b) => timeVal(b, "publishedAt") - timeVal(a, "publishedAt"));
+    if (opts.cursor) {
+      const idx = all.findIndex((d) => d.id === opts.cursor);
+      if (idx >= 0) all = all.slice(idx + 1);
+    }
+    return all.slice(0, limit + 1);
+  });
+  const page = docs.slice(0, limit);
   return {
-    items: docs.map((d) => mapPost(d.id, d.data())),
-    nextCursor: snap.docs.length > limit ? docs[docs.length - 1].id : null,
+    items: page.map((d) => mapPost(d.id, d.data())),
+    nextCursor: docs.length > limit ? page[page.length - 1].id : null,
   };
 }
 
@@ -73,11 +124,22 @@ export async function listPostsAdmin(opts: { limit?: number; cursor?: string; st
     const cur = await db.collection("posts").doc(opts.cursor).get();
     if (cur.exists) q = q.startAfter(cur);
   }
-  const snap = await q.get();
-  const docs = snap.docs.slice(0, limit);
+  const docs = await queryDocs(q, async () => {
+    const snap = await db.collection("posts").get();
+    let all = (snap.docs as unknown as QDoc[]).filter((d) =>
+      opts.status ? d.data().status === opts.status : true
+    );
+    all.sort((a, b) => timeVal(b, "updatedAt") - timeVal(a, "updatedAt"));
+    if (opts.cursor) {
+      const idx = all.findIndex((d) => d.id === opts.cursor);
+      if (idx >= 0) all = all.slice(idx + 1);
+    }
+    return all.slice(0, limit + 1);
+  });
+  const page = docs.slice(0, limit);
   return {
-    items: docs.map((d) => mapPost(d.id, d.data())),
-    nextCursor: snap.docs.length > limit ? docs[docs.length - 1].id : null,
+    items: page.map((d) => mapPost(d.id, d.data())),
+    nextCursor: docs.length > limit ? page[page.length - 1].id : null,
   };
 }
 
@@ -143,7 +205,7 @@ export async function deletePost(id: string): Promise<void> {
 
 // ------------------------------- EVENTS ------------------------------
 function mapEvent(id: string, d: Record<string, unknown>): EventItem {
-  return {
+  return normalizeBrandDeep({
     id,
     title: String(d.title ?? ""),
     slug: String(d.slug ?? id),
@@ -163,7 +225,7 @@ function mapEvent(id: string, d: Record<string, unknown>): EventItem {
     seo: (d.seo as EventItem["seo"]) ?? undefined,
     createdAt: toISODate(d.createdAt) ?? new Date().toISOString(),
     updatedAt: toISODate(d.updatedAt) ?? new Date().toISOString(),
-  };
+  });
 }
 
 export async function listPublishedEvents(opts: { limit?: number; cursor?: string; upcomingOnly?: boolean } = {}) {
@@ -176,11 +238,25 @@ export async function listPublishedEvents(opts: { limit?: number; cursor?: strin
     const cur = await db.collection("events").doc(opts.cursor).get();
     if (cur.exists) q = q.startAfter(cur);
   }
-  const snap = await q.get();
-  const docs = snap.docs.slice(0, limit);
+  const docs = await queryDocs(q, async () => {
+    const snap = await db.collection("events").get();
+    let all = (snap.docs as unknown as QDoc[]).filter((d) => {
+      const data = d.data();
+      if (data.status !== "published") return false;
+      if (opts.upcomingOnly && timeVal(d, "startAt") < Date.now()) return false;
+      return true;
+    });
+    all.sort((a, b) => timeVal(a, "startAt") - timeVal(b, "startAt"));
+    if (opts.cursor) {
+      const idx = all.findIndex((d) => d.id === opts.cursor);
+      if (idx >= 0) all = all.slice(idx + 1);
+    }
+    return all.slice(0, limit + 1);
+  });
+  const page = docs.slice(0, limit);
   return {
-    items: docs.map((d) => mapEvent(d.id, d.data())),
-    nextCursor: snap.docs.length > limit ? docs[docs.length - 1].id : null,
+    items: page.map((d) => mapEvent(d.id, d.data())),
+    nextCursor: docs.length > limit ? page[page.length - 1].id : null,
   };
 }
 
@@ -255,7 +331,7 @@ export async function deleteEvent(id: string) {
 
 // ------------------------------ SPEAKERS -----------------------------
 function mapSpeaker(id: string, d: Record<string, unknown>): Speaker {
-  return {
+  return normalizeBrandDeep({
     id,
     name: String(d.name ?? ""),
     slug: String(d.slug ?? id),
@@ -269,7 +345,7 @@ function mapSpeaker(id: string, d: Record<string, unknown>): Speaker {
     status: (d.status as PublishStatus) ?? "published",
     createdAt: toISODate(d.createdAt) ?? new Date().toISOString(),
     updatedAt: toISODate(d.updatedAt) ?? new Date().toISOString(),
-  };
+  });
 }
 
 export async function listPublishedSpeakers(opts: { limit?: number; featuredOnly?: boolean } = {}) {
@@ -278,8 +354,18 @@ export async function listPublishedSpeakers(opts: { limit?: number; featuredOnly
   let q: Query = db.collection("speakers").where("status", "==", "published");
   if (opts.featuredOnly) q = q.where("featured", "==", true);
   q = q.orderBy("name", "asc").limit(limit);
-  const snap = await q.get();
-  return snap.docs.map((d) => mapSpeaker(d.id, d.data()));
+  const docs = await queryDocs(q, async () => {
+    const snap = await db.collection("speakers").get();
+    const all = (snap.docs as unknown as QDoc[]).filter((d) => {
+      const data = d.data();
+      if (data.status !== "published") return false;
+      if (opts.featuredOnly && data.featured !== true) return false;
+      return true;
+    });
+    all.sort((a, b) => String(a.data().name ?? "").localeCompare(String(b.data().name ?? "")));
+    return all.slice(0, limit);
+  });
+  return docs.map((d) => mapSpeaker(d.id, d.data()));
 }
 
 export async function listSpeakersAdmin(opts: { limit?: number } = {}) {
@@ -373,7 +459,7 @@ export async function deleteCategory(id: string) {
 
 // ------------------------------- PAGES -------------------------------
 function mapPage(id: string, d: Record<string, unknown>): PageDoc {
-  return {
+  return normalizeBrandDeep({
     id,
     slug: String(d.slug ?? id),
     title: String(d.title ?? ""),
@@ -381,7 +467,7 @@ function mapPage(id: string, d: Record<string, unknown>): PageDoc {
     status: (d.status as PublishStatus) ?? "draft",
     seo: (d.seo as PageDoc["seo"]) ?? undefined,
     updatedAt: toISODate(d.updatedAt) ?? new Date().toISOString(),
-  };
+  });
 }
 
 export async function getPageBySlug(slug: string): Promise<PageDoc | null> {

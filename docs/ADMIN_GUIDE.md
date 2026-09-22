@@ -34,7 +34,7 @@ Published events appear at `/events` + `/events/[slug]` (with Event JSON-LD for 
 
 Name/slug, title, company, **talk topic**, bio, photo (library picker), social links, featured,
 status. Published profiles appear at `/speakers` + `/speakers/[slug]`, rendered as a
-ManUp-style grid: hover a portrait for the social links, open a card for the detail modal
+Speaker grid: hover a portrait for the social links, open a card for the detail modal
 (topic, bio, socials, full-profile link).
 
 ## Schedule (`/admin/schedule`)

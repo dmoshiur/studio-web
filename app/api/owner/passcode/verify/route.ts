@@ -73,7 +73,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid passcode", code: "invalid" }, { status: 401 });
     }
 
-    const { token, maxAgeSeconds } = issueHaSession(result.sessionEpoch ?? 0);
+    const { token, maxAgeSeconds } = await issueHaSession(result.sessionEpoch ?? 0);
     await auditLog({
       actorId: "hackeradmin-gate",
       action: "hackeradmin.passcode.verify",

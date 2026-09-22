@@ -68,6 +68,9 @@ function ResetFlow() {
 
       const data = (await res.json().catch(() => ({}))) as { resetToken?: string; delivered?: boolean };
       if (data.resetToken) setResetToken(data.resetToken);
+      // Surface SMTP delivery problems without revealing whether the
+      // account exists (delivered=false only means the mail could not go out).
+      setDeliveryWarning(data.delivered === false && !data.resetToken);
       setSent(true);
     } catch {
       // Never reveal whether an account exists.

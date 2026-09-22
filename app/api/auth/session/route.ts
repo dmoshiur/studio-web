@@ -5,13 +5,17 @@ import { SESSION_COOKIE, adminSessionUser, isEnvAdmin, isEnvAdminConfigured, ver
 import {
   authenticateWithPassword,
   createIdentitySession,
+  getIdentityUser,
   identityBackend,
   IdentityError,
 } from "@/lib/server/identity";
+import { getCredentialByEmail } from "@/lib/server/local-credentials";
 import { handleApiError, requestIp } from "@/lib/server/api-helpers";
 import { rateLimit, rateLimitHeaders, RATE_PRESETS } from "@/lib/server/rate-limit";
 import { auditLog } from "@/lib/server/audit";
 import { bumpCounter, opsInfo, opsWarn } from "@/lib/server/ops-log";
+import type { Role } from "@/types";
+import { isAdminRole, isOwnerRole } from "@/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -32,10 +36,26 @@ function sessionCookieOptions(maxAgeSeconds: number) {
   };
 }
 
+function redirectForRole(role: Role): string {
+  if (role === "admin" || role === "owner" || role === "superadmin") return "/admin";
+  return "/";
+}
+
 /**
  * Create a session. Two accepted credential shapes:
- *  1. { email, password }  → environment master admin, then the active backend
+ *  1. { email, password }  → the ACTIVE IDENTITY STORE (the exact same
+ *     state the password-reset flow writes). On the embedded backend that
+ *     is the scrypt-hashed credential table; on Firebase deployments the
+ *     password is verified client-side and exchanged as an ID token, so
+ *     this shape only serves the store + the env break-glass below.
  *  2. { idToken }          → Firebase Authentication (client SDK sign-in)
+ *
+ * The environment master admin (ADMIN_EMAIL/ADMIN_PASSWORD) is used ONLY
+ * to bootstrap / as break-glass while the account does not yet exist in
+ * the identity store. Once the account exists (it is seeded on boot), the
+ * store is the single source of truth — a password changed or reset
+ * through the account flows is effective immediately and the original env
+ * value no longer grants access.
  */
 export async function POST(req: Request) {
   try {
@@ -57,56 +77,74 @@ export async function POST(req: Request) {
       const { email, password } = passwordSchema.parse(raw);
       const normalized = email.trim().toLowerCase();
 
-      // 1) Environment master administrator — full platform access.
-      //    Only attempt if env admin is fully configured (email AND password set).
-      if (isEnvAdmin(normalized) && isEnvAdminConfigured()) {
-        if (verifyAdminPassword(password)) {
-          // Env admin password matches → grant superadmin access
+      // 1) Embedded backend — verify against the credential store (the same
+      //    record the forgot-password flow updates). Same algorithm and
+      //    comparison used when the password was created or reset (scrypt).
+      if (identityBackend() === "local") {
+        const cred = getCredentialByEmail(normalized);
+        if (cred) {
+          try {
+            const user = await authenticateWithPassword(normalized, password);
+            const { token, maxAgeSeconds } = await createIdentitySession(user);
+            await auditLog({ actorId: user.uid, actorEmail: normalized, actorRole: user.role, action: "auth.login", result: "success", metadata: { mode: "password" }, ip });
+            bumpCounter("authSuccess");
+            const res = NextResponse.json({
+              ok: true,
+              role: user.role,
+              redirect: redirectForRole(user.role),
+              user,
+            });
+            res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions(maxAgeSeconds));
+            return res;
+          } catch (err) {
+            if (err instanceof IdentityError) {
+              await auditLog({ actorEmail: normalized, action: "auth.login", result: "failure", metadata: { mode: "password", code: err.code }, ip });
+              bumpCounter("authFailures");
+              opsWarn("auth", `Failed sign-in attempt for ${normalized}`);
+              // Generic message — never reveal which half was wrong.
+              return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+            }
+            throw err;
+          }
+        }
+      }
+
+      // 2) Environment master administrator — break-glass ONLY while the
+      //    account does not exist in the identity store (bootstrap gap).
+      //    Once it exists, the store decides — so a reset password works
+      //    immediately and a stale env value cannot override it.
+      let storeHasAccount = identityBackend() === "local" ? getCredentialByEmail(normalized) !== null : false;
+      if (!storeHasAccount && isEnvAdmin(normalized) && isEnvAdminConfigured() && verifyAdminPassword(password)) {
+        if (identityBackend() === "firebase") {
+          const auth = getAdminAuth();
+          storeHasAccount = auth
+            ? await auth.getUserByEmail(normalized).then(() => true).catch(() => false)
+            : true;
+        }
+        if (!storeHasAccount) {
           const user = adminSessionUser(normalized);
           const { token, maxAgeSeconds } = await createIdentitySession(user);
           await auditLog({ actorId: user.uid, actorEmail: normalized, actorRole: user.role, action: "auth.login", result: "success", metadata: { mode: "env-admin" }, ip });
           bumpCounter("authSuccess");
-          opsInfo("auth", `Master administrator signed in (${normalized})`);
-          const res = NextResponse.json({ ok: true, role: user.role, redirect: "/hackeradmin", user });
+          opsInfo("auth", `Master administrator signed in via env break-glass (${normalized})`);
+          const res = NextResponse.json({ ok: true, role: user.role, redirect: redirectForRole(user.role), user });
           res.cookies.set(SESSION_COOKIE, `env-admin:${token}`, sessionCookieOptions(maxAgeSeconds));
           return res;
         }
-        // Env admin password didn't match — fall through to check database
-        // credentials. This allows a user who registered with the same email
-        // through the form to still log in with their own password.
       }
 
-      // 2) Embedded backend credentials.
-      //    Covers: (a) normal user registrations, (b) env admin email with
-      //    wrong env password but correct database password.
       if (identityBackend() === "local") {
-        try {
-          const user = await authenticateWithPassword(normalized, password);
-          const { token, maxAgeSeconds } = await createIdentitySession(user);
-          await auditLog({ actorId: user.uid, actorEmail: normalized, actorRole: user.role, action: "auth.login", result: "success", metadata: { mode: "password" }, ip });
-          bumpCounter("authSuccess");
-          const res = NextResponse.json({
-            ok: true,
-            role: user.role,
-            redirect: user.role === "admin" || user.role === "owner" || user.role === "superadmin" ? (user.role === "admin" ? "/admin" : "/hackeradmin") : "/",
-            user,
-          });
-          res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions(maxAgeSeconds));
-          return res;
-        } catch (err) {
-          if (err instanceof IdentityError) {
-            await auditLog({ actorEmail: normalized, action: "auth.login", result: "failure", metadata: { mode: "password", code: err.code }, ip });
-            bumpCounter("authFailures");
-            opsWarn("auth", `Failed sign-in attempt for ${normalized}`);
-            return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
-          }
-          throw err;
-        }
+        await auditLog({ actorEmail: normalized, action: "auth.login", result: "failure", metadata: { mode: "password", code: "invalid_credentials" }, ip });
+        bumpCounter("authFailures");
+        opsWarn("auth", `Failed sign-in attempt for ${normalized}`);
+        return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
       }
 
-      // 3) Firebase deployments verify passwords through the client SDK.
+      // 3) Firebase deployments verify passwords through the client SDK
+      //    (Firebase Auth is the credential store the reset flow writes).
+      //    The login page exchanges the resulting ID token below.
       return NextResponse.json(
-        { error: "This deployment authenticates with Firebase — please sign in with the Firebase client.", code: "use_firebase_client" },
+        { error: "Password verification runs through the authentication provider.", code: "use_firebase_client" },
         { status: 400 }
       );
     }
@@ -114,26 +152,44 @@ export async function POST(req: Request) {
     /* ---------------- Firebase ID token ---------------- */
     const { idToken } = firebaseSchema.parse(raw);
     if (!isAdminConfigured() || getDataBackend() === "local") {
-      return NextResponse.json({ error: "Firebase Authentication is not configured" }, { status: 503 });
+      return NextResponse.json({ error: "Authentication service is not configured" }, { status: 503 });
     }
     const auth = getAdminAuth();
-    if (!auth) return NextResponse.json({ error: "Firebase Authentication is not configured" }, { status: 503 });
+    if (!auth) return NextResponse.json({ error: "Authentication service is not configured" }, { status: 503 });
 
     const days = Math.min(Math.max(Number(process.env.SESSION_MAX_AGE_DAYS ?? 7), 1), 14);
     const expiresIn = days * 24 * 60 * 60 * 1000;
     const sessionCookie = await auth.createSessionCookie(idToken, { expiresIn });
     const decoded = await auth.verifySessionCookie(sessionCookie, true);
 
+    const profile = await getIdentityUser(decoded.uid);
+    const claimRole = String((decoded as { role?: unknown }).role ?? "user") as Role;
+    const role: Role = isEnvAdmin(decoded.email ?? null)
+      ? "superadmin"
+      : isAdminRole(claimRole) || isOwnerRole(claimRole)
+        ? claimRole
+        : "user";
+    const user = {
+      uid: decoded.uid,
+      email: decoded.email ?? null,
+      displayName: decoded.name ?? profile?.displayName ?? null,
+      photoURL: decoded.picture ?? profile?.photoURL ?? null,
+      emailVerified: Boolean(decoded.email_verified) || profile?.emailVerified === true,
+      role,
+    };
+
     await auditLog({
       actorId: decoded.uid,
       actorEmail: decoded.email ?? undefined,
+      actorRole: role,
       action: "auth.login",
       result: "success",
       metadata: { mode: "firebase" },
       ip,
     });
+    bumpCounter("authSuccess");
 
-    const res = NextResponse.json({ ok: true, role: (decoded.role as string) ?? "user" });
+    const res = NextResponse.json({ ok: true, role, redirect: redirectForRole(role), user });
     res.cookies.set(SESSION_COOKIE, sessionCookie, sessionCookieOptions(Math.floor(expiresIn / 1000)));
     return res;
   } catch (err) {

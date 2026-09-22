@@ -1,6 +1,7 @@
 import "server-only";
 import nodemailer, { type Transporter } from "nodemailer";
 import { getAdminDb } from "@/lib/firebase/admin";
+import { normalizeBrandString } from "@/lib/brand";
 
 /**
  * SMTP mailer — server-only. Credentials come from environment variables.
@@ -35,7 +36,7 @@ export function getSmtpConfigFromEnv(): SmtpConfig | null {
     user,
     password,
     fromEmail,
-    fromName: process.env.SMTP_FROM_NAME ?? "Photography",
+    fromName: normalizeBrandString(process.env.SMTP_FROM_NAME ?? "Photography"),
     replyTo: process.env.SMTP_REPLY_TO || undefined,
   };
 }
@@ -49,7 +50,7 @@ async function getSmtpDisplayOverrides(): Promise<Partial<SmtpConfig>> {
     if (!snap.exists) return {};
     const d = snap.data() as Record<string, unknown>;
     return {
-      ...(typeof d.fromName === "string" ? { fromName: d.fromName } : {}),
+      ...(typeof d.fromName === "string" ? { fromName: normalizeBrandString(d.fromName) } : {}),
       ...(typeof d.fromEmail === "string" ? { fromEmail: d.fromEmail } : {}),
       ...(typeof d.replyTo === "string" ? { replyTo: d.replyTo } : {}),
     };

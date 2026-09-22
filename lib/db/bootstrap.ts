@@ -1,7 +1,7 @@
 import "server-only";
 import { seedIfEmpty } from "@/lib/db/seed";
 import { runRebrandMigration } from "@/lib/db/rebrand";
-import { opsInfo } from "@/lib/server/ops-log";
+import { opsInfo, opsWarn } from "@/lib/server/ops-log";
 
 /**
  * One-time-per-process startup tasks, kicked from the root layout:
@@ -20,6 +20,22 @@ async function boot(): Promise<void> {
   try {
     const { getDataBackend } = await import("@/lib/firebase/admin");
     opsInfo("app", `Application boot — data backend: ${getDataBackend()}`);
+    // Data-persistence diagnostics: the embedded store lives on the local
+    // disk and will NOT survive across serverless instances/deploys. The
+    // intended production database is Firestore — say so loudly.
+    if (getDataBackend() !== "firebase") {
+      if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+        console.warn(
+          "[bootstrap] ⚠ Running the embedded store on a serverless host — data, accounts and sessions are per-instance and will not persist. Configure the Firebase (Firestore) credentials so the deployment connects to the production database."
+        );
+        opsWarn("bootstrap", "Embedded store on serverless host — configure Firestore for production persistence");
+      }
+      if (!process.env.SESSION_SECRET) {
+        console.warn(
+          "[bootstrap] ⚠ SESSION_SECRET is not set — session cookies are signed with a generated key. Set SESSION_SECRET in production so sessions survive restarts and span instances."
+        );
+      }
+    }
   } catch {
     /* informational only */
   }

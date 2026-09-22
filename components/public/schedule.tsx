@@ -8,7 +8,7 @@ import type { ScheduleDay, Speaker } from "@/types";
 import { Reveal } from "@/components/public/reveal";
 
 /**
- * Day-by-day tabbed schedule — ManUp-style.
+ * Day-by-day tabbed schedule — reference-style.
  * Tabs switch purely client-side (no reload); each tab renders that day's
  * timeline: session title, timing, venue/track and the assigned speakers.
  */

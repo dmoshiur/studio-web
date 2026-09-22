@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import type { Speaker } from "@/types";
 
 /**
- * Speaker grid — ManUp-style feature structure:
+ * Speaker grid — reference-style feature structure:
  *  - photo card with a hover overlay that reveals the social links
  *  - speaker name + topic under the portrait
  *  - clicking a card opens a detail modal (bio, topic, socials, link to the

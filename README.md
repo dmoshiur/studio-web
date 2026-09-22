@@ -1,7 +1,7 @@
 # Photography — Event Management Studio (v2)
 
 A premium, fully dynamic photography & event management platform — rebuilt from the classic
-[ManUp template](https://github.com/themewagon/manup) (Colorlib, CC BY 3.0 — attribution retained in the footer)
+[ManUp template](https://github.com/themewagon/manup) (Colorlib, CC BY 3.0 — attribution retained in this README)
 into a production-ready **Next.js 14** application with an editorial public site, a content studio and a
 separate owner control center.
 
@@ -32,7 +32,7 @@ and the studio switches over automatically.
 
 ## Highlights
 
-- **Public site** — home, about, events + detail, **speakers grid (ManUp-style: hover socials,
+- **Public site** — home, about, events + detail, **speakers grid (hover socials,
   topic, detail modal)**, **tabbed day-by-day schedule (`/schedule`, Day 1/2/3… tabs switch
   instantly client-side)**, journal (`/blog`) + post, contact, privacy, unsubscribe; SEO-ready
   (metadata, OG/Twitter, sitemap, robots, JSON-LD, **RSS at `/feed.xml`**). Mobile-first with
@@ -115,7 +115,7 @@ upload — cover images, videos, audio, documents, avatars, the owner portrait �
 CLOUDINARY_CLOUD_NAME=your-cloud
 CLOUDINARY_API_KEY=…
 CLOUDINARY_API_SECRET=…
-CLOUDINARY_FOLDER=manup        # optional root folder
+CLOUDINARY_FOLDER=photography     # optional root folder
 # or the single-variable form:
 # CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
 ```
